@@ -1,0 +1,2 @@
+#!/bin/bash
+grep -q "$(git status | tail -n 1)" && echo 'fuck12'
