@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Map "a/A" to "CAPSLOCK" , modulo specific product
+echo "hidutil property --matching '{\"ProductID\":0xAAAA,\"VendorID\":0xBBBB}' --set '{\"UserKeyMapping\":[{\"HIDKeyboardModifierMappingSrc\":0x700000039,\"HIDKeyboardModifierMappingDst\":0x700000004}]}'"
+# Add something to path
+echo "path+=(/Users/mariopokemon/Desktop/projs/git-goblin)"
+# replace all html files "A or B" -> "C. and D."
+echo "find . -type f -name '*.html' -exec sed -i '' s/A\ or\ B/C\.\ and\ D\./g {} +"
+# file extensions and count
+echo "find . -type f | sed -n 's/..*\.//p' | sort | uniq -c"
+# swap files
+echo "swap () {
+  tmp_name=$(TMPDIR=$(dirname -- \"$1\") mktemp) &&
+  mv -f -- "$1" "$tmp_name" &&
+  mv -f -- "$2" "$1" &&
+  mv -f -- "$tmp_name" "$2"
+}
+swap file file_1"
