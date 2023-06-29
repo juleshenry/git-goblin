@@ -1,0 +1,3 @@
+#!/bin/bash
+# GACP -> git add .;git commit -m "$0";git push
+touch '$(date -u -R "+%m-%d-%y-%H-%M-%S" ).txt'
