@@ -16,9 +16,12 @@ def get_open_issues(repo):
 def main(repositories):
     for repo in repositories:
         open_issues = get_open_issues(repo)
-        print(f"Open issues in {repo}:")
-        for issue in open_issues:
-            print(f" - {issue['title']} ({issue['html_url']})")
+        if open_issues:
+            print(f"Open issues in {repo}:")
+            for ix,issue in enumerate(open_issues):
+                if '.' in issue['title'][:5]:
+                    tit = ''.join(issue['title'].split('.')[1:])
+                print(f"{ix}. {tit} ({issue['html_url']})")
 
 import subprocess
 import requests
@@ -35,7 +38,6 @@ def get_public_repositories(username):
         return []
 
 def get_user_repos(username):
-
     repositories = get_public_repositories(username)
     
     if repositories:
@@ -46,8 +48,10 @@ def get_user_repos(username):
 
 def clean_urls(x):
     return ['/'.join(s.split('/')[-2:]) for s in x]
+
 if __name__ == "__main__":
     us = 'juleshenry'
     x = get_user_repos(us)
+    print(x)
     y = clean_urls(x)
     main(y)
