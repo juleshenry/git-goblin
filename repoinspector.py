@@ -52,6 +52,7 @@ def clean_urls(x):
 if __name__ == "__main__":
     us = 'juleshenry'
     x = get_user_repos(us)
-    print(x)
+    if not x:
+        print('API likely failed')
     y = clean_urls(x)
     main(y)
