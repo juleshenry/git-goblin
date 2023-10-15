@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# swap files
+echo "swap () {
+  tmp_name=$(TMPDIR=$(dirname -- \"$1\") mktemp) &&
+  mv -f -- "$1" "$tmp_name" &&
+  mv -f -- "$2" "$1" &&
+  mv -f -- "$tmp_name" "$2"
+}
+swap file file_1"

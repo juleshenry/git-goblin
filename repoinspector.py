@@ -50,8 +50,8 @@ def clean_urls(x):
     return ['/'.join(s.split('/')[-2:]) for s in x]
 
 if __name__ == "__main__":
-    us = 'juleshenry'
-    x = get_user_repos(us)
+    user = 'juleshenry'
+    x = get_user_repos(user)
     if not x:
         print('API likely failed')
     y = clean_urls(x)

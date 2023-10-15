@@ -1,6 +1,0 @@
-#!/bin/bash
-# echo "git-goblin vanilla";
-# echo "$(git push)"  | grep 'Could' $0;
-# grep 'echo' git-goblin.sh;
-
-# Keeps all failed pushes in queue. Released on connect to internet.
