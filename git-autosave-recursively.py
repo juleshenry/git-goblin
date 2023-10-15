@@ -7,9 +7,14 @@ def unseen(gfc, dir):
             return 0
     return 1
 
+def change_directory_and_run_command(directory, command):
+    # os.chdir(directory)
+    rez = subprocess.run([f'cd {directory}; zsh -i -c {command}'], shell=True)
+    print(rez.stdout)
+
 def recurse_directories(base_path):
     gitful_cache = set() # dirs with git in them
-    true_root = os.getcwd()
+    autosave = "gacp 'Autosaving... $(date)'"
     for root, dirs, files in os.walk(base_path):
         
         for d in dirs:
@@ -18,9 +23,9 @@ def recurse_directories(base_path):
             if unseen(gitful_cache, command) and '.git' in str(command):
                 gitful_cache.add(command)
                 # print('Git repo discovered     @', command[:-5])
-                cmd=(true_root + command[1:-4])
-                print(cmd)
-                subprocess.run(['cd ' + cmd,  "gacp 'Autosaving... $(date)'"])
+                place=(command[2:-4])
+                print(place)
+                change_directory_and_run_command(place, autosave)
 
 if __name__ == "__main__":
     base_path = "."  # Starting directory (current directory)
