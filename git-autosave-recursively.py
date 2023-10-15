@@ -8,13 +8,13 @@ def unseen(gfc, dir):
     return 1
 
 def change_directory_and_run_command(directory, command):
-    # os.chdir(directory)
-    rez = subprocess.run([f'cd {directory}; zsh -i -c {command}'], shell=True)
+    gacp = "git add .; git commit -m 'Autosaving...';git push"
+    rez = subprocess.run([f'cd {directory}; zsh -i -c "{gacp }"'], shell=True)
     print(rez.stdout)
 
 def recurse_directories(base_path):
     gitful_cache = set() # dirs with git in them
-    autosave = "gacp 'Autosaving... $(date)'"
+    autosave = "gacp '"
     for root, dirs, files in os.walk(base_path):
         
         for d in dirs:
