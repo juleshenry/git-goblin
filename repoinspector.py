@@ -1,7 +1,9 @@
 import requests
-# For a given user, find all open issues for all repos
+import argparse
+
 
 def get_open_issues(repo):
+    # For a given user, find all open issues for all repos
     url = f"https://api.github.com/repos/{repo}/issues"
     response = requests.get(url)
 
@@ -19,12 +21,8 @@ def main(repositories):
         if open_issues:
             print(f"Open issues in {repo}:")
             for ix,issue in enumerate(open_issues):
-                if '.' in issue['title'][:5]:
-                    tit = ''.join(issue['title'].split('.')[1:])
-                print(f"{ix}. {tit} ({issue['html_url']})")
+                print(f"{ix}. {issue['title']} ({issue['html_url']})")
 
-import subprocess
-import requests
 
 def get_public_repositories(username):
     url = f"https://api.github.com/users/{username}/repos"
@@ -50,7 +48,9 @@ def clean_urls(x):
     return ['/'.join(s.split('/')[-2:]) for s in x]
 
 if __name__ == "__main__":
-    user = 'juleshenry'
+    p = argparse.ArgumentParser(description="Repo Inspector")
+    args, positional_args = p.parse_known_args()
+    user = ('juleshenry' if not positional_args else positional_args[0])
     x = get_user_repos(user)
     if not x:
         print('API likely failed')

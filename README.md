@@ -5,19 +5,17 @@ Git Scripts that Get the Job Done!
 
 # gacp
 Simplifies clunky common pattern of adding all changes, committing and pushing.
-
 E.g. `gacp "New Form on HomePage"`
 
 
 There are two ways to add your shell script to your PATH:
 1. Move the shell script to a directory that is already in your PATH. 
 
-Inspect `echo $PATH`-> `/Library/Frameworks/Python.framework/Versions/3.10/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin`. Then, for example: `sudo mv gacp /usr/bin`
-
-
-2. Add the shell script's directory to your PATH
-
-Then, add like so: `export PATH=$PATH:/home/jdoe/myscripts`
+Navigate your terminal to the gitgoblin root.
+`echo "$(pwd)\gacp`
+`nano ~/.bashrc OR nano ~/.zshrc`
+`alias myalias='gacp'` 
+`source ~/.bashrc OR source ~/.zshrc` 
 
 # rec-autosave
 Runs around cleaning up uncommitted projects.
