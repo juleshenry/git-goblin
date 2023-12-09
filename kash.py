@@ -39,6 +39,12 @@ import os
 
 
 def cereal(*a, **k):
+    a = list(filter(lambda x:type(x)==int or type(x)==str or type(x)==float, a))
+    # for o in a:
+    #     print(o,type(o))
+    # print('asd')
+    # for x in k:
+    #     print(x,type(x))
     return str({"a": json.dumps(a), "k": json.dumps(k)})
 
 
@@ -86,7 +92,7 @@ def kash(file_path):
 def fib(*a, **k):
     for _ in range(1000):
         pass
-    print("hard funccc called")
+    print("~~~!!!!!@@@@@((((*****))))````````"*2)
     return f"F({cereal(*a,**k)})"
 
 
@@ -110,12 +116,12 @@ class A:
     def fib(*a, **k):
         for _ in range(1000):
             pass
-        print("hard funccc called")
+        print("~~~~~@@@@@@$$$$$(((()))))"*8)
         return f"F({cereal(*a,**k)})"
 
 
 # Basic
-# print(f'>>{(etap:="step uno")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
+print(f'>>{(etap:="step uno")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
 
 print(f'>>{(etap:="step uno")}<<', A().fib(1, 2, 3, "arg", key="key", kwarg=etap))
 
