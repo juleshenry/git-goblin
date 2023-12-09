@@ -24,3 +24,8 @@ Makes a text file of as $GMT_DateTime.txt
 
 # ds-store-duster
 Recurses all child folders and removes .DS_Store
+
+# dust-kash
+Recurses all child folders and removes .kash
+
+
