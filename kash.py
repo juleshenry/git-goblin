@@ -40,11 +40,6 @@ import os
 
 def cereal(*a, **k):
     a = list(filter(lambda x: type(x) == int or type(x) == str or type(x) == float, a))
-    # for o in a:
-    #     print(o,type(o))
-    # print('asd')
-    # for x in k:
-    #     print(x,type(x))
     return str({"a": json.dumps(a), "k": json.dumps(k)})
 
 
@@ -113,11 +108,29 @@ class A:
         return f"F({cereal(*a,**k)})"
 
 
-# Basic
+# Basic ( Run these 1 @ a time, then notice...)
+"""
+@kash("good")
+def fib(*a, **k):
+    for _ in range(1000):
+        pass
+    print("~~~!!!!!@@@@@((((*****))))````````" * 2)
+    return f"F({cereal(*a,**k)})"
+print(f'>>{(etap:="step one")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
+print(f'>>{(etap:="step one")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
 print(f'>>{(etap:="step two")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
-
-# print(f'>>{(etap:="step uno")}<<', A().fib(1, 2, 3, "arg", key="key", kwarg=etap))
-
-
-# print(fib(1,2,3, "foo", key="bar", kwarg="kwarg"))
-# print(fib(9,9,9, "foo", key="bar"))
+print(f'>>{(etap:="step two")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
+print(f'>>{(etap:="step one")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
+"""
+if __name__=='__main__':
+    @kash("good")
+    def fib(*a, **k):
+        for _ in range(1000):
+            pass
+        print("~~~!!!!!@@@@@((((*****))))````````" * 2)
+        return f"F({cereal(*a,**k)})"
+    print(f'>>{(etap:="step one")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
+    print(f'>>{(etap:="step one")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
+    print(f'>>{(etap:="step two")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
+    print(f'>>{(etap:="step two")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
+    print(f'>>{(etap:="step one")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
