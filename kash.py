@@ -39,7 +39,7 @@ import os
 
 
 def cereal(*a, **k):
-    a = list(filter(lambda x:type(x)==int or type(x)==str or type(x)==float, a))
+    a = list(filter(lambda x: type(x) == int or type(x) == str or type(x) == float, a))
     # for o in a:
     #     print(o,type(o))
     # print('asd')
@@ -55,32 +55,22 @@ def kash(file_path):
         @functools.wraps(func)
         def wrapper(*a, **k):
             cere = cereal(*a, **k)
-            print(file_path, "!")
             if not os.path.exists(file_path):
                 result = func(*a, **k)
                 with open(file_path, "w+") as file:
                     new = {cere: result}
                     json.dump(new, file)
             else:
-                print(f"{file_path} exists")
                 with open(file_path, "r") as file:
-                    print("reading...")
                     try:
                         cow = json.load(file)
                         milk = cow.get(cere)
-                        print('MILK',milk)
                         if milk:
-                            print(f"Cache hit!")
                             return milk
-                        print('cc',cow)
                     except json.JSONDecodeError as e:
-                        print("JSNFAL", e)
-                    print("exists but failed to find it in cache")
-
+                        print(e)
                     result = func(*a, **k)
                     bigger = dict({cere: result}, **cow)
-
-                    print('BESTT',)
                     with open(file_path, "w+") as file:
                         json.dump(bigger, file)
 
@@ -95,7 +85,7 @@ def kash(file_path):
 def fib(*a, **k):
     for _ in range(1000):
         pass
-    print("~~~!!!!!@@@@@((((*****))))````````"*2)
+    print("~~~!!!!!@@@@@((((*****))))````````" * 2)
     return f"F({cereal(*a,**k)})"
 
 
@@ -119,7 +109,7 @@ class A:
     def fib(*a, **k):
         for _ in range(1000):
             pass
-        print("~~~~~@@@@@@$$$$$(((()))))"*8)
+        print("~~~~~@@@@@@$$$$$(((()))))" * 8)
         return f"F({cereal(*a,**k)})"
 
 
