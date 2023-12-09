@@ -48,38 +48,32 @@ def kash(file_path):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*a, **k):
-            ce = cereal(*a, **k)
-            if os.path.exists(file_path):
-                print("exists")
+            cere = cereal(*a, **k)
+            print(file_path, "!")
+            if not os.path.exists(file_path):
+                result = func(*a, **k)
+                with open(file_path, "w+") as file:
+                    new = {cere: result}
+                    json.dump(new, file)
+            else:
+                print(f"{file_path} exists")
                 with open(file_path, "r") as file:
+                    print("reading...")
                     try:
-                        cache_past = json.load(file)
-                        # 'searching for ',ce)
-                        cr = cache_past.get(ce)
-                        if cr:
-                            #  Second case, cache is found
+                        milk = json.load(file).get(cere)
+                        if milk:
                             print(f"Cache hit!")
-                            return cr
-
+                            return milk
                     except json.JSONDecodeError as e:
                         print("JSNFAL", e)
-                        pass
                     print("exists but failed to find it in cache")
+
                     result = func(*a, **k)
-                    # Update cache
-                    new = {ce: result}
                     try:
                         cache_past = json.load(file)
-                        new.update(**cache_past)
+                        dict({cere: result}, **cache_past)
                     except json.JSONDecodeError as e:
                         print("json failed", e)
-                        pass
-
-            # First case, didn't have it must calc
-            result = func(*a, **k)
-            with open(file_path, "w+") as file:
-                new = {ce: result}
-                json.dump(new, file)
 
             return result
 
@@ -97,6 +91,21 @@ def fib(*a, **k):
 
 
 class A:
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
+    def to_json(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
+    def __serialize__(self):
+        # Convert the object to a dictionary that can be serialized
+        return {"image_paths": self.image_paths}
+
+    @classmethod
+    def __deserialize__(cls, data):
+        # Create an instance of the class using the deserialized data
+        return cls(**data)
+
     @kash("A-class")
     def fib(*a, **k):
         for _ in range(1000):
@@ -105,7 +114,10 @@ class A:
         return f"F({cereal(*a,**k)})"
 
 
-print(f'>>{(etap:="step uno")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
+# Basic
+# print(f'>>{(etap:="step uno")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
+
+print(f'>>{(etap:="step uno")}<<', A().fib(1, 2, 3, "arg", key="key", kwarg=etap))
 
 
 # print(fib(1,2,3, "foo", key="bar", kwarg="kwarg"))
