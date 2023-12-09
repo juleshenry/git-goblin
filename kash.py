@@ -66,20 +66,23 @@ def kash(file_path):
                 with open(file_path, "r") as file:
                     print("reading...")
                     try:
-                        milk = json.load(file).get(cere)
+                        cow = json.load(file)
+                        milk = cow.get(cere)
+                        print('MILK',milk)
                         if milk:
                             print(f"Cache hit!")
                             return milk
+                        print('cc',cow)
                     except json.JSONDecodeError as e:
                         print("JSNFAL", e)
                     print("exists but failed to find it in cache")
 
                     result = func(*a, **k)
-                    try:
-                        cache_past = json.load(file)
-                        dict({cere: result}, **cache_past)
-                    except json.JSONDecodeError as e:
-                        print("json failed", e)
+                    bigger = dict({cere: result}, **cow)
+
+                    print('BESTT',)
+                    with open(file_path, "w+") as file:
+                        json.dump(bigger, file)
 
             return result
 
@@ -121,9 +124,9 @@ class A:
 
 
 # Basic
-print(f'>>{(etap:="step uno")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
+print(f'>>{(etap:="step two")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
 
-print(f'>>{(etap:="step uno")}<<', A().fib(1, 2, 3, "arg", key="key", kwarg=etap))
+# print(f'>>{(etap:="step uno")}<<', A().fib(1, 2, 3, "arg", key="key", kwarg=etap))
 
 
 # print(fib(1,2,3, "foo", key="bar", kwarg="kwarg"))
