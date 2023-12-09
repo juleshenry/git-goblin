@@ -4,27 +4,82 @@ import os
 
 
 # WTF. NEED TO CACHE IN JSON WHILE USING AK AS UID... I/O IS THE ISSUE TRANSLATING...
+# SHALLOW VERSION
+"""
+{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}
+{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}
+{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}
+{,.'******{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{***}{,.'}{,.'}{,.'***.'}{,.'***.'}
+{,.*******{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{***}{,.'}{,.'}{,.'***.'}{,.****.'}
+{,********{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{***}{,.'}{,.'}{,.'***.'}{,.****.'}
+{,******'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{***}{,.'}{,.'}{,.'}{,.'}{,.****.'}
+{,****,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{***}{,.'}{,.'}{,.'}{,.'}{,.****.'}
+{,****,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{***}{,.'}{,.'}{,.'}{,.'}{,.****.'}
+*********}{,.'***.'}{,.'****'}{,.'}*********}{,.'}{***}{,.'******{,.'***.'}{*********
+*********}{,.'***.'}{,.'****'}{,.'***********{,.'}{***}{,.******}{,.'***.'}{*********
+*********}{,.'***.'}{,.'****'}{,.*************,.'}{***}{,******'}{,.'***.'}{*********
+{,****,.'}{,.'***.'}{,.'****'}{,.*************,.'}{***}{******.'}{,.'***.'}{,.****.'}
+{,****,.'}{,.'***.'}{,.'****'}{,*****.'}{,*****.'}{***}*****{,.'}{,.'***.'}{,.****.'}
+{,****,.'}{,.'***.'}{,.'****'}{,****,.'}{,.****.'}{********}{,.'}{,.'***.'}{,.****.'}
+{,****,.'}{,.'***.'}{,.'****'}{,****,.'}{,.'}{,.'}{********}{,.'}{,.'***.'}{,.****.'}
+{,****,.'}{,.'***.'}{,.'****'}{,****,.'}{,.'}{,.'}{*********{,.'}{,.'***.'}{,.****.'}
+{,****,.'}{,.'***.'}{,.'****'}{,****,.'}{,.'}{,.'}{*********{,.'}{,.'***.'}{,.****.'}
+{,****,.'}{,.'***.'}{,.'****'}{,****,.'}{,.'}{,.'}{****{*****,.'}{,.'***.'}{,.****.'}
+{,****,.'}{,.'***.'}{,.'****'}{,****,.'}{,.'}{,.'}{***}{,****,.'}{,.'***.'}{,.****.'}
+{,****,.'}{,.'****'}{,.'****'}{,****,.'}{,.****.'}{***}{,*****.'}{,.'***.'}{,.****.'}
+{,****,.'}{,.'****'}{,.*****'}{,*****.'}{,*****.'}{***}{,.*****'}{,.'***.'}{,.****.'}
+{,****,.'}{,.'**************'}{,.**************.'}{***}{,.'****'}{,.'***.'}{,.*****'}
+{,****,.'}{,.'**************'}{,.*************,.'}{***}{,.'*****}{,.'***.'}{,.*******
+{,****,.'}{,.'}*************'}{,.'***********{,.'}{***}{,.'}*****{,.'***.'}{,.*******
+{,****,.'}{,.'}{********}***'}{,.'}*********}{,.'}{***}{,.'}*****{,.'***.'}{,.'******
+{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}
+{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}
+{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}{,.'}
+"""
 
-def cereal(*a,**k):
-    return str({"a":json.dumps(a),"k":json.dumps(k),""})
+
+def cereal(*a, **k):
+    return str({"a": json.dumps(a), "k": json.dumps(k)})
+
+
 def kash(file_path):
-    file_path = "kash_"+file_path
+    file_path = file_path + ".kash"
+
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*a, **k):
-            # if cash
+            ce = cereal(*a, **k)
             if os.path.exists(file_path):
-                with open(file_path, 'r') as file:
+                print("exists")
+                with open(file_path, "r") as file:
                     try:
-                        cached_result = json.load(file)
-                        if cereal(*a,**k) in cached_result["args_kwargs"]:
-                            print(f"Cache hit for {file_path} is {cached_result}")
-                            return cached_result
-                    except json.JSONDecodeError:
+                        cache_past = json.load(file)
+                        # 'searching for ',ce)
+                        cr = cache_past.get(ce)
+                        if cr:
+                            #  Second case, cache is found
+                            print(f"Cache hit!")
+                            return cr
+
+                    except json.JSONDecodeError as e:
+                        print("JSNFAL", e)
                         pass
+                    print("exists but failed to find it in cache")
+                    result = func(*a, **k)
+                    # Update cache
+                    new = {ce: result}
+                    try:
+                        cache_past = json.load(file)
+                        new.update(**cache_past)
+                    except json.JSONDecodeError as e:
+                        print("json failed", e)
+                        pass
+
+            # First case, didn't have it must calc
             result = func(*a, **k)
-            with open(file_path, 'w') as file:
-                json.dump({"result":,"arg_kwargs":[cereal(*a,**k)]+([]if not prev else prev)}, file)
+            with open(file_path, "w+") as file:
+                new = {ce: result}
+                json.dump(new, file)
 
             return result
 
@@ -32,14 +87,26 @@ def kash(file_path):
 
     return decorator
 
-@kash("fuckit")
-def fib(*a,**k):
-    for _ in range(1000):pass
-    print('hard funccc')
-    # cerealize
-    # c='_'.join(sorted(*a))+'_'+'_'.join(sorted(**k.items()))
-    return {k['key']:str(sum(a[:2]))+f"_{a[3]}_"}
 
-print(fib(1,2,3, "arg", key="key", kwarg="s"))
+@kash("good")
+def fib(*a, **k):
+    for _ in range(1000):
+        pass
+    print("hard funccc called")
+    return f"F({cereal(*a,**k)})"
+
+
+class A:
+    @kash("A-class")
+    def fib(*a, **k):
+        for _ in range(1000):
+            pass
+        print("hard funccc called")
+        return f"F({cereal(*a,**k)})"
+
+
+print(f'>>{(etap:="step uno")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
+
+
 # print(fib(1,2,3, "foo", key="bar", kwarg="kwarg"))
 # print(fib(9,9,9, "foo", key="bar"))
