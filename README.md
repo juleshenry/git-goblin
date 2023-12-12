@@ -28,4 +28,5 @@ Recurses all child folders and removes .DS_Store
 # dust-kash
 Recurses all child folders and removes .kash
 
+# kash
 
