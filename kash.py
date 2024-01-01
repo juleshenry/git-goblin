@@ -27,8 +27,6 @@ def kash(file_path):
                 json.dump(cow, file)
             return milk if milk is not None else result
 
-            return result
-
         return wrapper
 
     return decorator
