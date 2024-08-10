@@ -1,4 +1,3 @@
 #!/bin/bash
-# GCLO -> ur url pl0x
-# add 2 path  ~ alias=$GG_PATH/gclo
-git clone "https://www.github.com/juleshenry/$1"
+# gclo is a command shortcut for git clone like "gclo username/repo"
+git clone "https://www.github.com/$1"
