@@ -67,7 +67,7 @@ class A:
         for _ in range(1000):
             pass
         print("~~~~~@@@@@@$$$$$(((()))))" * 8)
-        return f"F({cereal(*a,**k)})"
+        return f"F({serialize_args(*a,**k)})"
 
 
 # Basic ( Run these 1 @ a time, then notice...)
