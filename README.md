@@ -29,4 +29,5 @@ Recurses all child folders and removes .DS_Store
 Recurses all child folders and removes .kash
 
 # kash
+Python decorator that caches results based on parameters
 
