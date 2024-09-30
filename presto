@@ -1,1 +1,2 @@
+# Delete all git history - use with caution
 git checkout --orphan annie;git add -A;git commit -am 'cm'; git branch -D main;git branch -m main;git push -f origin main

@@ -3,29 +3,35 @@ import json
 import os
 
 
-def cereal(*a, **k):
-    a = list(filter(lambda x: type(x) == int or type(x) == str or type(x) == float, a))
+def serialize_args(*a, **k):
+    a = [x for x in a if isinstance(x, (int, str, float))]
     return str({"a": json.dumps(a), "k": json.dumps(k)})
 
 
-def kash(file_path):
-    file_path = file_path + ".kash"
+def kash(cache_file):
+    cache_file = cache_file + ".kash"
 
     def decorator(func):
         @functools.wraps(func)
-        def wrapper(*a, **k):
+        def wrapper(*args, **kwargs):
             try:
-                with open(file_path, "r") as file:
-                    cow = json.load(file)
+                with open(cache_file, "r") as file:
+                    cache_data = json.load(file)
             except (json.JSONDecodeError, FileNotFoundError):
-                cow = {}
-            milk = cow.get(cere:= cereal(*a, **k))
-            if milk is None:
-                result = func(*a, **k)
-                cow[cere] = result
-            with open(file_path, "w+") as file:
-                json.dump(cow, file)
-            return milk if milk is not None else result
+                cache_data = {}
+
+            key = serialize_args(*args, **kwargs)
+            cached_result = cache_data.get(key)
+
+            if cached_result is None:
+                result = func(*args, **kwargs)
+                cache_data[key] = result
+                with open(cache_file, "w") as file:
+                    json.dump(cache_data, file)
+            else:
+                result = cached_result
+
+            return result
 
         return wrapper
 
@@ -37,7 +43,7 @@ def fib(*a, **k):
     for _ in range(1000):
         pass
     print("~~~!!!!!@@@@@((((*****))))````````" * 2)
-    return f"F({cereal(*a,**k)})"
+    return f"F({serialize_args(*a,**k)})"
 
 
 class A:
