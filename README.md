@@ -1,6 +1,8 @@
 # git-goblin
 Git Scripts that Get the Job Done!
 
+![ggob.jpeg](ggob.jpeg)
+
 To add any script to your path... for example, gacp.
 
 Navigate your terminal to the gitgoblin root.
@@ -8,7 +10,7 @@ Navigate your terminal to the gitgoblin root.
 `nano ~/.bashrc OR nano ~/.zshrc`
 `alias myalias='$PATH_TO_GITGOBLIN/git-goblin-gacp'` 
 `source ~/.bashrc OR source ~/.zshrc` 
-`chmod 777 gacp`
+`chmod 700 gacp`
 GOOD TO GO!
 
 # gg
@@ -20,8 +22,11 @@ E.g. `gg "New Form on HomePage"`
 ## (history|grep $1)
 would you like to grep history on the fly? `h` that joint!!
 
-# git-autosave-recursively.py
+# autosave-git-recursively.py
 When called, recurses all child folders and git pushes with the message "Autosave $GMT_DateTime"
+
+# git-goblin.py
+pipe this into .$$rc to quickly initialize git-goblin
 
 # date-file-maker
 Makes a text file of as $GMT_DateTime.txt
