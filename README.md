@@ -11,11 +11,13 @@ Navigate your terminal to the gitgoblin root.
 `chmod 777 gacp`
 GOOD TO GO!
 
-# gg (aka 'gacp' aka 'gush')
+# gg
+## (aka 'gacp' aka 'gush')
 Simplifies clunky common pattern of adding all changes, committing and pushing.
 E.g. `gg "New Form on HomePage"`
 
-# h (history|grep $1)
+# h 
+## (history|grep $1)
 would you like to grep history on the fly? `h` that joint!!
 
 # git-autosave-recursively.py
