@@ -77,7 +77,7 @@ def fib(*a, **k):
     for _ in range(1000):
         pass
     print("~~~!!!!!@@@@@((((*****))))````````" * 2)
-    return f"F({cereal(*a,**k)})"
+    return f"F({serialize_args(*a,**k)})"
 print(f'>>{(etap:="step one")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
 print(f'>>{(etap:="step one")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
 print(f'>>{(etap:="step two")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
@@ -91,7 +91,7 @@ if __name__ == "__main__":
         for _ in range(1000):
             pass
         print("~~~!!!!!@@@@@((((*****))))````````" * 2)
-        return f"F({cereal(*a,**k)})"
+        return f"F({serialize_args(*a,**k)})"
 
     print(f'>>{(etap:="step one")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))
     print(f'>>{(etap:="step one")}<<', fib(1, 2, 3, "arg", key="key", kwarg=etap))

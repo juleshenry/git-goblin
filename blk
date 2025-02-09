@@ -1,0 +1,3 @@
+#!/bin/bash
+# blk:=
+python3 -m black $1
