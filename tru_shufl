@@ -1,0 +1,5 @@
+
+import secrets; # true shuffle
+s,o=set(),[]
+while s!=set(z:=range(1,22)):(a:= secrets.choice(z)) and (""if a in s else (s.add(a) or o.append(a)))
+print(o)
