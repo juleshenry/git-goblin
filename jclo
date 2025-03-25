@@ -1,0 +1,4 @@
+#!/bin/bash
+# gclo is a command shortcut for git clone like "gclo username/repo"
+j=juleshenry
+git clone "https://www.github.com/$j/$1"
