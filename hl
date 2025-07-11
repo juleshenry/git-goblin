@@ -1,0 +1,6 @@
+#!/bin/bash
+# history-grep I'm feeling lucky prompt
+result=$(history 1| grep "$1" | tail -n 2 | head -n 1)
+echo "Penultimate match: $result"
+read -p "Press Enter to execute, or Ctrl+C to cancel..."
+eval "$result"
