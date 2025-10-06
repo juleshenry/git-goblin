@@ -1,5 +1,4 @@
-
-import secrets; # true shuffle
-s,o=set(),[]
-while s!=set(z:=range(1,22)):(a:= secrets.choice(z)) and (""if a in s else (s.add(a) or o.append(a)))
+# /bin/python3
+import secrets as b;s,o,i=set(),[],list(range(1,53))
+while len(o)<len(i):(a:=b.choice(i))not in s and(s.add(a),o.append(a),)
 print(o)
