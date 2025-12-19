@@ -162,14 +162,23 @@ Recursively finds and removes all `.kash` cache files created by the kash decora
 ### date-file-maker
 Creates an empty text file with a UTC timestamp as the filename.
 
-**⚠️ Note:** The script currently has conflicting date format options (-R and custom format) which causes an error. To use it, you may need to edit the script to use only: `date -u '+%m-%d-%y-%H:%M:%S'`
+**⚠️ Script Issue:** The script currently has a bug with conflicting date format options (`-R` and a custom format string). 
 
-**Usage:**
+**To fix:** Edit the script and change line 3 from:
+```bash
+touch "$(date -u -R '+%m-%d-%y-%H:%M:%S').txt"
+```
+to:
+```bash
+touch "$(date -u '+%m-%d-%y-%H:%M:%S').txt"
+```
+
+**Usage (after fix):**
 ```bash
 ./date-file-maker
 ```
 
-**Intended output:** Creates a file like `12-19-25-14:35:22.txt`
+**Output:** Creates a file like `12-19-25-14:35:22.txt`
 
 ### swap
 Prints a bash function that swaps the names of two files.
@@ -207,9 +216,9 @@ python3 rename_recursively.py /path/to/directory
 ```
 
 **Example:**
-- `my_document.pdf` → `nt.pdf` (last 5 chars)
-- `test.txt` → `t.txt` (last 5 chars)
-- `ab.py` → `ab.py` (only 5 chars available, keeps full name)
+- `my_document.pdf` → `t.pdf` (last 5 chars: "t.pdf")
+- `hello.txt` → `o.txt` (last 5 chars: "o.txt")
+- `ab.py` → `ab.py` (only 5 chars total, keeps full name)
 
 ### file_ext_and_cnt
 Prints a count of files grouped by their extension.
