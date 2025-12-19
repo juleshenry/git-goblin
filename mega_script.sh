@@ -208,7 +208,7 @@ alias gfh='git log --follow -p --'
 alias gst='git stash'
 
 # 63. Stash with message
-alias gstm='git stash save'
+alias gstm='git stash push -m'
 
 # 64. Stash including untracked
 alias gstu='git stash -u'
@@ -358,18 +358,29 @@ ginit() {
 
 # Quick clone from GitHub
 ghcl() {
+    if [ -z "$1" ]; then
+        echo "Usage: ghcl <username/repo>"
+        return 1
+    fi
     git clone "https://github.com/$1"
 }
 
 # Create branch and switch to it
 gbc() {
+    if [ -z "$1" ]; then
+        echo "Usage: gbc <branch_name>"
+        return 1
+    fi
     git checkout -b "$1"
 }
 
 # Delete branch both locally and remotely
 gbdall() {
-    git branch -d "$1"
-    git push origin --delete "$1"
+    if [ -z "$1" ]; then
+        echo "Usage: gbdall <branch_name>"
+        return 1
+    fi
+    git branch -d "$1" && git push origin --delete "$1"
 }
 
 # Undo last commit but keep changes
@@ -401,8 +412,11 @@ gsearchtext() {
 
 # Create new branch from origin/main
 gnew() {
-    git fetch origin
-    git checkout -b "$1" origin/main
+    if [ -z "$1" ]; then
+        echo "Usage: gnew <branch_name>"
+        return 1
+    fi
+    git fetch origin && git checkout -b "$1" origin/main
 }
 
 # Update current branch from all remotes
@@ -433,9 +447,9 @@ glarge() {
 
 # Sync fork with upstream
 gsyncfork() {
-    git fetch upstream
-    git checkout main
-    git merge upstream/main
+    git fetch upstream && \
+    git checkout main && \
+    git merge upstream/main && \
     git push origin main
 }
 
