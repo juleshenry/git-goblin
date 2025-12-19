@@ -91,8 +91,8 @@ SCRIPTS=(
     "swap"
 )
 
-# Check if git-goblin aliases already exist
-if grep -q "# git-goblin aliases" "$RC_FILE" 2>/dev/null; then
+# Check if git-goblin aliases already exist (look for START marker specifically)
+if grep -q "# git-goblin aliases - START" "$RC_FILE" 2>/dev/null; then
     print_warning "Git Goblin aliases already exist in $RC_FILE"
     read -p "Do you want to replace them? (y/N): " -n 1 -r
     echo
@@ -142,13 +142,16 @@ for script in "${SCRIPTS[@]}"; do
     fi
 done
 
-# Also make Python scripts executable
+# Also make Python scripts executable (with glob safety check)
+shopt -s nullglob 2>/dev/null || true  # Enable nullglob if available (bash)
 for py_script in "$SCRIPT_DIR"/*.py; do
-    if [ -f "$py_script" ]; then
+    # Double check file exists (handles case when glob doesn't expand)
+    if [ -e "$py_script" ] && [ -f "$py_script" ]; then
         chmod +x "$py_script"
         chmod_count=$((chmod_count + 1))
     fi
 done
+shopt -u nullglob 2>/dev/null || true  # Disable nullglob
 
 print_success "Made $chmod_count files executable"
 
@@ -158,11 +161,6 @@ echo "=========================================="
 print_success "Setup complete!"
 echo "=========================================="
 echo ""
-print_info "To start using git-goblin, run:"
-echo "    source $RC_FILE"
-echo ""
-print_info "Or simply open a new terminal window."
-echo ""
 print_info "Available commands:"
 for script in "${SCRIPTS[@]}"; do
     if [ -f "$SCRIPT_DIR/$script" ]; then
@@ -170,15 +168,14 @@ for script in "${SCRIPTS[@]}"; do
     fi
 done
 echo ""
-
-# Provide sourcing instructions
 echo "=========================================="
-print_info "IMPORTANT: To activate git-goblin in your current shell, run:"
+print_info "IMPORTANT: To activate git-goblin, run:"
 echo ""
 echo "    source $RC_FILE"
 echo ""
-print_info "Or simply open a new terminal window where the aliases will be automatically loaded."
+print_info "Alternatively, open a new terminal window where"
+print_info "the aliases will be automatically loaded."
 echo "=========================================="
-
+echo ""
 print_success "Git Goblin is ready to go! 🎉"
 echo ""
