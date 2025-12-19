@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import os
 alias_files = []
 with open("README.md") as s:

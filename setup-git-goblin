@@ -97,9 +97,10 @@ if grep -q "# git-goblin aliases" "$RC_FILE" 2>/dev/null; then
     read -p "Do you want to replace them? (y/N): " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        # Remove old git-goblin section
-        sed -i.tmp '/# git-goblin aliases - START/,/# git-goblin aliases - END/d' "$RC_FILE"
-        rm -f "${RC_FILE}.tmp"
+        # Remove old git-goblin section (portable sed approach)
+        TEMP_FILE=$(mktemp)
+        sed '/# git-goblin aliases - START/,/# git-goblin aliases - END/d' "$RC_FILE" > "$TEMP_FILE"
+        mv "$TEMP_FILE" "$RC_FILE"
         print_info "Removed old git-goblin aliases"
     else
         print_info "Keeping existing aliases. Skipping alias addition."
@@ -170,19 +171,14 @@ for script in "${SCRIPTS[@]}"; do
 done
 echo ""
 
-# Ask if user wants to source now
-read -p "Would you like to source $RC_FILE now? (Y/n): " -n 1 -r
-echo
-if [[ ! $REPLY =~ ^[Nn]$ ]]; then
-    # Source the RC file
-    print_info "Sourcing $RC_FILE..."
-    # We need to source it in a way that affects the parent shell
-    print_warning "Note: Aliases will be available in new terminal sessions."
-    print_info "Run this command to use git-goblin in this session:"
-    echo ""
-    echo "    source $RC_FILE"
-    echo ""
-fi
+# Provide sourcing instructions
+echo "=========================================="
+print_info "IMPORTANT: To activate git-goblin in your current shell, run:"
+echo ""
+echo "    source $RC_FILE"
+echo ""
+print_info "Or simply open a new terminal window where the aliases will be automatically loaded."
+echo "=========================================="
 
 print_success "Git Goblin is ready to go! 🎉"
 echo ""
