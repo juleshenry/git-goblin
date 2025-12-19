@@ -11,7 +11,7 @@ Navigate your terminal to the git-goblin root directory:
 
 ```bash
 cd /path/to/git-goblin
-echo "$(pwd)/scriptname"  # Note the path for the next step
+echo "$(pwd)/gg"  # Note the path for the next step (using 'gg' as example)
 ```
 
 Add aliases to your shell configuration:
@@ -22,13 +22,13 @@ nano ~/.bashrc  # OR nano ~/.zshrc
 
 Add an alias line like this:
 ```bash
-alias myalias='/path/to/git-goblin/scriptname'
+alias gg='/path/to/git-goblin/gg'
 ```
 
 Apply the changes and make executable:
 ```bash
 source ~/.bashrc  # OR source ~/.zshrc
-chmod +x /path/to/git-goblin/scriptname
+chmod +x /path/to/git-goblin/gg
 ```
 
 You're good to go!
@@ -70,7 +70,7 @@ gclo username/repo
 gclo torvalds/linux
 ```
 
-Executes: `git clone https://www.github.com/username/repo`
+Executes: `git clone https://github.com/username/repo`
 
 ### jclo
 Quick clone for juleshenry's repositories specifically.
@@ -85,7 +85,7 @@ jclo reponame
 jclo git-goblin
 ```
 
-Executes: `git clone https://www.github.com/juleshenry/reponame`
+Executes: `git clone https://github.com/juleshenry/reponame`
 
 ### presto
 **⚠️ Use with extreme caution!**
@@ -316,7 +316,8 @@ class MyClass:
 **Cache Management:**
 - Cache files are stored as JSON with `.kash` extension
 - To clear cache: delete the `.kash` files or use `./dust-kash`
-- Only serializable types are cached (int, str, float)
+- Supports JSON-serializable types (int, str, float, bool, list, dict)
+- Complex objects and non-serializable types will be filtered out from cache keys
 
 **Use Cases:**
 - Expensive computations with repeated inputs
