@@ -24,7 +24,7 @@ If you prefer to add scripts manually or want to customize your setup:
 
 Navigate your terminal to the git-goblin root:
 ```bash
-echo "$(pwd)\gacp"
+echo "$(pwd)/gacp"
 nano ~/.bashrc OR nano ~/.zshrc
 alias myalias='$PATH_TO_GITGOBLIN/git-goblin-gacp'
 source ~/.bashrc OR source ~/.zshrc

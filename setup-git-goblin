@@ -142,16 +142,12 @@ for script in "${SCRIPTS[@]}"; do
     fi
 done
 
-# Also make Python scripts executable (with glob safety check)
-shopt -s nullglob 2>/dev/null || true  # Enable nullglob if available (bash)
-for py_script in "$SCRIPT_DIR"/*.py; do
-    # Double check file exists (handles case when glob doesn't expand)
-    if [ -e "$py_script" ] && [ -f "$py_script" ]; then
-        chmod +x "$py_script"
-        chmod_count=$((chmod_count + 1))
-    fi
-done
-shopt -u nullglob 2>/dev/null || true  # Disable nullglob
+# Also make Python scripts executable
+# Use find for portability instead of glob
+while IFS= read -r -d '' py_script; do
+    chmod +x "$py_script"
+    chmod_count=$((chmod_count + 1))
+done < <(find "$SCRIPT_DIR" -maxdepth 1 -name "*.py" -type f -print0 2>/dev/null)
 
 print_success "Made $chmod_count files executable"
 
