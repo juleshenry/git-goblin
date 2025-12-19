@@ -187,14 +187,19 @@ swap file1.txt file2.txt
 ```
 
 ### rename_recursively.py
-Recursively renames all files in a directory to their last 5 characters.
+Recursively renames all files in a directory to their last 5 characters. Files with names shorter than 5 characters will keep their full filename.
 
-**⚠️ Use with caution** - This can make files hard to identify!
+**⚠️ Use with extreme caution** - This destructively renames all files and can make them hard to identify!
 
 **Usage:**
 ```bash
 python3 rename_recursively.py /path/to/directory
 ```
+
+**Example:**
+- `my_document.pdf` → `nt.pdf` (last 5 chars)
+- `test.txt` → `t.txt` (last 5 chars)
+- `ab.py` → `ab.py` (only 5 chars available, keeps full name)
 
 ### file_ext_and_cnt
 Prints a count of files grouped by their extension.
@@ -282,7 +287,8 @@ The `kash` decorator caches function results to `.kash` files (JSON format) base
 **How it works:**
 1. First call with specific parameters: Function executes and result is cached to `filename.kash`
 2. Subsequent calls with same parameters: Cached result is returned immediately
-3. Different parameters: Function executes and new result is cached with different key
+3. Different parameters (int, str, or float): Function executes and new result is cached with different key
+4. **Note:** Only int, str, and float arguments affect the cache key; other types are ignored
 
 **Basic Usage:**
 ```python
@@ -316,8 +322,9 @@ class MyClass:
 **Cache Management:**
 - Cache files are stored as JSON with `.kash` extension
 - To clear cache: delete the `.kash` files or use `./dust-kash`
-- Supports JSON-serializable types (int, str, float, bool, list, dict)
-- Complex objects and non-serializable types will be filtered out from cache keys
+- **Cache key limitation:** Only int, str, and float arguments are used to generate cache keys
+- Other argument types (bool, list, dict, objects) are filtered out and won't affect caching
+- This means functions called with different complex objects will incorrectly return the same cached result
 
 **Use Cases:**
 - Expensive computations with repeated inputs
