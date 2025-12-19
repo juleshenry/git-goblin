@@ -39,26 +39,354 @@ Automated setup script that configures git-goblin for your environment. Detects 
 ## (aka 'gacp' aka 'gush')
 Simplifies clunky common pattern of adding all changes, committing and pushing.
 E.g. `gg "New Form on HomePage"`
+A collection of productivity-enhancing git scripts and utilities for developers who want to streamline their workflow.
 
-# h 
-## (history|grep $1)
-would you like to grep history on the fly? `h` that joint!!
+## Installation
 
-# autosave-git-recursively.py
-When called, recurses all child folders and git pushes with the message "Autosave $GMT_DateTime"
+Navigate your terminal to the git-goblin root directory:
 
-# git-goblin.py
-pipe this into .$$rc to quickly initialize git-goblin
+```bash
+cd /path/to/git-goblin
+echo "$(pwd)/gg"  # Note the path for the next step (using 'gg' as example)
+```
 
-# date-file-maker
-Makes a text file of as $GMT_DateTime.txt
+Add aliases to your shell configuration:
 
-# ds-store-duster
-Recurses all child folders and removes .DS_Store
+```bash
+nano ~/.bashrc  # OR nano ~/.zshrc
+```
 
-# dust-kash
-Recurses all child folders and removes .kash
+Add an alias line like this:
+```bash
+alias gg='/path/to/git-goblin/gg'
+```
 
-# kash
-Python decorator that caches results based on parameters
+Apply the changes and make executable:
+```bash
+source ~/.bashrc  # OR source ~/.zshrc
+chmod +x /path/to/git-goblin/gg
+```
+
+You're good to go!
+
+## Git Workflow Scripts
+
+### gg
+**Aliases:** gacp, gush
+
+Simplifies the common pattern of adding all changes, committing, and pushing in one command.
+
+**Usage:**
+```bash
+gg "Your commit message"
+```
+
+**Example:**
+```bash
+gg "New Form on HomePage"
+```
+
+This executes:
+```bash
+git add .
+git commit -m "Your commit message"
+git push
+```
+
+### gclo
+Git clone shortcut for quickly cloning repositories.
+
+**Usage:**
+```bash
+gclo username/repo
+```
+
+**Example:**
+```bash
+gclo torvalds/linux
+```
+
+Executes: `git clone https://github.com/username/repo`
+
+### jclo
+Quick clone for juleshenry's repositories specifically.
+
+**Usage:**
+```bash
+jclo reponame
+```
+
+**Example:**
+```bash
+jclo git-goblin
+```
+
+Executes: `git clone https://github.com/juleshenry/reponame`
+
+### presto
+**⚠️ Use with extreme caution!**
+
+Deletes all git history and starts fresh. This is a destructive operation.
+
+**What it does:**
+- Creates a new orphan branch
+- Commits all current files
+- Deletes the main branch
+- Renames the orphan branch to main
+- Force pushes to origin
+
+### autosave-git-recursively.py
+Recursively searches for all git repositories in child directories and automatically commits and pushes them with a timestamp.
+
+**Usage:**
+```bash
+python3 autosave-git-recursively.py
+```
+
+Commits are made with the message: `Autosaving... [timestamp]`
+
+## Shell History Utilities
+
+### h
+**Command:** `history | grep $1`
+
+Grep your shell history on the fly!
+
+**Usage:**
+```bash
+h searchterm
+```
+
+**Example:**
+```bash
+h docker  # Shows all history entries containing "docker"
+```
+
+### hl
+**History-grep "I'm feeling lucky" prompt**
+
+Finds the penultimate match from history and prompts you to execute it.
+
+**Usage:**
+```bash
+hl searchterm
+```
+
+The script will:
+1. Find the second-to-last history match
+2. Display it
+3. Prompt you to press Enter to execute or Ctrl+C to cancel
+
+## File Management Utilities
+
+### ds-store-duster
+Recursively finds and removes all `.DS_Store` files (macOS metadata files) from the current directory and subdirectories.
+
+**Usage:**
+```bash
+./ds-store-duster
+```
+
+### dust-kash
+Recursively finds and removes all `.kash` cache files created by the kash decorator.
+
+**Usage:**
+```bash
+./dust-kash
+```
+
+### date-file-maker
+Creates an empty text file with a UTC timestamp as the filename.
+
+**⚠️ Script Issue:** The script currently has a bug with conflicting date format options (`-R` and a custom format string). 
+
+**To fix:** Edit the script and change line 3 from:
+```bash
+touch "$(date -u -R '+%m-%d-%y-%H:%M:%S').txt"
+```
+to:
+```bash
+touch "$(date -u '+%m-%d-%y-%H:%M:%S').txt"
+```
+
+**Usage (after fix):**
+```bash
+./date-file-maker
+```
+
+**Output:** Creates a file like `12-19-25-14:35:22.txt`
+
+### swap
+Prints a bash function that swaps the names of two files.
+
+**Usage:**
+```bash
+# The script prints the function code, which you can:
+# 1. Copy and paste into your terminal, or
+# 2. Add to your .bashrc/.zshrc, or
+# 3. Evaluate directly:
+eval "$(./swap)"
+
+# Then use it:
+swap file1.txt file2.txt
+```
+
+**The function it provides:**
+```bash
+swap () {
+  tmp_name=$(TMPDIR=$(dirname -- "$1") mktemp) &&
+  mv -f -- "$1" "$tmp_name" &&
+  mv -f -- "$2" "$1" &&
+  mv -f -- "$tmp_name" "$2"
+}
+```
+
+### rename_recursively.py
+Recursively renames all files in a directory to their last 5 characters. Files with names shorter than 5 characters will keep their full filename.
+
+**⚠️ Use with extreme caution** - This destructively renames all files and can make them hard to identify!
+
+**Usage:**
+```bash
+python3 rename_recursively.py /path/to/directory
+```
+
+**Example:**
+- `my_document.pdf` → `t.pdf` (last 5 chars: "t.pdf")
+- `hello.txt` → `o.txt` (last 5 chars: "o.txt")
+- `ab.py` → `ab.py` (only 5 chars total, keeps full name)
+
+### file_ext_and_cnt
+Prints a count of files grouped by their extension.
+
+**Usage:**
+```bash
+./file_ext_and_cnt
+```
+
+Executes: `find . -type f | sed -n 's/..*\.//p' | sort | uniq -c`
+
+### pdf-to-svg
+Batch converts all PDF files in the current directory to SVG format using Inkscape.
+
+**Requirements:** Inkscape must be installed.
+
+**Usage:**
+```bash
+./pdf-to-svg
+```
+
+### tru_shufl
+A true random shuffle implementation using Python's secrets module (cryptographically strong).
+
+**Usage:**
+```bash
+python3 tru_shufl
+```
+
+Generates a shuffled list of numbers from 1 to 52 (useful for card games, etc.)
+
+## Development Utilities
+
+### blk
+Runs Python Black formatter on a specified file.
+
+**Usage:**
+```bash
+blk filename.py
+```
+
+### git-goblin.py
+Generates shell alias commands for git-goblin scripts. Pipe the output into your `.bashrc` or `.zshrc` to quickly initialize git-goblin aliases.
+
+**Usage:**
+```bash
+python3 git-goblin.py >> ~/.zshrc
+source ~/.zshrc
+```
+
+### repoinspector.py
+Fetches and displays all open issues across a GitHub user's repositories.
+
+**Requirements:** `requests` library (`pip install requests`)
+
+**Usage:**
+```bash
+python3 repoinspector.py [username]
+```
+
+**Example:**
+```bash
+python3 repoinspector.py juleshenry
+```
+
+If no username is provided, defaults to "juleshenry".
+
+### repolist.sh
+Lists all GitHub repositories for a user (requires GitHub CLI).
+
+**Usage:**
+```bash
+./repolist.sh
+```
+
+Executes: `gh repo list juleshenry --limit 1000`
+
+## Python Utilities
+
+### kash
+**A Python decorator for caching function results based on parameters.**
+
+The `kash` decorator caches function results to `.kash` files (JSON format) based on the function's arguments. When the function is called again with the same parameters, the cached result is returned instead of re-executing the function.
+
+**How it works:**
+1. First call with specific parameters: Function executes and result is cached to `filename.kash`
+2. Subsequent calls with same parameters: Cached result is returned immediately
+3. Different parameters (int, str, or float): Function executes and new result is cached with different key
+4. **Note:** Only int, str, and float arguments affect the cache key; other types are ignored
+
+**Basic Usage:**
+```python
+from kash import kash
+
+@kash("my_cache")  # Creates my_cache.kash file
+def expensive_function(x, y):
+    # Some time-consuming operation
+    result = x ** y
+    return result
+
+# First call - executes function
+print(expensive_function(2, 10))  # Computes and caches
+
+# Second call with same args - uses cache
+print(expensive_function(2, 10))  # Returns cached result instantly
+
+# Different args - executes function
+print(expensive_function(3, 10))  # Computes and caches new result
+```
+
+**Class Methods:**
+```python
+class MyClass:
+    @kash("class_cache")
+    def expensive_method(self, param):
+        # Heavy computation
+        return result
+```
+
+**Cache Management:**
+- Cache files are stored as JSON with `.kash` extension
+- To clear cache: delete the `.kash` files or use `./dust-kash`
+- **Cache key limitation:** Only int, str, and float arguments are used to generate cache keys
+- Other argument types (bool, list, dict, objects) are filtered out and won't affect caching
+- This means functions called with different complex objects will incorrectly return the same cached result
+
+**Use Cases:**
+- Expensive computations with repeated inputs
+- API calls with same parameters
+- Data processing pipelines
+- Machine learning model predictions
+
+## License
+See [LICENSE](LICENSE) file for details.
 
