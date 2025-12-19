@@ -162,28 +162,38 @@ Recursively finds and removes all `.kash` cache files created by the kash decora
 ### date-file-maker
 Creates an empty text file with a UTC timestamp as the filename.
 
+**⚠️ Note:** The script currently has conflicting date format options (-R and custom format) which causes an error. To use it, you may need to edit the script to use only: `date -u '+%m-%d-%y-%H:%M:%S'`
+
 **Usage:**
 ```bash
 ./date-file-maker
 ```
 
-Creates a file like: `12-19-25-14:35:22.txt`
+**Intended output:** Creates a file like `12-19-25-14:35:22.txt`
 
 ### swap
-Swaps the names of two files.
+Prints a bash function that swaps the names of two files.
 
 **Usage:**
 ```bash
-# First, define the function (or add to your .bashrc/.zshrc)
+# The script prints the function code, which you can:
+# 1. Copy and paste into your terminal, or
+# 2. Add to your .bashrc/.zshrc, or
+# 3. Evaluate directly:
+eval "$(./swap)"
+
+# Then use it:
+swap file1.txt file2.txt
+```
+
+**The function it provides:**
+```bash
 swap () {
   tmp_name=$(TMPDIR=$(dirname -- "$1") mktemp) &&
   mv -f -- "$1" "$tmp_name" &&
   mv -f -- "$2" "$1" &&
   mv -f -- "$tmp_name" "$2"
 }
-
-# Then use it
-swap file1.txt file2.txt
 ```
 
 ### rename_recursively.py
