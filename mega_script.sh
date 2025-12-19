@@ -6,8 +6,7 @@
 # BASIC GIT OPERATIONS (1-15)
 # ============================================================================
 
-# 1. Quick add, commit, push
-alias gacp='git add . && git commit -m "$1" && git push'
+# 1. Quick add, commit, push (use as function - see below)
 
 # 2. Quick status
 alias gs='git status'
@@ -51,292 +50,304 @@ alias gl='git pull'
 # 15. Pull with rebase
 alias glr='git pull --rebase'
 
+# 16. Pull and prune
+alias glp='git pull --prune'
+
 # ============================================================================
-# BRANCHING (16-30)
+# BRANCHING (17-30)
 # ============================================================================
 
-# 16. List branches
+# 17. List branches
 alias gb='git branch'
 
-# 17. List all branches (including remote)
+# 18. List all branches (including remote)
 alias gba='git branch -a'
 
-# 18. Create new branch
+# 19. Create new branch
 alias gbn='git branch'
 
-# 19. Delete branch
+# 20. Delete branch
 alias gbd='git branch -d'
 
-# 20. Force delete branch
+# 21. Force delete branch
 alias gbdf='git branch -D'
 
-# 21. Checkout branch
+# 22. Checkout branch
 alias gco='git checkout'
 
-# 22. Checkout new branch
+# 23. Checkout new branch
 alias gcob='git checkout -b'
 
-# 23. Checkout previous branch
+# 24. Checkout previous branch
 alias gcop='git checkout -'
 
-# 24. Checkout master/main
+# 25. Checkout master/main
 alias gcom='git checkout main || git checkout master'
 
-# 25. Switch to branch (newer syntax)
+# 26. Switch to branch (newer syntax)
 alias gsw='git switch'
 
-# 26. Create and switch to new branch
+# 27. Create and switch to new branch
 alias gswc='git switch -c'
 
-# 27. Merge branch
+# 28. Merge branch
 alias gm='git merge'
 
-# 28. Merge with no fast-forward
+# 29. Merge with no fast-forward
 alias gmnf='git merge --no-ff'
 
-# 29. Abort merge
+# 30. Abort merge
 alias gma='git merge --abort'
 
-# 30. Show merged branches
+# 31. Show merged branches
 alias gbm='git branch --merged'
 
 # ============================================================================
-# LOGGING AND HISTORY (31-45)
+# LOGGING AND HISTORY (32-46)
 # ============================================================================
 
-# 31. Pretty log
+# 32. Pretty log
 alias glog='git log --oneline --decorate --graph'
 
-# 32. Pretty log with all branches
+# 33. Pretty log with all branches
 alias gloga='git log --oneline --decorate --graph --all'
 
-# 33. Log with dates
+# 34. Log with dates
 alias glogd='git log --pretty=format:"%h %ad %s" --date=short'
 
-# 34. Log with stats
+# 35. Log with stats
 alias glogs='git log --stat'
 
-# 35. Log with patch
+# 36. Log with patch
 alias glogp='git log -p'
 
-# 36. Show last commit
+# 37. Show last commit
 alias glast='git log -1 HEAD'
 
-# 37. Show who changed what
+# 38. Show who changed what
 alias gblame='git blame'
 
-# 38. Show changes in last commit
+# 39. Show changes in last commit
 alias gshow='git show'
 
-# 39. Show file at specific commit
+# 40. Show file at specific commit (requires commit:file argument)
 alias gshowf='git show'
 
-# 40. List commits by author
+# 41. List commits by author
 alias gauthor='git log --author'
 
-# 41. Search commits
+# 42. Search commits
 alias gsearch='git log --all --grep'
 
-# 42. Show branches with last commit
+# 43. Show branches with last commit
 alias gbv='git branch -v'
 
-# 43. Show branches with more info
+# 44. Show branches with more info
 alias gbvv='git branch -vv'
 
-# 44. Reflog
+# 45. Reflog
 alias grl='git reflog'
 
-# 45. Short reflog
+# 46. Short reflog
 alias grls='git reflog --pretty=short'
 
 # ============================================================================
-# DIFF AND INSPECTION (46-60)
+# DIFF AND INSPECTION (47-61)
 # ============================================================================
 
-# 46. Show diff
+# 47. Show diff
 alias gd='git diff'
 
-# 47. Show diff of staged files
+# 48. Show diff of staged files
 alias gds='git diff --staged'
 
-# 48. Show diff with stats
+# 49. Show diff with stats
 alias gdst='git diff --stat'
 
-# 49. Show diff of specific file
+# 50. Show diff of specific file (requires file argument)
 alias gdf='git diff'
 
-# 50. Show word diff
+# 51. Show word diff
 alias gdw='git diff --word-diff'
 
-# 51. Show diff between branches
+# 52. Show diff between branches (requires branch arguments)
 alias gdb='git diff'
 
-# 52. Show files changed
+# 53. Show files changed
 alias gdfiles='git diff --name-only'
 
-# 53. Show files changed with status
+# 54. Show files changed with status
 alias gdstat='git diff --name-status'
 
-# 54. Show diff in color
+# 55. Show diff in color
 alias gdc='git diff --color-words'
 
-# 55. Show what changed in last commit
+# 56. Show what changed in last commit
 alias gdlc='git diff HEAD^ HEAD'
 
-# 56. List tracked files
+# 57. List tracked files
 alias gls='git ls-files'
 
-# 57. List untracked files
+# 58. List untracked files
 alias glsu='git ls-files --others'
 
-# 58. Show file content at commit
+# 59. Show file content at commit (requires commit:file argument)
 alias gcat='git show'
 
-# 59. Show contributors
+# 60. Show contributors
 alias gcontrib='git shortlog -sn'
 
-# 60. Show file history
+# 61. Show file history
 alias gfh='git log --follow -p --'
 
 # ============================================================================
-# STASHING (61-70)
+# STASHING (62-71)
 # ============================================================================
 
-# 61. Stash changes
+# 62. Stash changes
 alias gst='git stash'
 
-# 62. Stash with message
+# 63. Stash with message
 alias gstm='git stash save'
 
-# 63. Stash including untracked
+# 64. Stash including untracked
 alias gstu='git stash -u'
 
-# 64. Stash all (including ignored)
+# 65. Stash all (including ignored)
 alias gsta='git stash -a'
 
-# 65. List stashes
+# 66. List stashes
 alias gstl='git stash list'
 
-# 66. Show stash content
+# 67. Show stash content
 alias gsts='git stash show -p'
 
-# 67. Apply last stash
+# 68. Apply last stash
 alias gstap='git stash apply'
 
-# 68. Pop last stash
+# 69. Pop last stash
 alias gstpo='git stash pop'
 
-# 69. Drop stash
+# 70. Drop stash
 alias gstd='git stash drop'
 
-# 70. Clear all stashes
+# 71. Clear all stashes
 alias gstc='git stash clear'
 
 # ============================================================================
-# REMOTE OPERATIONS (71-80)
+# REMOTE OPERATIONS (72-81)
 # ============================================================================
 
-# 71. Show remotes
+# 72. Show remotes
 alias gr='git remote'
 
-# 72. Show remotes with URLs
+# 73. Show remotes with URLs
 alias grv='git remote -v'
 
-# 73. Add remote
+# 74. Add remote
 alias gra='git remote add'
 
-# 74. Remove remote
+# 75. Remove remote
 alias grr='git remote remove'
 
-# 75. Rename remote
+# 76. Rename remote
 alias grrm='git remote rename'
 
-# 76. Fetch from origin
+# 77. Fetch from origin
 alias gf='git fetch'
 
-# 77. Fetch all remotes
+# 78. Fetch all remotes
 alias gfa='git fetch --all'
 
-# 78. Fetch with prune
+# 79. Fetch with prune
 alias gfp='git fetch --prune'
 
-# 79. Clone repository
+# 80. Clone repository
 alias gcl='git clone'
 
-# 80. Clone with depth
+# 81. Clone with depth
 alias gcld='git clone --depth 1'
 
 # ============================================================================
-# RESET AND CLEAN (81-90)
+# RESET AND CLEAN (82-91)
 # ============================================================================
 
-# 81. Reset to last commit (soft)
+# 82. Reset to last commit (soft)
 alias grss='git reset --soft HEAD~1'
 
-# 82. Reset to last commit (mixed)
+# 83. Reset to last commit (mixed)
 alias grsm='git reset HEAD~1'
 
-# 83. Reset to last commit (hard)
+# 84. Reset to last commit (hard)
 alias grsh='git reset --hard HEAD~1'
 
-# 84. Reset to origin
+# 85. Reset to origin
 alias grso='git reset --hard origin/$(git branch --show-current)'
 
-# 85. Unstage all files
+# 86. Unstage all files
 alias gus='git reset HEAD'
 
-# 86. Unstage specific file
+# 87. Unstage specific file (requires file argument after --)
 alias gusf='git reset HEAD --'
 
-# 87. Clean untracked files (dry run)
+# 88. Clean untracked files (dry run)
 alias gcn='git clean -n'
 
-# 88. Clean untracked files
+# 89. Clean untracked files
 alias gcf='git clean -f'
 
-# 89. Clean untracked files and directories
+# 90. Clean untracked files and directories
 alias gcfd='git clean -fd'
 
-# 90. Discard changes in file
+# 91. Discard changes in file (requires file argument after --)
 alias gdis='git checkout --'
 
 # ============================================================================
-# ADVANCED OPERATIONS (91-100)
+# ADVANCED OPERATIONS (92-101)
 # ============================================================================
 
-# 91. Cherry-pick commit
+# 92. Cherry-pick commit
 alias gcp='git cherry-pick'
 
-# 92. Cherry-pick and continue
+# 93. Cherry-pick and continue
 alias gcpc='git cherry-pick --continue'
 
-# 93. Cherry-pick abort
+# 94. Cherry-pick abort
 alias gcpa='git cherry-pick --abort'
 
-# 94. Rebase interactive
+# 95. Rebase interactive
 alias grbi='git rebase -i'
 
-# 95. Rebase continue
+# 96. Rebase continue
 alias grbc='git rebase --continue'
 
-# 96. Rebase abort
+# 97. Rebase abort
 alias grba='git rebase --abort'
 
-# 97. Rebase skip
+# 98. Rebase skip
 alias grbs='git rebase --skip'
 
-# 98. Show tags
+# 99. Show tags
 alias gt='git tag'
 
-# 99. Create tag
+# 100. Create tag
 alias gta='git tag -a'
 
-# 100. Push tags
+# 101. Push tags
 alias gpt='git push --tags'
 
 # ============================================================================
 # FUNCTIONS - Complex Operations
 # ============================================================================
+
+# Quick add, commit, push
+gacp() {
+    if [ -z "$1" ]; then
+        echo "Usage: gacp <commit_message>"
+        return 1
+    fi
+    git add . && git commit -m "$1" && git push
+}
 
 # Initialize git repo with initial commit
 ginit() {
@@ -394,10 +405,10 @@ gnew() {
     git checkout -b "$1" origin/main
 }
 
-# Update all branches
+# Update current branch from all remotes
 gupdateall() {
     git fetch --all
-    git pull --all
+    git pull
 }
 
 # Show size of repository
@@ -412,7 +423,12 @@ gfilesize() {
 
 # Find large files in history
 glarge() {
-    git rev-list --objects --all | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' | awk '/^blob/ {print substr($0,6)}' | sort --numeric-sort --key=2 | tail -${1:-10}
+    local count=${1:-10}
+    git rev-list --objects --all | \
+        git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' | \
+        awk '/^blob/ {print substr($0,6)}' | \
+        sort --numeric-sort --key=2 | \
+        tail -${count}
 }
 
 # Sync fork with upstream
@@ -425,6 +441,10 @@ gsyncfork() {
 
 # Squash last N commits
 gsquash() {
+    if [ -z "$2" ]; then
+        echo "Usage: gsquash <number_of_commits> <commit_message>"
+        return 1
+    fi
     git reset --soft HEAD~${1:-2}
     git commit -m "$2"
 }
@@ -468,8 +488,16 @@ rmdstore() {
 
 # Remove node_modules recursively
 rmnodemodules() {
-    find . -name "node_modules" -type d -prune -exec rm -rf {} \;
-    echo "Removed all node_modules directories"
+    echo "Finding node_modules directories..."
+    find . -name "node_modules" -type d -prune
+    read -p "Remove all node_modules directories? (y/N) " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        find . -name "node_modules" -type d -prune -exec rm -rf {} \;
+        echo "Removed all node_modules directories"
+    else
+        echo "Cancelled"
+    fi
 }
 
 # Count files by extension
