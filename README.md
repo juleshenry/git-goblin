@@ -354,3 +354,38 @@ class MyClass:
 ## License
 See [LICENSE](LICENSE) file for details.
 
+# mega_script.sh
+**100 Useful Git Aliases and File Management Routines!** 🚀
+
+A comprehensive collection of Git shortcuts and utilities organized into categories:
+- **Basic Git Operations** (15 aliases): Quick commands for add, commit, push, pull
+- **Branching** (15 aliases): Branch creation, deletion, switching, and merging
+- **Logging & History** (15 aliases): Beautiful logs, blame, reflog, and search
+- **Diff & Inspection** (15 aliases): Compare changes, inspect files, view contributors
+- **Stashing** (10 aliases): Save and restore work in progress
+- **Remote Operations** (10 aliases): Manage remotes, fetch, clone
+- **Reset & Clean** (10 aliases): Undo changes, clean workspace
+- **Advanced Operations** (10 aliases): Cherry-pick, rebase, tags
+- **25+ Utility Functions**: Complex workflows like `ginit()`, `gquick()`, `gsyncfork()`, `gstats()`
+- **File Management**: Remove .DS_Store, find large files, backup repos
+
+## Usage
+Source the script in your shell:
+```bash
+source mega_script.sh
+```
+
+Or add to your `~/.bashrc` or `~/.zshrc`:
+```bash
+echo "source $(pwd)/mega_script.sh" >> ~/.bashrc
+source ~/.bashrc
+```
+
+## Examples
+- `gs` - Quick git status
+- `gacp "commit message"` - Add, commit, and push in one command
+- `glog` - Beautiful commit history graph
+- `ginfo` - Show repository information
+- `galias` - List all available Git aliases
+- `gquick` - Commit and push with automatic timestamp
+
