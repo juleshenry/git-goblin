@@ -25,7 +25,9 @@ After running the setup script, all git-goblin commands will be available as bas
 
 If you prefer to set up manually or want to customize your setup:
 
-1. Add the source line to your shell configuration:
+### Option 1: Source all functions at once (Recommended)
+
+Add the source line to your shell configuration:
 
 ```bash
 # For bash users
@@ -39,9 +41,25 @@ source ~/.zshrc
 
 Replace `/path/to/git-goblin` with the actual path to your git-goblin directory.
 
-2. All git-goblin commands are now available as bash functions!
+### Option 2: Source individual scripts
 
-**Note:** The old alias-based approach has been replaced with bash functions for better shell environment compatibility.
+You can also source individual scripts as needed:
+
+```bash
+# For bash users
+echo 'source /path/to/git-goblin/hl' >> ~/.bashrc
+source ~/.bashrc
+
+# For zsh users  
+echo 'source /path/to/git-goblin/hl' >> ~/.zshrc
+source ~/.zshrc
+```
+
+This approach is useful if you only want specific git-goblin commands available in your shell.
+
+**Note:** The old alias-based approach has been replaced with bash functions for better shell environment compatibility. All scripts can now be:
+- **Sourced** to define bash functions in your current shell
+- **Executed directly** as standalone scripts (backward compatible)
 
 # setup-git-goblin
 Automated setup script that configures git-goblin for your environment. Detects your shell (bash/zsh), adds a source line to load bash functions from the appropriate RC file, makes Python scripts executable, and provides helpful feedback throughout the process. Automatically migrates old alias-based configurations to the new bash function approach.
