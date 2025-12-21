@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
-# swap files
-echo "swap () {
-  tmp_name=$(TMPDIR=$(dirname -- \"$1\") mktemp) &&
-  mv -f -- "$1" "$tmp_name" &&
-  mv -f -- "$2" "$1" &&
-  mv -f -- "$tmp_name" "$2"
+# swap: Swap the names of two files
+# Usage: source this file, then use: swap file1 file2
+
+swap() {
+    local tmp_name=$(TMPDIR=$(dirname -- "$1") mktemp)
+    mv -f -- "$1" "$tmp_name"
+    mv -f -- "$2" "$1"
+    mv -f -- "$tmp_name" "$2"
 }
-swap file file_1"
+
+# If script is executed directly (not sourced), call the function
+if [ "${BASH_SOURCE[0]}" -ef "$0" ]; then
+    swap "$@"
+fi

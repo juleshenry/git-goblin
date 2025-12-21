@@ -1,2 +1,12 @@
 #!/bin/bash
-find . -type f -name '.DS_Store' -exec rm {} +
+# ds-store-duster: Remove all .DS_Store files recursively
+# Usage: source this file, then use: ds-store-duster
+
+ds-store-duster() {
+    find . -type f -name '.DS_Store' -exec rm {} +
+}
+
+# If script is executed directly (not sourced), call the function
+if [ "${BASH_SOURCE[0]}" -ef "$0" ]; then
+    ds-store-duster "$@"
+fi

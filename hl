@@ -1,6 +1,15 @@
 #!/bin/bash
-# history-grep I'm feeling lucky prompt
-result=$(history 1| grep "$1" | tail -n 2 | head -n 1)
-echo "Penultimate match: $result"
-read -p "Press Enter to execute, or Ctrl+C to cancel..."
-eval "$result"
+# hl: history-grep "I'm feeling lucky" prompt
+# Usage: source this file, then use: hl searchterm
+
+hl() {
+    local result=$(history 1 | grep "$1" | tail -n 2 | head -n 1)
+    echo "Penultimate match: $result"
+    read -p "Press Enter to execute, or Ctrl+C to cancel..."
+    eval "$result"
+}
+
+# If script is executed directly (not sourced), call the function
+if [ "${BASH_SOURCE[0]}" -ef "$0" ]; then
+    hl "$@"
+fi

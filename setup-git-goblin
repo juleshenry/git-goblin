@@ -76,6 +76,21 @@ BACKUP_FILE="${RC_FILE}.backup.$(date +%Y%m%d_%H%M%S)"
 cp "$RC_FILE" "$BACKUP_FILE"
 print_info "Backed up RC file to: $BACKUP_FILE"
 
+# List of scripts that can be sourced individually
+SCRIPTS=(
+    "gg"
+    "h"
+    "gclo"
+    "jclo"
+    "blk"
+    "ds-store-duster"
+    "dust-kash"
+    "hl"
+    "date-file-maker"
+    "presto"
+    "swap"
+)
+
 # Check if git-goblin source line already exists
 SOURCE_LINE="source \"$SCRIPT_DIR/git-goblin-functions.sh\""
 
@@ -121,7 +136,10 @@ else
         echo ""
         echo "# git-goblin bash functions - START"
         echo "# Added by setup-git-goblin on $(date)"
+        echo "# You can source the main functions file (recommended):"
         echo "$SOURCE_LINE"
+        echo "# Or source individual scripts as needed:"
+        echo "# source \"$SCRIPT_DIR/hl\""
         echo "# git-goblin bash functions - END"
         echo ""
     } >> "$RC_FILE"
@@ -129,9 +147,17 @@ else
     print_success "Source line added to $RC_FILE"
 fi
 
-# Make Python scripts executable for direct use
-print_info "Making Python scripts executable..."
+# Make all scripts executable (for both direct execution and sourcing)
+print_info "Making scripts executable..."
 chmod_count=0
+for script in "${SCRIPTS[@]}"; do
+    if [ -f "$SCRIPT_DIR/$script" ]; then
+        chmod +x "$SCRIPT_DIR/$script"
+        chmod_count=$((chmod_count + 1))
+    fi
+done
+
+# Make Python scripts executable
 while IFS= read -r -d '' py_script; do
     chmod +x "$py_script"
     chmod_count=$((chmod_count + 1))

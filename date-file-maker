@@ -1,3 +1,12 @@
 #!/bin/bash
-# Creates an empty, UTC time-stamped textfile
-touch "$(date -u -R '+%m-%d-%y-%H:%M:%S').txt"
+# date-file-maker: Create a UTC timestamped text file
+# Usage: source this file, then use: date-file-maker
+
+date-file-maker() {
+    touch "$(date -u '+%m-%d-%y-%H:%M:%S').txt"
+}
+
+# If script is executed directly (not sourced), call the function
+if [ "${BASH_SOURCE[0]}" -ef "$0" ]; then
+    date-file-maker "$@"
+fi
