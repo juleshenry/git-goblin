@@ -3,9 +3,6 @@
 # Bash functions for git-goblin utilities
 # Usage: source /path/to/git-goblin/git-goblin-functions.sh
 
-# Get the directory where this script is located
-GIT_GOBLIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 # ============================================================================
 # GIT WORKFLOW FUNCTIONS
 # ============================================================================
