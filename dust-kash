@@ -1,2 +1,12 @@
 #!/bin/bash
-find . -type f -name '*.kash' -exec rm {} +
+# dust-kash: Remove all .kash cache files recursively
+# Usage: source this file, then use: dust-kash
+
+dust-kash() {
+    find . -type f -name '*.kash' -exec rm {} +
+}
+
+# If script is executed directly (not sourced), call the function
+if [ "${BASH_SOURCE[0]}" -ef "$0" ]; then
+    dust-kash "$@"
+fi

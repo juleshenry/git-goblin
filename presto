@@ -1,2 +1,17 @@
-# Delete all git history - use with caution
-git checkout --orphan annie;git add -A;git commit -am 'cm'; git branch -D main;git branch -m main;git push -f origin main
+#!/bin/bash
+# presto: Delete all git history - use with extreme caution!
+# Usage: source this file, then use: presto
+
+presto() {
+    git checkout --orphan annie
+    git add -A
+    git commit -am 'cm'
+    git branch -D main
+    git branch -m main
+    git push -f origin main
+}
+
+# If script is executed directly (not sourced), call the function
+if [ "${BASH_SOURCE[0]}" -ef "$0" ]; then
+    presto "$@"
+fi

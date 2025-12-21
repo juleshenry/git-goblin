@@ -1,4 +1,13 @@
 #!/bin/bash
-# gclo is a command shortcut for git clone like "gclo username/repo"
-j=juleshenry
-git clone "https://www.github.com/$j/$1"
+# jclo: git clone for juleshenry repositories
+# Usage: source this file, then use: jclo reponame
+
+jclo() {
+    local j=juleshenry
+    git clone "https://www.github.com/$j/$1"
+}
+
+# If script is executed directly (not sourced), call the function
+if [ "${BASH_SOURCE[0]}" -ef "$0" ]; then
+    jclo "$@"
+fi

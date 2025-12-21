@@ -1,6 +1,6 @@
 #!/bin/bash
 # setup-git-goblin: Automated setup script for git-goblin utilities
-# This script detects your shell, adds aliases to your RC file, and makes scripts executable
+# This script detects your shell and adds a source line to your RC file to load bash functions
 
 set -e
 
@@ -76,7 +76,7 @@ BACKUP_FILE="${RC_FILE}.backup.$(date +%Y%m%d_%H%M%S)"
 cp "$RC_FILE" "$BACKUP_FILE"
 print_info "Backed up RC file to: $BACKUP_FILE"
 
-# List of scripts to set up (executable files, excluding this setup script)
+# List of scripts that can be sourced individually
 SCRIPTS=(
     "gg"
     "h"
@@ -91,10 +91,26 @@ SCRIPTS=(
     "swap"
 )
 
-# Check if git-goblin aliases already exist (look for START marker specifically)
+# Check if git-goblin source line already exists
+SOURCE_LINE="source \"$SCRIPT_DIR/git-goblin-functions.sh\""
+
+# Check for both old aliases and new source line
+HAS_OLD_ALIASES=false
+HAS_SOURCE_LINE=false
+
 if grep -q "# git-goblin aliases - START" "$RC_FILE" 2>/dev/null; then
-    print_warning "Git Goblin aliases already exist in $RC_FILE"
-    read -p "Do you want to replace them? (y/N): " -n 1 -r
+    HAS_OLD_ALIASES=true
+fi
+
+if grep -q "git-goblin-functions.sh" "$RC_FILE" 2>/dev/null; then
+    HAS_SOURCE_LINE=true
+fi
+
+# Handle old aliases if they exist
+if [ "$HAS_OLD_ALIASES" = true ]; then
+    print_warning "Old git-goblin aliases detected in $RC_FILE"
+    print_info "These will be replaced with the new bash function approach"
+    read -p "Do you want to proceed with the migration? (y/N): " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         # Remove old git-goblin section (portable sed approach)
@@ -102,37 +118,36 @@ if grep -q "# git-goblin aliases - START" "$RC_FILE" 2>/dev/null; then
         sed '/# git-goblin aliases - START/,/# git-goblin aliases - END/d' "$RC_FILE" > "$TEMP_FILE"
         mv "$TEMP_FILE" "$RC_FILE"
         print_info "Removed old git-goblin aliases"
+        HAS_SOURCE_LINE=false  # Need to add source line
     else
-        print_info "Keeping existing aliases. Skipping alias addition."
-        SKIP_ALIASES=true
+        print_info "Keeping existing configuration. Exiting."
+        exit 0
     fi
 fi
 
-# Add aliases to RC file
-if [ "$SKIP_ALIASES" != "true" ]; then
-    print_info "Adding git-goblin aliases to $RC_FILE..."
+# Add source line to RC file if not already present
+if [ "$HAS_SOURCE_LINE" = true ]; then
+    print_info "Git Goblin bash functions are already configured in $RC_FILE"
+    print_info "No changes needed."
+else
+    print_info "Adding git-goblin source line to $RC_FILE..."
     
     {
         echo ""
-        echo "# git-goblin aliases - START"
+        echo "# git-goblin bash functions - START"
         echo "# Added by setup-git-goblin on $(date)"
-        
-        for script in "${SCRIPTS[@]}"; do
-            if [ -f "$SCRIPT_DIR/$script" ]; then
-                echo "alias $script='$SCRIPT_DIR/$script'"
-            fi
-        done
-        
-        echo "# git-goblin aliases - END"
+        echo "# You can source the main functions file (recommended):"
+        echo "$SOURCE_LINE"
+        echo "# Or source individual scripts as needed:"
+        echo "# source \"$SCRIPT_DIR/hl\""
+        echo "# git-goblin bash functions - END"
         echo ""
     } >> "$RC_FILE"
     
-    print_success "Aliases added to $RC_FILE"
-else
-    print_info "Skipped adding aliases"
+    print_success "Source line added to $RC_FILE"
 fi
 
-# Make all scripts executable
+# Make all scripts executable (for both direct execution and sourcing)
 print_info "Making scripts executable..."
 chmod_count=0
 for script in "${SCRIPTS[@]}"; do
@@ -142,12 +157,17 @@ for script in "${SCRIPTS[@]}"; do
     fi
 done
 
-# Also make Python scripts executable
-# Use find for portability instead of glob
+# Make Python scripts executable
 while IFS= read -r -d '' py_script; do
     chmod +x "$py_script"
     chmod_count=$((chmod_count + 1))
 done < <(find "$SCRIPT_DIR" -maxdepth 1 -name "*.py" -type f -print0 2>/dev/null)
+
+# Make the functions file executable
+if [ -f "$SCRIPT_DIR/git-goblin-functions.sh" ]; then
+    chmod +x "$SCRIPT_DIR/git-goblin-functions.sh"
+    chmod_count=$((chmod_count + 1))
+fi
 
 print_success "Made $chmod_count files executable"
 
@@ -157,12 +177,25 @@ echo "=========================================="
 print_success "Setup complete!"
 echo "=========================================="
 echo ""
-print_info "Available commands:"
-for script in "${SCRIPTS[@]}"; do
-    if [ -f "$SCRIPT_DIR/$script" ]; then
-        echo "  - $script"
-    fi
-done
+print_info "Available bash functions:"
+echo "  Git Workflow:"
+echo "    - gg          : Quick add, commit, and push"
+echo "    - gclo        : Git clone shortcut"
+echo "    - jclo        : Git clone for juleshenry repos"
+echo "    - presto      : Delete git history (use with caution!)"
+echo ""
+echo "  Shell History:"
+echo "    - h           : Grep shell history"
+echo "    - hl          : History-grep 'I'm feeling lucky'"
+echo ""
+echo "  File Management:"
+echo "    - ds-store-duster : Remove .DS_Store files"
+echo "    - dust-kash       : Remove .kash cache files"
+echo "    - date-file-maker : Create UTC timestamped file"
+echo "    - swap            : Swap two file names"
+echo ""
+echo "  Development:"
+echo "    - blk         : Run Python Black formatter"
 echo ""
 echo "=========================================="
 print_info "IMPORTANT: To activate git-goblin, run:"
@@ -170,7 +203,7 @@ echo ""
 echo "    source $RC_FILE"
 echo ""
 print_info "Alternatively, open a new terminal window where"
-print_info "the aliases will be automatically loaded."
+print_info "the functions will be automatically loaded."
 echo "=========================================="
 echo ""
 print_success "Git Goblin is ready to go! 🎉"

@@ -1,3 +1,12 @@
 #!/bin/bash
-# blk:=
-python3 -m black $1
+# blk: Run Python Black formatter
+# Usage: source this file, then use: blk filename.py
+
+blk() {
+    python3 -m black "$1"
+}
+
+# If script is executed directly (not sourced), call the function
+if [ "${BASH_SOURCE[0]}" -ef "$0" ]; then
+    blk "$@"
+fi
