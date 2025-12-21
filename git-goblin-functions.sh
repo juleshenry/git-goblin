@@ -9,6 +9,7 @@
 
 # gg: git add, commit, and push in one command
 # Usage: gg "commit message"
+unalias gg 2>/dev/null || true
 gg() {
     git add .
     git commit -m "$1"
