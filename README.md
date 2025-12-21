@@ -14,26 +14,37 @@ cd /path/to/git-goblin
 
 This script will:
 - Detect your shell (bash/zsh)
-- Add all git-goblin aliases to your RC file (.bashrc/.zshrc)
-- Make all scripts executable
+- Add a source line to your RC file (.bashrc/.zshrc) to load git-goblin bash functions
+- Make Python scripts executable
 - Create a backup of your RC file before making changes
+- Migrate old alias-based configurations to the new bash function approach
+
+After running the setup script, all git-goblin commands will be available as bash functions in your shell.
 
 ## Manual Setup
 
-If you prefer to add scripts manually or want to customize your setup:
+If you prefer to set up manually or want to customize your setup:
 
-Navigate your terminal to the git-goblin root:
+1. Add the source line to your shell configuration:
+
 ```bash
-echo "$(pwd)/gacp"
-nano ~/.bashrc OR nano ~/.zshrc
-alias myalias='$PATH_TO_GITGOBLIN/git-goblin-gacp'
-source ~/.bashrc OR source ~/.zshrc
-chmod 700 gacp
+# For bash users
+echo 'source /path/to/git-goblin/git-goblin-functions.sh' >> ~/.bashrc
+source ~/.bashrc
+
+# For zsh users
+echo 'source /path/to/git-goblin/git-goblin-functions.sh' >> ~/.zshrc
+source ~/.zshrc
 ```
-GOOD TO GO!
+
+Replace `/path/to/git-goblin` with the actual path to your git-goblin directory.
+
+2. All git-goblin commands are now available as bash functions!
+
+**Note:** The old alias-based approach has been replaced with bash functions for better shell environment compatibility.
 
 # setup-git-goblin
-Automated setup script that configures git-goblin for your environment. Detects your shell (bash/zsh), adds aliases to the appropriate RC file, makes all scripts executable, and provides helpful feedback throughout the process.
+Automated setup script that configures git-goblin for your environment. Detects your shell (bash/zsh), adds a source line to load bash functions from the appropriate RC file, makes Python scripts executable, and provides helpful feedback throughout the process. Automatically migrates old alias-based configurations to the new bash function approach.
 
 # gg
 ## (aka 'gacp' aka 'gush')
@@ -43,31 +54,28 @@ A collection of productivity-enhancing git scripts and utilities for developers 
 
 ## Installation
 
-Navigate your terminal to the git-goblin root directory:
+The recommended way to install git-goblin is using the automated setup script:
 
 ```bash
 cd /path/to/git-goblin
-echo "$(pwd)/gg"  # Note the path for the next step (using 'gg' as example)
+./setup-git-goblin
 ```
 
-Add aliases to your shell configuration:
+This will configure your shell to load git-goblin bash functions automatically.
+
+Alternatively, you can manually add this line to your shell configuration:
 
 ```bash
-nano ~/.bashrc  # OR nano ~/.zshrc
+# Add to ~/.bashrc or ~/.zshrc
+source /path/to/git-goblin/git-goblin-functions.sh
 ```
 
-Add an alias line like this:
-```bash
-alias gg='/path/to/git-goblin/gg'
-```
-
-Apply the changes and make executable:
+Then reload your shell:
 ```bash
 source ~/.bashrc  # OR source ~/.zshrc
-chmod +x /path/to/git-goblin/gg
 ```
 
-You're good to go!
+All git-goblin commands are now available as bash functions!
 
 ## Git Workflow Scripts
 

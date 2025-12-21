@@ -1,11 +1,9 @@
 alias conda='/opt/homebrew/anaconda3/bin/conda'
 alias f='open -a "Visual Studio Code"'
 alias pip=pip3
-alias gg='~/git-goblin/gg'
-alias h='~/git-goblin/h'
-alias gclo='~/git-goblin/gclo'
 alias surreal='/Users/emmanuelenri/.surrealdb/surreal'
-alias blk='~/git-goblin/blk'
-alias dzt='~/git-goblin/ds-store-duster'
-alias jclo='~/git-goblin/jclo'
-alias hl='~/git-goblin/hl'
+
+# git-goblin bash functions - START
+# Load git-goblin bash functions instead of aliases
+source ~/git-goblin/git-goblin-functions.sh
+# git-goblin bash functions - END
