@@ -9,7 +9,7 @@
 
 # gg: git add, commit, and push in one command
 # Usage: gg "commit message"
-unalias gg 2>/dev/null || true
+
 gg() {
     git add .
     git commit -m "$1"
@@ -46,7 +46,7 @@ presto() {
 # h: grep shell history
 # Usage: h searchterm
 h() {
-    history | grep "$1"
+    history 1| grep "$1"
 }
 
 # hl: history-grep "I'm feeling lucky" prompt
@@ -63,7 +63,7 @@ hl() {
 # ============================================================================
 
 # ds-store-duster: Remove all .DS_Store files recursively
-ds-store-duster() {
+dst() {
     find . -type f -name '.DS_Store' -exec rm {} +
 }
 
@@ -103,7 +103,7 @@ export -f jclo
 export -f presto
 export -f h
 export -f hl
-export -f ds-store-duster
+export -f dst
 export -f dust-kash
 export -f date-file-maker
 export -f swap
