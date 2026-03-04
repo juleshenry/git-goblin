@@ -16,66 +16,16 @@ from datetime import datetime
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 GITHUB_USER = "juleshenry"
+COPYRIGHT_HOLDER = "Julian Philip Henry"
 YEAR = datetime.now().year
-OLLAMA_MODEL = "llama3"
-OLLAMA_URL = "http://localhost:11434/api/generate"
 CROC_SHADES_PATH = os.path.join(SCRIPT_DIR, "croc-shades")
 
-# Cache so we don't re-query ollama for the same slug
-_pretty_name_cache: dict[str, str] = {}
 
-
-def prettify_repo_name(repo_slug: str) -> str:
-    """Use Ollama llama3 to turn a repo slug into a human-readable project name.
-
-    Example: 'quantum_mnist' -> 'Quantum MNIST'
-             'langaugelilypad' -> 'Language Lilypad'
-    Falls back to simple title-casing if Ollama is unavailable.
-    """
-    if repo_slug in _pretty_name_cache:
-        return _pretty_name_cache[repo_slug]
-
-    prompt = (
-        f"Convert this GitHub repository slug into a clean, human-readable project name. "
-        f"Preserve acronyms in uppercase (e.g. MNIST, API, NLP, ML, CV, GPU). "
-        f"Fix obvious typos if any. Reply with ONLY the project name, nothing else.\n\n"
-        f"Slug: {repo_slug}"
-    )
-
-    try:
-        payload = json.dumps({
-            "model": OLLAMA_MODEL,
-            "prompt": prompt,
-            "stream": False,
-            "options": {"temperature": 0},
-        }).encode()
-        req = urllib.request.Request(
-            OLLAMA_URL,
-            data=payload,
-            headers={"Content-Type": "application/json"},
-            method="POST",
-        )
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            body = json.loads(resp.read().decode())
-        pretty = body.get("response", "").strip().strip('"').strip("'")
-        # Sanity check: if the model returned something absurdly long or empty, fall back
-        if pretty and len(pretty) < 80:
-            _pretty_name_cache[repo_slug] = pretty
-            return pretty
-    except Exception as e:
-        print(f"  [WARN] Ollama call failed ({e}), falling back to simple title-case.")
-
-    # Fallback: replace separators and title-case
-    fallback = repo_slug.replace("-", " ").replace("_", " ").title()
-    _pretty_name_cache[repo_slug] = fallback
-    return fallback
-
-
-def build_mit_license(project_name: str) -> str:
-    """Build the MIT license text with the given project name in the copyright line."""
+def build_mit_license() -> str:
+    """Build the MIT license text with the copyright holder name."""
     return f"""MIT License
 
-Copyright (c) {YEAR} {project_name}
+Copyright (c) {YEAR} {COPYRIGHT_HOLDER}
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -162,10 +112,6 @@ def add_license_to_repo(repo: dict, dry_run: bool = False) -> bool:
     repo_name = repo["name"]
     full_name = repo["full_name"]
 
-    # Get a pretty project name via Ollama
-    pretty_name = prettify_repo_name(repo_name)
-    print(f"  Project name: {pretty_name}")
-
     if dry_run:
         print(f"  [DRY RUN] Would add MIT LICENSE to {full_name}")
         return True
@@ -178,7 +124,7 @@ def add_license_to_repo(repo: dict, dry_run: bool = False) -> bool:
             return False
 
         license_path = os.path.join(tmpdir, "LICENSE")
-        license_content = build_mit_license(pretty_name) + "\n" + load_croc_shades()
+        license_content = build_mit_license() + "\n" + load_croc_shades()
         with open(license_path, "w", encoding="utf-8") as f:
             f.write(license_content)
 
