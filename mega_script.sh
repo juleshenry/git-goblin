@@ -535,6 +535,6 @@ gbackup() {
 # UTILITY MESSAGES
 # ============================================================================
 
-echo "Git Goblin Mega Script loaded! 🎉"
-echo "Type 'galias' to see all Git aliases"
-echo "Type 'ginfo' to see current repository info"
+# "Git Goblin Mega Script loaded! 🎉"
+# "Type 'galias' to see all Git aliases"
+# "Type 'ginfo' to see current repository info"

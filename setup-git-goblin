@@ -1,102 +1,15 @@
 #!/bin/bash
 # setup-git-goblin: Automated setup script for git-goblin utilities
-# This script detects your shell and adds a source line to your RC file to load bash functions
-
-set -e
-
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-
-# Print formatted messages
-print_info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
-}
-
-print_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
-}
-
-print_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
-}
-
-print_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
-}
-
-echo ""
-echo "=========================================="
-echo "   Git Goblin Setup Script"
-echo "=========================================="
-echo ""
-
-# Get the directory where this script is located (git-goblin root)
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-print_info "Git Goblin directory: $SCRIPT_DIR"
-
-# Detect the current shell
-CURRENT_SHELL=$(basename "$SHELL")
-print_info "Detected shell: $CURRENT_SHELL"
-
-# Determine the RC file to use
-RC_FILE=""
-case "$CURRENT_SHELL" in
-    zsh)
-        RC_FILE="$HOME/.zshrc"
-        ;;
-    bash)
-        # Check for .bash_profile first (macOS preference), then .bashrc
-        if [ -f "$HOME/.bash_profile" ]; then
-            RC_FILE="$HOME/.bash_profile"
-        else
-            RC_FILE="$HOME/.bashrc"
-        fi
-        ;;
-    *)
-        print_warning "Unsupported shell: $CURRENT_SHELL"
-        print_warning "Attempting to use .bashrc as fallback"
-        RC_FILE="$HOME/.bashrc"
-        ;;
-esac
-
-print_info "Using RC file: $RC_FILE"
-
-# Create RC file if it doesn't exist
-if [ ! -f "$RC_FILE" ]; then
-    print_warning "RC file does not exist. Creating: $RC_FILE"
-    touch "$RC_FILE"
-fi
-
-# Backup the RC file
-BACKUP_FILE="${RC_FILE}.backup.$(date +%Y%m%d_%H%M%S)"
-cp "$RC_FILE" "$BACKUP_FILE"
-print_info "Backed up RC file to: $BACKUP_FILE"
-
-# List of scripts that can be sourced individually
-SCRIPTS=(
-    "gg"
-    "h"
-    "gclo"
-    "jclo"
-    "blk"
-    "dst"
-    "dust-kash"
-    "hl"
-    "date-file-maker"
-    "presto"
-    "swap"
-)
+# ... (existing content) ...
 
 # Check if git-goblin source line already exists
 SOURCE_LINE="source \"$SCRIPT_DIR/git-goblin-functions.sh\""
+MEGA_SCRIPT_LINE="source \"$SCRIPT_DIR/mega_script.sh\""
 
 # Check for both old aliases and new source line
 HAS_OLD_ALIASES=false
 HAS_SOURCE_LINE=false
+HAS_MEGA_SCRIPT_LINE=false
 
 if grep -q "# git-goblin aliases - START" "$RC_FILE" 2>/dev/null; then
     HAS_OLD_ALIASES=true
@@ -106,27 +19,18 @@ if grep -q "git-goblin-functions.sh" "$RC_FILE" 2>/dev/null; then
     HAS_SOURCE_LINE=true
 fi
 
+if grep -q "mega_script.sh" "$RC_FILE" 2>/dev/null; then
+    HAS_MEGA_SCRIPT_LINE=true
+fi
+
 # Handle old aliases if they exist
 if [ "$HAS_OLD_ALIASES" = true ]; then
-    print_warning "Old git-goblin aliases detected in $RC_FILE"
-    print_info "These will be replaced with the new bash function approach"
-    read -p "Do you want to proceed with the migration? (y/N): " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        # Remove old git-goblin section (portable sed approach)
-        TEMP_FILE=$(mktemp)
-        sed '/# git-goblin aliases - START/,/# git-goblin aliases - END/d' "$RC_FILE" > "$TEMP_FILE"
-        mv "$TEMP_FILE" "$RC_FILE"
-        print_info "Removed old git-goblin aliases"
-        HAS_SOURCE_LINE=false  # Need to add source line
-    else
-        print_info "Keeping existing configuration. Exiting."
-        exit 0
+# ... (existing content) ...
     fi
 fi
 
 # Add source line to RC file if not already present
-if [ "$HAS_SOURCE_LINE" = true ]; then
+if [ "$HAS_SOURCE_LINE" = true ] && [ "$HAS_MEGA_SCRIPT_LINE" = true ]; then
     print_info "Git Goblin bash functions are already configured in $RC_FILE"
     print_info "No changes needed."
 else
@@ -137,7 +41,12 @@ else
         echo "# git-goblin bash functions - START"
         echo "# Added by setup-git-goblin on $(date)"
         echo "# You can source the main functions file (recommended):"
-        echo "$SOURCE_LINE"
+        if [ "$HAS_SOURCE_LINE" = false ]; then
+            echo "$SOURCE_LINE"
+        fi
+        if [ "$HAS_MEGA_SCRIPT_LINE" = false ]; then
+            echo "$MEGA_SCRIPT_LINE"
+        fi
         echo "# Or source individual scripts as needed:"
         echo "# source \"$SCRIPT_DIR/hl\""
         echo "# git-goblin bash functions - END"
@@ -149,17 +58,7 @@ fi
 
 # Make all scripts executable (for both direct execution and sourcing)
 print_info "Making scripts executable..."
-chmod_count=0
-for script in "${SCRIPTS[@]}"; do
-    if [ -f "$SCRIPT_DIR/$script" ]; then
-        chmod +x "$SCRIPT_DIR/$script"
-        chmod_count=$((chmod_count + 1))
-    fi
-done
-
-# Make Python scripts executable
-while IFS= read -r -d '' py_script; do
-    chmod +x "$py_script"
+# ... (existing content) ...
     chmod_count=$((chmod_count + 1))
 done < <(find "$SCRIPT_DIR" -maxdepth 1 -name "*.py" -type f -print0 2>/dev/null)
 
@@ -169,42 +68,12 @@ if [ -f "$SCRIPT_DIR/git-goblin-functions.sh" ]; then
     chmod_count=$((chmod_count + 1))
 fi
 
+if [ -f "$SCRIPT_DIR/mega_script.sh" ]; then
+    chmod +x "$SCRIPT_DIR/mega_script.sh"
+    chmod_count=$((chmod_count + 1))
+fi
+
 print_success "Made $chmod_count files executable"
 
 # Final instructions
-echo ""
-echo "=========================================="
-print_success "Setup complete!"
-echo "=========================================="
-echo ""
-print_info "Available bash functions:"
-echo "  Git Workflow:"
-echo "    - gg          : Quick add, commit, and push"
-echo "    - gclo        : Git clone shortcut"
-echo "    - jclo        : Git clone for juleshenry repos"
-echo "    - presto      : Delete git history (use with caution!)"
-echo ""
-echo "  Shell History:"
-echo "    - h           : Grep shell history"
-echo "    - hl          : History-grep 'I'm feeling lucky'"
-echo ""
-echo "  File Management:"
-echo "    - dst : Remove .DS_Store files"
-echo "    - dust-kash       : Remove .kash cache files"
-echo "    - date-file-maker : Create UTC timestamped file"
-echo "    - swap            : Swap two file names"
-echo ""
-echo "  Development:"
-echo "    - blk         : Run Python Black formatter"
-echo ""
-echo "=========================================="
-print_info "IMPORTANT: To activate git-goblin, run:"
-echo ""
-echo "    source $RC_FILE"
-echo ""
-print_info "Alternatively, open a new terminal window where"
-print_info "the functions will be automatically loaded."
-echo "=========================================="
-echo ""
-print_success "Git Goblin is ready to go! 🎉"
-echo ""
+# ... (existing content) ...
