@@ -1,453 +1,897 @@
 # git-goblin
+
 Git Scripts that Get the Job Done!
 
 ![ggob.jpeg](ggob.jpeg)
 
-## Quick Setup (Recommended)
+**380+ shell shortcuts** for Git, Docker, Kubernetes, AWS, GCP, Terraform, Helm, Ansible, Vagrant, npm/yarn/pnpm, Python/pip, systemd, networking, Redis, Postgres, nginx, cybersecurity/recon, and everyday CLI tools -- all searchable through the `G` command.
 
-Run the automated setup script:
-
-```bash
-cd /path/to/git-goblin
-./setup-git-goblin
-```
-
-This script will:
-- Detect your shell (bash/zsh)
-- Add a source line to your RC file (.bashrc/.zshrc) to load git-goblin bash functions
-- Make Python scripts executable
-- Create a backup of your RC file before making changes
-- Migrate old alias-based configurations to the new bash function approach
-
-After running the setup script, all git-goblin commands will be available as bash functions in your shell.
-
-## Manual Setup
-
-If you prefer to set up manually or want to customize your setup:
-
-### Option 1: Source all functions at once (Recommended)
-
-Add the source line to your shell configuration:
-
-```bash
-# For bash users
-echo 'source /path/to/git-goblin/git-goblin-functions.sh' >> ~/.bashrc
-source ~/.bashrc
-
-# For zsh users
-echo 'source /path/to/git-goblin/git-goblin-functions.sh' >> ~/.zshrc
-source ~/.zshrc
-```
-
-Replace `/path/to/git-goblin` with the actual path to your git-goblin directory.
-
-### Option 2: Source individual scripts
-
-You can also source individual scripts as needed:
-
-```bash
-# For bash users
-echo 'source /path/to/git-goblin/hl' >> ~/.bashrc
-source ~/.bashrc
-
-# For zsh users  
-echo 'source /path/to/git-goblin/hl' >> ~/.zshrc
-source ~/.zshrc
-```
-
-This approach is useful if you only want specific git-goblin commands available in your shell.
-
-**Note:** The old alias-based approach has been replaced with bash functions for better shell environment compatibility. All scripts can now be:
-- **Sourced** to define bash functions in your current shell
-- **Executed directly** as standalone scripts (backward compatible)
-
-# setup-git-goblin
-Automated setup script that configures git-goblin for your environment. Detects your shell (bash/zsh), adds a source line to load bash functions from the appropriate RC file, makes Python scripts executable, and provides helpful feedback throughout the process. Automatically migrates old alias-based configurations to the new bash function approach.
-
-# gg
-## (aka 'gacp' aka 'gush')
-Simplifies clunky common pattern of adding all changes, committing and pushing.
-E.g. `gg "New Form on HomePage"`
-A collection of productivity-enhancing git scripts and utilities for developers who want to streamline their workflow.
+---
 
 ## Installation
 
-The recommended way to install git-goblin is using the automated setup script:
+### Quick Setup (Recommended)
+
+```bash
+git clone https://github.com/juleshenry/git-goblin.git
+cd git-goblin
+chmod +x setup-git-goblin
+./setup-git-goblin
+source ~/.bashrc  # or source ~/.zshrc
+```
+
+### One-Liner
+
+```bash
+git clone https://github.com/juleshenry/git-goblin.git && cd git-goblin && chmod +x setup-git-goblin && ./setup-git-goblin && source ~/.bashrc
+```
+
+### Manual Setup
+
+If you prefer not to run the installer, add these two lines to your `~/.bashrc` or `~/.zshrc`:
+
+```bash
+source /path/to/git-goblin/git-goblin-functions.sh
+source /path/to/git-goblin/mega_script.sh
+```
+
+Then reload: `source ~/.bashrc`
+
+### What the Installer Does
+
+- Detects your shell (bash or zsh) and finds the right RC file
+- Backs up your RC file before making any changes
+- Removes old alias-based configs if migrating from an earlier version
+- Adds source lines for `git-goblin-functions.sh` and `mega_script.sh`
+- Makes all scripts executable
+
+### Uninstall
 
 ```bash
 cd /path/to/git-goblin
-./setup-git-goblin
+./setup-git-goblin --remove
+source ~/.bashrc
 ```
 
-This will configure your shell to load git-goblin bash functions automatically.
+This cleanly removes the git-goblin block from your RC file. Your backup is preserved.
 
-Alternatively, you can manually add this line to your shell configuration:
+---
+
+## G -- The Git-Goblin Shell
+
+`G` is the brain of git-goblin. It has three modes:
+
+### 1. Best-Guess Mode: `G 'command'`
+
+Pass any raw CLI command and `G` scores every registered shortcut to find the closest match. It shows the shortcut name, the underlying command, a doc blurb, and runners-up.
 
 ```bash
-# Add to ~/.bashrc or ~/.zshrc
-source /path/to/git-goblin/git-goblin-functions.sh
+G 'git status'
+#  G best guess for 'git status'
+#  ────────────────────────────────────────────
+#
+#  gs
+#  runs:  git status
+#  what:  Show working tree status
+#
+#  see also:
+#    gss              Short-format status
+#    ginfo            Show repo info summary
+#    gdfiles          List changed filenames
+
+G 'docker logs'
+#  dl
+#  runs:  docker logs -f CONTAINER
+#  what:  Follow container logs
+
+G 'kubectl get pods'
+#  kgp
+#  runs:  kubectl get pods
+#  what:  List pods
+
+G 'terraform plan'
+#  tfp
+#  runs:  terraform plan
+#  what:  Plan changes
 ```
 
-Then reload your shell:
+The best match is automatically copied to your clipboard (macOS pbcopy / Linux xclip).
+
+#### More G Examples -- npm, Python, Networking, Security
+
 ```bash
-source ~/.bashrc  # OR source ~/.zshrc
+G 'npm install'
+#  ni
+#  runs:  npm install
+#  what:  npm install
+#
+#  see also:
+#    nid              npm install as dev dependency
+#    nig              npm install globally
+#    ninit            Initialize new npm project
+
+G 'yarn add'
+#  ya
+#  runs:  yarn add PACKAGE
+#  what:  Yarn add package
+
+G 'pnpm dev'
+#  prd
+#  runs:  pnpm dev
+#  what:  pnpm dev server
+
+G 'pip install'
+#  pip3i
+#  runs:  pip3 install PACKAGE
+#  what:  pip install a package
+#
+#  see also:
+#    pipr             pip install from requirements
+#    pipu             Upgrade a pip package
+#    pide             pip install in editable mode
+
+G 'python venv'
+#  venv
+#  runs:  python3 -m venv venv
+#  what:  Create a virtual environment
+#
+#  see also:
+#    va               Activate venv
+#    vd               Deactivate venv
+
+G 'pytest'
+#  pt
+#  runs:  pytest
+#  what:  Run pytest
+#
+#  see also:
+#    ptv              Run pytest verbose
+#    ptc              Run pytest with coverage
+
+G 'systemctl restart'
+#  screstart
+#  runs:  sudo systemctl restart SERVICE
+#  what:  Restart a service
+
+G 'curl POST json'
+#  curlj
+#  runs:  curl -X POST -H JSON -d DATA URL
+#  what:  curl POST with JSON body
+
+G 'dns lookup'
+#  digs
+#  runs:  dig +short DOMAIN
+#  what:  Quick DNS lookup
+#
+#  see also:
+#    nsl              nslookup shortcut
+#    digr             Reverse DNS lookup
+
+G 'my public ip'
+#  myip
+#  runs:  curl ifconfig.me
+#  what:  Show public IP address
+
+G 'redis keys'
+#  rdkeys
+#  runs:  redis-cli keys '*'
+#  what:  List all Redis keys
+
+G 'postgres connections'
+#  pgconn
+#  runs:  SELECT from pg_stat_activity
+#  what:  Show active connections
+
+G 'nginx reload'
+#  ngr
+#  runs:  sudo nginx -s reload
+#  what:  Reload nginx
+
+G 'port scan'
+#  nquick
+#  runs:  nmap -F HOST
+#  what:  Nmap quick scan (top 100 ports)
+#
+#  see also:
+#    nfull            Nmap full TCP port scan
+#    ncscan           Port scan with netcat
+#    portcheck        Check if a port is open
+
+G 'nmap vulnerability'
+#  nvuln
+#  runs:  nmap --script vuln HOST
+#  what:  Nmap vulnerability scan
+
+G 'ssl certificate'
+#  sslcheck
+#  runs:  openssl s_client + x509 DOMAIN
+#  what:  Check SSL certificate info
+#
+#  see also:
+#    sslchain         Show full SSL cert chain
+#    sslciphers       Enumerate SSL ciphers
+
+G 'tcpdump'
+#  sniff
+#  runs:  sudo tcpdump -i any -nn
+#  what:  Packet sniffing (tcpdump)
+#
+#  see also:
+#    tcapt            Capture packets to file
+#    tcport           tcpdump filter by port
+#    tchost           tcpdump filter by host
+
+G 'banner grab'
+#  bannergrab
+#  runs:  nc -w 3 HOST PORT
+#  what:  Banner grab via netcat
+
+G 'generate password'
+#  genpw
+#  runs:  tr -dc A-Za-z0-9... < /dev/urandom
+#  what:  Generate random password
+
+G 'netstat listening'
+#  nstcp
+#  runs:  netstat -tlnp
+#  what:  Netstat listening TCP ports
+#
+#  see also:
+#    nstat            Show listening ports (netstat)
+#    ssl              Show listening ports (ss)
+#    myports          Show open ports on this host
+
+G 'telnet'
+#  tn
+#  runs:  telnet HOST
+#  what:  Telnet to a host
+
+G 'base64'
+#  b64e
+#  runs:  base64 FILE
+#  what:  Base64 encode
+#
+#  see also:
+#    b64d             Base64 decode
+
+G 'uuid'
+#  uuid
+#  runs:  python3 uuid4
+#  what:  Generate a UUID
 ```
 
-All git-goblin commands are now available as bash functions!
+#### Partial and Misspelled Queries
 
-## Git Workflow Scripts
+`G` uses word-overlap scoring, so partial matches still work:
 
-### gg
-**Aliases:** gacp, gush
-
-Simplifies the common pattern of adding all changes, committing, and pushing in one command.
-
-**Usage:**
 ```bash
-gg "Your commit message"
+G 'push force'    # -> gpf (git push --force)
+G 'stash pop'     # -> gstpo (git stash pop)
+G 'compose up'    # -> dcu (docker compose up -d)
+G 'branch delete' # -> gbd (git branch -d BRANCH)
+G 'pods all'      # -> kgpa (kubectl get pods --all-namespaces)
+G 'commit amend'  # -> gcam (git commit --amend -m MSG)
 ```
 
-**Example:**
+### 2. Add Mode: `G -a 'command' 'description'`
+
+Add your own custom shortcuts on the fly. They persist across sessions in `~/.git-goblin-custom`.
+
 ```bash
-gg "New Form on HomePage"
+G -a 'docker stats' 'Live container resource usage'
+# [ok] Added: docker stats -- Live container resource usage
+# [..] Saved to ~/.git-goblin-custom (persists across sessions).
+
+G -a 'npm run dev' 'Start local dev server'
+# [ok] Added: npm run dev -- Start local dev server
+
+G -a 'ssh -L 8080:localhost:80 server' 'SSH tunnel port 80 to local 8080'
+# [ok] Added
+
+G -a 'rsync -avz src/ dest/' 'Rsync with compression'
+# [ok] Added
 ```
 
-This executes:
+After adding, these show up in `G` lookups and interactive mode immediately.
+
+### 3. Interactive Mode: `G` (no args)
+
+Launches a full-screen fuzzy-find TUI over every registered command:
+
+```
+  G -- git-goblin shell  (380/380)
+  > docker|
+
+  > dps              List running containers
+    dpsa             List all containers
+    di               List images
+    dex              Exec into container
+    dl               Follow container logs
+    ...
+
+  [arrows] navigate  [enter] select+show  [tab] copy  [esc] quit
+```
+
+Type to filter, arrows to navigate, Enter to see full details, Tab to copy, Esc to quit. Fuzzy matching -- you don't need exact strings.
+
+### gg-help: Built-in Reference
+
 ```bash
-git add .
-git commit -m "Your commit message"
-git push
+gg-help             # show everything
+gg-help docker      # filter to docker commands
+gg-help kubernetes  # filter to k8s commands
+gg-help aws         # filter to AWS commands
+gg-help terraform   # filter to terraform commands
+gg-help npm         # filter to npm/yarn/pnpm commands
+gg-help python      # filter to python/pip commands
+gg-help redis       # filter to redis commands
+gg-help nmap        # filter to security/recon commands
+gg-help nginx       # filter to nginx commands
 ```
 
-### gclo
-Git clone shortcut for quickly cloning repositories.
+---
 
-**Usage:**
-```bash
-gclo username/repo
-```
+## Git Workflow Commands
 
-**Example:**
-```bash
-gclo torvalds/linux
-```
+| Command | What it does |
+|---------|-------------|
+| `gg "msg"` | `git add . && commit && push` in one shot |
+| `gacp "msg"` | Same as `gg` (alias) |
+| `gclo user/repo` | `git clone https://github.com/user/repo` |
+| `jclo repo` | Clone from `juleshenry/repo` |
+| `presto` | **DESTRUCTIVE**: wipe all git history, fresh start |
+| `gwip` | Quick WIP commit with timestamp (no push) |
+| `gunwip` | Undo last WIP commit, keep changes staged |
+| `gpristine` | Hard-reset to match remote exactly |
+| `gtag v1.0 "msg"` | Create + push an annotated tag |
+| `gpr "title"` | Create a GitHub PR via `gh` CLI |
+| `gdiff-fancy` | Pretty diff summary with stats |
+| `ginit` | `git init` with initial commit |
+| `ghcl user/repo` | Clone from GitHub |
+| `gbc branch` | Create + checkout new branch |
+| `gbdall branch` | Delete branch locally and remotely |
+| `gundo` | Undo last commit, keep changes staged |
+| `gbs` | Branches sorted by last modified |
+| `gquick` | Commit + push with auto-timestamp |
+| `gchanged N` | Files changed in last N commits |
+| `gsearchtext "text"` | Search for string across git history |
+| `gnew branch` | New branch from `origin/main` |
+| `gupdateall` | Fetch all remotes + pull |
+| `greposize` | Repo object storage size |
+| `gfilesize` | List tracked files by size |
+| `glarge N` | Find N largest blobs in history |
+| `gsyncfork` | Sync fork with upstream/main |
+| `gsquash N "msg"` | Squash last N commits |
+| `gstats` | Commit count by author |
+| `garchive branch` | Archive branch as tag, delete it |
+| `galias` | List all `g*` aliases |
+| `ginfo` | Repo name, branch, remote, last commit |
+| `gbackup` | Tar.gz backup of current repo |
 
-Executes: `git clone https://github.com/username/repo`
+## Git Aliases (101 shortcuts)
 
-### jclo
-Quick clone for juleshenry's repositories specifically.
+All from `mega_script.sh`. Examples:
 
-**Usage:**
-```bash
-jclo reponame
-```
+| Alias | Expands to |
+|-------|-----------|
+| `gs` | `git status` |
+| `gss` | `git status -s` |
+| `ga` | `git add .` |
+| `gc` | `git commit -m` |
+| `gp` | `git push` |
+| `gl` | `git pull` |
+| `glr` | `git pull --rebase` |
+| `gb` | `git branch` |
+| `gco` | `git checkout` |
+| `gcob` | `git checkout -b` |
+| `gcom` | `git checkout main` |
+| `gsw` | `git switch` |
+| `gm` | `git merge` |
+| `glog` | `git log --oneline --decorate --graph` |
+| `glast` | `git log -1 HEAD` |
+| `gblame` | `git blame` |
+| `gd` | `git diff` |
+| `gds` | `git diff --staged` |
+| `gdlc` | `git diff HEAD^ HEAD` |
+| `gst` | `git stash` |
+| `gstpo` | `git stash pop` |
+| `gf` | `git fetch` |
+| `gcl` | `git clone` |
+| `grss` | `git reset --soft HEAD~1` |
+| `grsh` | `git reset --hard HEAD~1` |
+| `gcp` | `git cherry-pick` |
+| `grbi` | `git rebase -i` |
+| `gt` | `git tag` |
+| `gpt` | `git push --tags` |
 
-**Example:**
-```bash
-jclo git-goblin
-```
+Run `gg-help` or `gg-help git` for the full list.
 
-Executes: `git clone https://github.com/juleshenry/reponame`
+---
 
-### presto
-**⚠️ Use with extreme caution!**
+## Docker Shortcuts (20 commands)
 
-Deletes all git history and starts fresh. This is a destructive operation.
+| Command | What it does |
+|---------|-------------|
+| `dps` | `docker ps` -- list running containers |
+| `dpsa` | `docker ps -a` -- list all containers |
+| `di` | `docker images` -- list images |
+| `drm` | `docker rm` -- remove a container |
+| `drmi` | `docker rmi` -- remove an image |
+| `drmf` | Force-remove all containers |
+| `drmia` | Remove all images |
+| `dex CONTAINER` | `docker exec -it CONTAINER bash` |
+| `dl` | `docker logs -f` -- follow logs |
+| `dstop` | Stop all running containers |
+| `dprune` | `docker system prune -af` |
+| `dc` | `docker compose` |
+| `dcu` | `docker compose up -d` |
+| `dcd` | `docker compose down` |
+| `dcb` | `docker compose build` |
+| `dcl` | `docker compose logs -f` |
+| `dcr` | `docker compose restart` |
+| `dvls` | `docker volume ls` |
+| `dnls` | `docker network ls` |
+| `dbuild NAME` | `docker build -t NAME .` |
 
-**What it does:**
-- Creates a new orphan branch
-- Commits all current files
-- Deletes the main branch
-- Renames the orphan branch to main
-- Force pushes to origin
+---
 
-### autosave-git-recursively.py
-Recursively searches for all git repositories in child directories and automatically commits and pushes them with a timestamp.
+## Kubernetes Shortcuts (26 commands)
 
-**Usage:**
-```bash
-python3 autosave-git-recursively.py
-```
+| Command | What it does |
+|---------|-------------|
+| `k` | `kubectl` |
+| `kgp` | `kubectl get pods` |
+| `kgpa` | `kubectl get pods --all-namespaces` |
+| `kgs` | `kubectl get svc` |
+| `kgn` | `kubectl get nodes` |
+| `kgd` | `kubectl get deployments` |
+| `kgi` | `kubectl get ingress` |
+| `kgns` | `kubectl get namespaces` |
+| `kga` | `kubectl get all` |
+| `kdp` | `kubectl describe pod` |
+| `kds` | `kubectl describe svc` |
+| `kdd` | `kubectl describe deployment` |
+| `kl POD` | `kubectl logs -f POD` |
+| `klp POD` | Previous container logs |
+| `kex POD` | `kubectl exec -it POD -- bash` |
+| `kaf FILE` | `kubectl apply -f FILE` |
+| `kdf FILE` | `kubectl delete -f FILE` |
+| `kctx` | List kube contexts |
+| `kuse CTX` | Switch kube context |
+| `kns NS` | Set default namespace |
+| `kpf` | `kubectl port-forward` |
+| `kscale DEP N` | Scale deployment to N replicas |
+| `krollout DEP` | Check rollout status |
+| `krestart DEP` | Restart a deployment |
+| `ktop` | Pod resource usage |
+| `ktopn` | Node resource usage |
 
-Commits are made with the message: `Autosaving... [timestamp]`
+---
 
-## Shell History Utilities
+## AWS CLI Shortcuts (15 commands)
 
-### h
-**Command:** `history | grep $1`
+| Command | What it does |
+|---------|-------------|
+| `awsid` | `aws sts get-caller-identity` |
+| `awsls` | `aws s3 ls` -- list S3 buckets |
+| `awscp` | `aws s3 cp` -- copy to S3 |
+| `awssync` | `aws s3 sync` -- sync dir to S3 |
+| `awsec2` | List EC2 instances (table) |
+| `awsecr [region]` | ECR docker login |
+| `awslam` | List Lambda functions |
+| `awslog LOG_GROUP` | Tail CloudWatch logs |
+| `awseb` | List Elastic Beanstalk environments |
+| `awscf` | List CloudFormation stacks |
+| `awseks` | List EKS clusters |
+| `awsrds` | List RDS instances |
+| `awsssm INSTANCE` | SSM session to EC2 |
+| `awswho` | Show current IAM user |
+| `awsregions` | List all AWS regions |
 
-Grep your shell history on the fly!
+---
 
-**Usage:**
-```bash
-h searchterm
-```
+## GCP / gcloud Shortcuts (15 commands)
 
-**Example:**
-```bash
-h docker  # Shows all history entries containing "docker"
-```
+| Command | What it does |
+|---------|-------------|
+| `gcpid` | Show current GCP project |
+| `gcpset PROJECT` | Set GCP project |
+| `gcpls` | List GCE instances |
+| `gcpssh INSTANCE` | SSH into GCE instance |
+| `gcpgke` | List GKE clusters |
+| `gcpgkecreds CLUSTER` | Get GKE kubeconfig |
+| `gcpbq` | List BigQuery datasets |
+| `gcpgsutil` | List GCS buckets |
+| `gcpcp` | Copy file to GCS |
+| `gcpsync` | Sync directory to GCS |
+| `gcprun` | List Cloud Run services |
+| `gcpfn` | List Cloud Functions |
+| `gcpsql` | List Cloud SQL instances |
+| `gcplog` | Read GCP logs |
+| `gcpauth` | `gcloud auth login` |
 
-### hl
-**History-grep "I'm feeling lucky" prompt**
+---
 
-Finds the penultimate match from history and prompts you to execute it.
+## Terraform Shortcuts (11 commands)
 
-**Usage:**
-```bash
-hl searchterm
-```
+| Command | What it does |
+|---------|-------------|
+| `tf` | `terraform` |
+| `tfi` | `terraform init` |
+| `tfp` | `terraform plan` |
+| `tfa` | `terraform apply` |
+| `tfaa` | `terraform apply -auto-approve` |
+| `tfd` | `terraform destroy` |
+| `tfs` | `terraform state list` |
+| `tfo` | `terraform output` |
+| `tfv` | `terraform validate` |
+| `tff` | `terraform fmt -recursive` |
+| `tfw` | `terraform workspace list` |
 
-The script will:
-1. Find the second-to-last history match
-2. Display it
-3. Prompt you to press Enter to execute or Ctrl+C to cancel
+---
 
-## File Management Utilities
+## Helm / Ansible / Vagrant (7 commands)
 
-### ds-store-duster
-Recursively finds and removes all `.DS_Store` files (macOS metadata files) from the current directory and subdirectories.
+| Command | What it does |
+|---------|-------------|
+| `hup` | `helm upgrade --install` |
+| `hls` | `helm list` |
+| `hdel` | `helm uninstall` |
+| `ans` | `ansible-playbook` |
+| `vup` | `vagrant up` |
+| `vsh` | `vagrant ssh` |
+| `vhalt` | `vagrant halt` |
 
-**Usage:**
-```bash
-./ds-store-duster
-```
+---
 
-### dust-kash
-Recursively finds and removes all `.kash` cache files created by the kash decorator.
+## npm / yarn / pnpm (30 commands)
 
-**Usage:**
-```bash
-./dust-kash
-```
+| Command | What it does |
+|---------|-------------|
+| `ni` | `npm install` |
+| `nid` | `npm install --save-dev` |
+| `nig` | `npm install -g` |
+| `nrd` | `npm run dev` |
+| `nrb` | `npm run build` |
+| `nrs` | `npm run start` |
+| `nrt` | `npm run test` |
+| `nrl` | `npm run lint` |
+| `nls` | `npm list --depth=0` |
+| `nout` | `npm outdated` |
+| `nup` | `npm update` |
+| `naf` | `npm audit fix` |
+| `ncc` | `npm cache clean --force` |
+| `ninit` | `npm init -y` |
+| `nx` | `npx` |
+| `yi` | `yarn install` |
+| `ya` | `yarn add` |
+| `yad` | `yarn add --dev` |
+| `yrd` | `yarn dev` |
+| `yrb` | `yarn build` |
+| `yrs` | `yarn start` |
+| `yrt` | `yarn test` |
+| `yga` | `yarn global add` |
+| `pi` | `pnpm install` |
+| `pad` | `pnpm add` |
+| `padd` | `pnpm add -D` |
+| `prd` | `pnpm dev` |
+| `prb` | `pnpm build` |
+| `prs` | `pnpm start` |
+| `prt` | `pnpm test` |
 
-### date-file-maker
-Creates an empty text file with a UTC timestamp as the filename.
+---
 
-**⚠️ Script Issue:** The script currently has a bug with conflicting date format options (`-R` and a custom format string). 
+## Python / pip / venv (20 commands)
 
-**To fix:** Edit the script and change line 3 from:
-```bash
-touch "$(date -u -R '+%m-%d-%y-%H:%M:%S').txt"
-```
-to:
-```bash
-touch "$(date -u '+%m-%d-%y-%H:%M:%S').txt"
-```
+| Command | What it does |
+|---------|-------------|
+| `py` | `python3` |
+| `py2` | `python2` |
+| `pip3i` | `pip3 install` |
+| `pipr` | `pip3 install -r requirements.txt` |
+| `pipf` | `pip3 freeze > requirements.txt` |
+| `pipl` | `pip3 list` |
+| `pipo` | `pip3 list --outdated` |
+| `pipu` | `pip3 install --upgrade` |
+| `pipun` | `pip3 uninstall` |
+| `venv` | `python3 -m venv venv` |
+| `va` | `source venv/bin/activate` |
+| `vd` | `deactivate` |
+| `pt` | `pytest` |
+| `ptv` | `pytest -v` |
+| `ptc` | `pytest --cov` |
+| `pym` | `python3 -m MODULE` |
+| `ipy` | `ipython` |
+| `jnb` | `jupyter notebook` |
+| `jlab` | `jupyter lab` |
+| `pide` | `pip3 install -e .` |
 
-**Usage (after fix):**
-```bash
-./date-file-maker
-```
+---
 
-**Output:** Creates a file like `12-19-25-14:35:22.txt`
+## systemd / Services (15 commands)
 
-### swap
-Prints a bash function that swaps the names of two files.
+| Command | What it does |
+|---------|-------------|
+| `scs` | `sudo systemctl status` |
+| `scstart` | `sudo systemctl start` |
+| `scstop` | `sudo systemctl stop` |
+| `screstart` | `sudo systemctl restart` |
+| `scenable` | `sudo systemctl enable` |
+| `scdisable` | `sudo systemctl disable` |
+| `screload` | `sudo systemctl reload` |
+| `scdaemon` | `sudo systemctl daemon-reload` |
+| `jctl` | `sudo journalctl -f` |
+| `jctlu` | `sudo journalctl -u UNIT` |
+| `jctlt` | `sudo journalctl --since today` |
+| `scls` | `systemctl list-units --type=service` |
+| `scfail` | `systemctl --failed` |
+| `scactive` | `systemctl is-active` |
+| `scenabled` | `systemctl is-enabled` |
 
-**Usage:**
-```bash
-# The script prints the function code, which you can:
-# 1. Copy and paste into your terminal, or
-# 2. Add to your .bashrc/.zshrc, or
-# 3. Evaluate directly:
-eval "$(./swap)"
+---
 
-# Then use it:
-swap file1.txt file2.txt
-```
+## Networking (20 commands)
 
-**The function it provides:**
-```bash
-swap () {
-  tmp_name=$(TMPDIR=$(dirname -- "$1") mktemp) &&
-  mv -f -- "$1" "$tmp_name" &&
-  mv -f -- "$2" "$1" &&
-  mv -f -- "$tmp_name" "$2"
-}
-```
+| Command | What it does |
+|---------|-------------|
+| `curlt` | `curl` with DNS/connect/TLS timing breakdown |
+| `curlh` | `curl -I` -- show HTTP headers |
+| `curlj URL DATA` | `curl -X POST` with JSON body |
+| `wgetm` | `wget --mirror` -- mirror a site |
+| `myip` | Show public IP (`curl ifconfig.me`) |
+| `localip` | Show local IP address |
+| `ping5` | `ping -c 5` |
+| `digs` | `dig +short` -- quick DNS lookup |
+| `digr` | `dig -x` -- reverse DNS |
+| `nsl` | `nslookup` |
+| `trace` | `traceroute` |
+| `nstat` | `netstat -tlnp` -- listening ports |
+| `ssl` | `ss -tlnp` -- listening ports |
+| `conns` | `ss -s` -- connection summary |
+| `portcheck HOST PORT` | Check if a port is open (via `nc`) |
+| `speedtest` | Internet speed test |
+| `ifls` | List network interfaces |
+| `headers` | `curl -sI` -- HTTP headers for URL |
+| `dlf` | `curl -L -O` -- download file |
+| `whois` | Whois lookup |
 
-### rename_recursively.py
-Recursively renames all files in a directory to their last 5 characters. Files with names shorter than 5 characters will keep their full filename.
+---
 
-**⚠️ Use with extreme caution** - This destructively renames all files and can make them hard to identify!
+## Redis (12 commands)
 
-**Usage:**
-```bash
-python3 rename_recursively.py /path/to/directory
-```
+| Command | What it does |
+|---------|-------------|
+| `rd` | `redis-cli` |
+| `rdping` | `redis-cli ping` |
+| `rdinfo` | `redis-cli info` |
+| `rdmon` | `redis-cli monitor` |
+| `rdkeys` | `redis-cli keys "*"` |
+| `rdget` | `redis-cli get KEY` |
+| `rdset` | `redis-cli set KEY VAL` |
+| `rddel` | `redis-cli del KEY` |
+| `rdflush` | `redis-cli flushdb` |
+| `rdflushall` | `redis-cli flushall` |
+| `rdsize` | `redis-cli dbsize` |
+| `rdshut` | `redis-cli shutdown` |
 
-**Example:**
-- `my_document.pdf` → `t.pdf` (last 5 chars: "t.pdf")
-- `hello.txt` → `o.txt` (last 5 chars: "o.txt")
-- `ab.py` → `ab.py` (only 5 chars total, keeps full name)
+---
 
-### file_ext_and_cnt
-Prints a count of files grouped by their extension.
+## PostgreSQL (15 commands)
 
-**Usage:**
-```bash
-./file_ext_and_cnt
-```
+| Command | What it does |
+|---------|-------------|
+| `pg` | `psql` |
+| `pgsu` | `sudo -u postgres psql` |
+| `pgls` | `psql -l` -- list databases |
+| `pgdb DB [user]` | Connect to a database |
+| `pgdump` | `pg_dump` |
+| `pgrestore` | `pg_restore` |
+| `pgcreate` | `createdb` |
+| `pgdrop` | `dropdb` |
+| `pgroles` | List PostgreSQL roles |
+| `pgconn` | Show active connections |
+| `pgsize` | Show table sizes |
+| `pgrunning` | Show running queries |
+| `pgvacuum` | Run `VACUUM FULL` |
+| `pgstatus` | PostgreSQL service status |
+| `pgver` | `psql --version` |
 
-Executes: `find . -type f | sed -n 's/..*\.//p' | sort | uniq -c`
+---
 
-### pdf-to-svg
-Batch converts all PDF files in the current directory to SVG format using Inkscape.
+## nginx (11 commands)
 
-**Requirements:** Inkscape must be installed.
+| Command | What it does |
+|---------|-------------|
+| `ngt` | `nginx -t` -- test config |
+| `ngr` | `nginx -s reload` |
+| `ngstart` | Start nginx |
+| `ngstop` | Stop nginx |
+| `ngrestart` | Restart nginx |
+| `ngstatus` | nginx service status |
+| `ngedit` | Edit `/etc/nginx/nginx.conf` |
+| `ngacc` | Tail nginx access log |
+| `ngerr` | Tail nginx error log |
+| `ngsites` | List sites-enabled |
+| `ngconf` | Dump full nginx config |
 
-**Usage:**
-```bash
-./pdf-to-svg
-```
+---
 
-### tru_shufl
-A true random shuffle implementation using Python's secrets module (cryptographically strong).
+## Cybersecurity / Network Recon (40 commands)
 
-**Usage:**
-```bash
-python3 tru_shufl
-```
+| Command | What it does |
+|---------|-------------|
+| **Telnet / Netstat** | |
+| `tn` | `telnet HOST` |
+| `tnp HOST PORT` | Telnet to host:port |
+| `nsa` | `netstat -an` -- all connections |
+| `nstcp` | `netstat -tlnp` -- listening TCP |
+| `nsudp` | `netstat -ulnp` -- listening UDP |
+| `nsproc` | `netstat -tulnp` -- with process info |
+| `nsest` | Netstat established connections |
+| **Nmap** | |
+| `nquick` | `nmap -F` -- quick scan (top 100 ports) |
+| `nfull` | `nmap -p-` -- full TCP port scan |
+| `nsvc` | `nmap -sV` -- service version detection |
+| `nos` | `nmap -O` -- OS detection (root) |
+| `nagg` | `nmap -A` -- aggressive scan |
+| `nsyn` | `nmap -sS` -- stealth SYN scan (root) |
+| `nudp` | `nmap -sU` -- UDP scan (root) |
+| `nsweep` | `nmap -sn` -- ping sweep subnet |
+| `nvuln` | `nmap --script vuln` -- vulnerability scan |
+| `nports HOST PORTS` | Scan specific ports |
+| `nscript` | `nmap -sC` -- scan with default scripts |
+| `nmapxml HOST [file]` | Nmap with XML output |
+| **Netcat** | |
+| `ncl PORT` | `nc -lvp` -- listen on port |
+| `ncs HOST PORT` | `nc` -- connect to host:port |
+| `ncscan HOST RANGE` | Port scan with netcat (no nmap needed) |
+| **SSL/TLS** | |
+| `sslcheck DOMAIN` | Check SSL certificate dates/subject/issuer |
+| `sslchain DOMAIN` | Show full SSL certificate chain |
+| `sslciphers DOMAIN` | Enumerate SSL ciphers |
+| **Recon** | |
+| `bannergrab HOST PORT` | Banner grab via netcat |
+| `myports` | Show open ports on this host |
+| `arptable` | Show ARP table |
+| `routes` | Show routing table |
+| `fwrules` | Show firewall rules (iptables/pf) |
+| **Packet Capture** | |
+| `sniff` | `tcpdump -i any` (root) |
+| `tcapt IFACE [file]` | Capture packets to pcap file |
+| `tcport PORT` | tcpdump filter by port |
+| `tchost HOST` | tcpdump filter by host |
+| **Security Checks** | |
+| `secheaders URL` | Check HTTP security headers |
+| `hashpw PASSWORD` | Hash password with SHA-512 |
+| `genpw [length]` | Generate random password (default 32) |
+| `worldwrite` | Find world-writable files |
+| `findsuid` | Find SUID binaries |
+| `whoson` | Show logged-in users |
 
-Generates a shuffled list of numbers from 1 to 52 (useful for card games, etc.)
+---
 
-## Development Utilities
+## Misc CLI Tools (22 commands)
 
-### blk
-Runs Python Black formatter on a specified file.
+| Command | What it does |
+|---------|-------------|
+| `duh` | `du -sh * \| sort -rh` -- disk usage sorted |
+| `dfh` | `df -h` -- disk free |
+| `fmem` | `free -h` -- memory usage |
+| `cpuinfo` | CPU information |
+| `w2` | `watch -n 2` -- watch command every 2s |
+| `lsofp` | `lsof -c PROCESS` |
+| `killname` | `pkill -f NAME` |
+| `hist` | Last 50 history entries |
+| `cl` | `clear` |
+| `reload` | Reload shell config |
+| `erc` | Edit shell RC file |
+| `path` | Show `$PATH` (one per line) |
+| `cx` | `chmod +x FILE` |
+| `epoch` | Print Unix timestamp |
+| `isodate` | Print ISO 8601 timestamp |
+| `uuid` | Generate UUID |
+| `b64e` | Base64 encode |
+| `b64d` | Base64 decode |
+| `sha256` | SHA256 hash of file |
+| `md5sum` | MD5 hash of file |
 
-**Usage:**
-```bash
-blk filename.py
-```
+---
 
-### git-goblin.py
-Generates shell alias commands for git-goblin scripts. Pipe the output into your `.bashrc` or `.zshrc` to quickly initialize git-goblin aliases.
+## Shell & File Utilities
 
-**Usage:**
-```bash
-python3 git-goblin.py >> ~/.zshrc
-source ~/.zshrc
-```
+| Command | What it does |
+|---------|-------------|
+| `h term` | Grep shell history |
+| `hl term` | History "I'm feeling lucky" -- run penultimate match |
+| `dst` | Remove all `.DS_Store` files recursively |
+| `dust-kash` | Remove all `.kash` cache files recursively |
+| `date-file-maker` | Create a UTC-timestamped `.txt` file |
+| `swap f1 f2` | Swap the names of two files |
+| `mkcd dir` | `mkdir -p` + `cd` in one step |
+| `extract archive` | Universal extractor (tar/gz/zip/7z/rar) |
+| `tre [path]` | `tree` with `.git`/`node_modules` ignored |
+| `ports` | Show listening TCP ports |
+| `sizeof path` | Human-readable size of file or dir |
+| `blk file.py` | Run Python Black formatter |
+| `serve [port]` | Quick HTTP server (default port 8000) |
+| `jql file.json` | Pretty-print JSON through `jq` + `less` |
+| `rmdstore` | Remove `.DS_Store` files with feedback |
+| `rmnodemodules` | Interactively remove `node_modules` dirs |
+| `countext` | Count files by extension |
+| `findlarge [size]` | Find files larger than N (default 10M) |
 
-### repoinspector.py
-Fetches and displays all open issues across a GitHub user's repositories.
-
-**Requirements:** `requests` library (`pip install requests`)
-
-**Usage:**
-```bash
-python3 repoinspector.py [username]
-```
-
-**Example:**
-```bash
-python3 repoinspector.py juleshenry
-```
-
-If no username is provided, defaults to "juleshenry".
-
-### repolist.sh
-Lists all GitHub repositories for a user (requires GitHub CLI).
-
-**Usage:**
-```bash
-./repolist.sh
-```
-
-Executes: `gh repo list juleshenry --limit 1000`
+---
 
 ## Python Utilities
 
 ### kash
-**A Python decorator for caching function results based on parameters.**
+A Python decorator for caching function results to `.kash` files (JSON).
 
-The `kash` decorator caches function results to `.kash` files (JSON format) based on the function's arguments. When the function is called again with the same parameters, the cached result is returned instead of re-executing the function.
-
-**How it works:**
-1. First call with specific parameters: Function executes and result is cached to `filename.kash`
-2. Subsequent calls with same parameters: Cached result is returned immediately
-3. Different parameters (int, str, or float): Function executes and new result is cached with different key
-4. **Note:** Only int, str, and float arguments affect the cache key; other types are ignored
-
-**Basic Usage:**
 ```python
 from kash import kash
 
-@kash("my_cache")  # Creates my_cache.kash file
+@kash("my_cache")
 def expensive_function(x, y):
-    # Some time-consuming operation
-    result = x ** y
-    return result
+    return x ** y
 
-# First call - executes function
-print(expensive_function(2, 10))  # Computes and caches
-
-# Second call with same args - uses cache
-print(expensive_function(2, 10))  # Returns cached result instantly
-
-# Different args - executes function
-print(expensive_function(3, 10))  # Computes and caches new result
+expensive_function(2, 10)  # computes and caches
+expensive_function(2, 10)  # returns cached result
 ```
 
-**Class Methods:**
-```python
-class MyClass:
-    @kash("class_cache")
-    def expensive_method(self, param):
-        # Heavy computation
-        return result
+Cache key uses `int`, `str`, and `float` args only. Clear cache with `dust-kash`.
+
+### autosave-git-recursively.py
+Walks child directories, finds all `.git` repos, auto-commits and pushes each.
+
+```bash
+python3 autosave-git-recursively.py
 ```
 
-**Cache Management:**
-- Cache files are stored as JSON with `.kash` extension
-- To clear cache: delete the `.kash` files or use `./dust-kash`
-- **Cache key limitation:** Only int, str, and float arguments are used to generate cache keys
-- Other argument types (bool, list, dict, objects) are filtered out and won't affect caching
-- This means functions called with different complex objects will incorrectly return the same cached result
+### repoinspector.py
+Fetches open issues across a GitHub user's repos. Requires `requests`.
 
-**Use Cases:**
-- Expensive computations with repeated inputs
-- API calls with same parameters
-- Data processing pipelines
-- Machine learning model predictions
+```bash
+python3 repoinspector.py [username]
+```
+
+### add_mit_license.py
+Adds MIT LICENSE (with croc-shades ASCII art) to all of a user's GitHub repos.
+
+```bash
+python3 add_mit_license.py [--dry-run]
+```
+
+### rename_recursively.py
+Recursively renames files to their last 5 characters. **Destructive**.
+
+```bash
+python3 rename_recursively.py /path/to/dir
+```
+
+---
+
+## Full Command Reference
+
+Run `gg-help` for the complete reference table with all 380+ commands:
+
+```bash
+gg-help             # show everything
+gg-help docker      # filter to docker commands
+gg-help kubernetes  # filter to k8s commands
+gg-help aws         # filter to AWS commands
+gg-help terraform   # filter to terraform commands
+gg-help npm         # filter to npm/yarn/pnpm
+gg-help python      # filter to python/pip
+gg-help systemd     # filter to systemd/services
+gg-help redis       # filter to redis
+gg-help postgres    # filter to postgresql
+gg-help nginx       # filter to nginx
+gg-help nmap        # filter to nmap/security
+gg-help ssl         # filter to SSL/TLS
+gg-help tcpdump     # filter to packet capture
+```
+
+---
 
 ## License
 See [LICENSE](LICENSE) file for details.
-
-# mega_script.sh
-**100 Useful Git Aliases and File Management Routines!** 🚀
-
-A comprehensive collection of Git shortcuts and utilities organized into categories:
-- **Basic Git Operations** (15 aliases): Quick commands for add, commit, push, pull
-- **Branching** (15 aliases): Branch creation, deletion, switching, and merging
-- **Logging & History** (15 aliases): Beautiful logs, blame, reflog, and search
-- **Diff & Inspection** (15 aliases): Compare changes, inspect files, view contributors
-- **Stashing** (10 aliases): Save and restore work in progress
-- **Remote Operations** (10 aliases): Manage remotes, fetch, clone
-- **Reset & Clean** (10 aliases): Undo changes, clean workspace
-- **Advanced Operations** (10 aliases): Cherry-pick, rebase, tags
-- **25+ Utility Functions**: Complex workflows like `ginit()`, `gquick()`, `gsyncfork()`, `gstats()`
-- **File Management**: Remove .DS_Store, find large files, backup repos
-
-## Usage
-Source the script in your shell:
-```bash
-source mega_script.sh
-```
-
-Or add to your `~/.bashrc` or `~/.zshrc`:
-```bash
-echo "source $(pwd)/mega_script.sh" >> ~/.bashrc
-source ~/.bashrc
-```
-
-## Examples
-- `gs` - Quick git status
-- `gacp "commit message"` - Add, commit, and push in one command
-- `glog` - Beautiful commit history graph
-- `ginfo` - Show repository information
-- `galias` - List all available Git aliases
-- `gquick` - Commit and push with automatic timestamp
-
