@@ -72,6 +72,11 @@ dust-kash() {
     find . -type f -name '*.kash' -exec rm {} +
 }
 
+# cruft: Find files larger than 1G (root)
+cruft() {
+    find / -type f -size +1G -exec du -h {} + 2>/dev/null | sort -rh
+}
+
 # date-file-maker: Create a UTC timestamped text file
 date-file-maker() {
     touch "$(date -u '+%m-%d-%y-%H:%M:%S').txt"
@@ -105,6 +110,7 @@ export -f h
 export -f hl
 export -f dst
 export -f dust-kash
+export -f cruft
 export -f date-file-maker
 export -f swap
 export -f blk

@@ -221,6 +221,14 @@ Recursively finds and removes all `.kash` cache files created by the kash decora
 ./dust-kash
 ```
 
+### cruft
+Finds files larger than 1G from the root filesystem, suppressing permission errors, and sorts results by size.
+
+**Usage:**
+```bash
+cruft
+```
+
 ### date-file-maker
 Creates an empty text file with a UTC timestamp as the filename.
 
@@ -450,4 +458,3 @@ source ~/.bashrc
 - `ginfo` - Show repository information
 - `galias` - List all available Git aliases
 - `gquick` - Commit and push with automatic timestamp
-
