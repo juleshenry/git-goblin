@@ -1191,8 +1191,12 @@ G() {
 # EXPORT ALL FUNCTIONS
 # ============================================================================
 
-export -f gg gclo jclo presto gwip gunwip gpristine gtag gpr gdiff-fancy
-export -f h hl
-export -f dst dust-kash date-file-maker swap mkcd extract tre ports sizeof
-export -f blk serve jql
-export -f G gg-help
+# export -f is bash-only; in zsh, sourced functions are already available.
+# Only use export -f when running under bash.
+if [[ -n "$BASH_VERSION" ]]; then
+    export -f gg gclo jclo presto gwip gunwip gpristine gtag gpr gdiff-fancy
+    export -f h hl
+    export -f dst dust-kash date-file-maker swap mkcd extract tre ports sizeof
+    export -f blk serve jql
+    export -f G gg-help
+fi
