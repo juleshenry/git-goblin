@@ -1,79 +1,279 @@
 #!/bin/bash
 # setup-git-goblin: Automated setup script for git-goblin utilities
-# ... (existing content) ...
+# Installs git-goblin into your shell (bash or zsh) by sourcing the
+# function and alias files from your RC file.
+#
+# Usage:
+#   ./setup-git-goblin           # install
+#   ./setup-git-goblin --remove  # uninstall
 
-# Check if git-goblin source line already exists
-SOURCE_LINE="source \"$SCRIPT_DIR/git-goblin-functions.sh\""
-MEGA_SCRIPT_LINE="source \"$SCRIPT_DIR/mega_script.sh\""
+set -euo pipefail
 
-# Check for both old aliases and new source line
-HAS_OLD_ALIASES=false
-HAS_SOURCE_LINE=false
-HAS_MEGA_SCRIPT_LINE=false
+# ============================================================================
+# Colors & helpers
+# ============================================================================
+
+_red='\033[0;31m'
+_green='\033[0;32m'
+_yellow='\033[0;33m'
+_cyan='\033[0;36m'
+_bold='\033[1m'
+_dim='\033[2m'
+_reset='\033[0m'
+
+print_ok()   { echo -e "${_green}${_bold}[ok]${_reset} $*"; }
+print_info() { echo -e "${_cyan}[..]${_reset} $*"; }
+print_warn() { echo -e "${_yellow}[!!]${_reset} $*"; }
+print_err()  { echo -e "${_red}[ERR]${_reset} $*" >&2; }
+
+# ============================================================================
+# Resolve script directory (works even when symlinked)
+# ============================================================================
+
+resolve_dir() {
+    local source="${BASH_SOURCE[0]}"
+    while [ -L "$source" ]; do
+        local dir
+        dir=$(cd -P "$(dirname "$source")" && pwd)
+        source=$(readlink "$source")
+        [[ "$source" != /* ]] && source="$dir/$source"
+    done
+    cd -P "$(dirname "$source")" && pwd
+}
+
+SCRIPT_DIR="$(resolve_dir)"
+
+# ============================================================================
+# Detect shell RC file
+# ============================================================================
+
+detect_rc_file() {
+    local shell_name
+    shell_name=$(basename "$SHELL")
+
+    case "$shell_name" in
+        zsh)  echo "${HOME}/.zshrc" ;;
+        bash)
+            # macOS uses .bash_profile for login shells
+            if [ -f "${HOME}/.bash_profile" ] && [[ "$OSTYPE" == darwin* ]]; then
+                echo "${HOME}/.bash_profile"
+            else
+                echo "${HOME}/.bashrc"
+            fi
+            ;;
+        *)
+            print_warn "Unknown shell: $shell_name -- defaulting to ~/.bashrc"
+            echo "${HOME}/.bashrc"
+            ;;
+    esac
+}
+
+RC_FILE="$(detect_rc_file)"
+
+# ============================================================================
+# Marker lines (used to find our block in the RC file)
+# ============================================================================
+
+MARKER_START="# git-goblin bash functions - START"
+MARKER_END="# git-goblin bash functions - END"
+SOURCE_FUNCTIONS="source \"${SCRIPT_DIR}/git-goblin-functions.sh\""
+SOURCE_MEGA="source \"${SCRIPT_DIR}/mega_script.sh\""
+
+# ============================================================================
+# Uninstall mode
+# ============================================================================
+
+uninstall() {
+    print_info "Removing git-goblin from ${RC_FILE}..."
+
+    if ! grep -q "$MARKER_START" "$RC_FILE" 2>/dev/null; then
+        print_warn "git-goblin block not found in ${RC_FILE}. Nothing to remove."
+        return 0
+    fi
+
+    # Back up before modifying
+    local backup="${RC_FILE}.bak.$(date +%Y%m%d-%H%M%S)"
+    cp "$RC_FILE" "$backup"
+    print_info "Backup created: ${backup}"
+
+    # Remove the block between markers (inclusive)
+    local tmp
+    tmp=$(mktemp)
+    awk "
+        /${MARKER_START//\//\\/}/  { skip=1; next }
+        /${MARKER_END//\//\\/}/    { skip=0; next }
+        !skip                      { print }
+    " "$RC_FILE" > "$tmp"
+    mv "$tmp" "$RC_FILE"
+
+    print_ok "git-goblin removed from ${RC_FILE}."
+    print_info "Reload your shell:  source ${RC_FILE}"
+    return 0
+}
+
+if [[ "${1:-}" == "--remove" || "${1:-}" == "--uninstall" ]]; then
+    uninstall
+    exit 0
+fi
+
+# ============================================================================
+# Banner
+# ============================================================================
+
+echo ""
+echo -e "${_bold}${_green}  git-goblin installer${_reset}"
+echo -e "${_dim}  ────────────────────────────────────────${_reset}"
+echo ""
+
+# ============================================================================
+# Verify required files exist
+# ============================================================================
+
+missing=0
+for f in git-goblin-functions.sh mega_script.sh; do
+    if [ ! -f "${SCRIPT_DIR}/${f}" ]; then
+        print_err "Required file not found: ${SCRIPT_DIR}/${f}"
+        missing=1
+    fi
+done
+
+if [ "$missing" -eq 1 ]; then
+    print_err "Aborting. Please make sure you're running this from the git-goblin directory."
+    exit 1
+fi
+
+print_ok "Found git-goblin-functions.sh"
+print_ok "Found mega_script.sh"
+
+# ============================================================================
+# Detect shell
+# ============================================================================
+
+SHELL_NAME=$(basename "$SHELL")
+print_info "Detected shell: ${_bold}${SHELL_NAME}${_reset}"
+print_info "RC file: ${_bold}${RC_FILE}${_reset}"
+
+# ============================================================================
+# Back up RC file
+# ============================================================================
+
+if [ -f "$RC_FILE" ]; then
+    BACKUP="${RC_FILE}.bak.$(date +%Y%m%d-%H%M%S)"
+    cp "$RC_FILE" "$BACKUP"
+    print_ok "Backed up ${RC_FILE} -> ${BACKUP}"
+else
+    print_info "${RC_FILE} does not exist yet -- will create it."
+    touch "$RC_FILE"
+fi
+
+# ============================================================================
+# Migrate old alias-based config (if present)
+# ============================================================================
 
 if grep -q "# git-goblin aliases - START" "$RC_FILE" 2>/dev/null; then
-    HAS_OLD_ALIASES=true
+    print_warn "Found old git-goblin alias block. Removing it..."
+    tmp=$(mktemp)
+    awk '
+        /# git-goblin aliases - START/ { skip=1; next }
+        /# git-goblin aliases - END/   { skip=0; next }
+        !skip                          { print }
+    ' "$RC_FILE" > "$tmp"
+    mv "$tmp" "$RC_FILE"
+    print_ok "Old alias block removed."
 fi
 
-if grep -q "git-goblin-functions.sh" "$RC_FILE" 2>/dev/null; then
-    HAS_SOURCE_LINE=true
+# ============================================================================
+# Remove existing git-goblin function block (for clean re-install)
+# ============================================================================
+
+if grep -q "$MARKER_START" "$RC_FILE" 2>/dev/null; then
+    print_info "Existing git-goblin block found -- replacing it..."
+    tmp=$(mktemp)
+    awk "
+        /${MARKER_START//\//\\/}/  { skip=1; next }
+        /${MARKER_END//\//\\/}/    { skip=0; next }
+        !skip                      { print }
+    " "$RC_FILE" > "$tmp"
+    mv "$tmp" "$RC_FILE"
 fi
 
-if grep -q "mega_script.sh" "$RC_FILE" 2>/dev/null; then
-    HAS_MEGA_SCRIPT_LINE=true
-fi
+# ============================================================================
+# Write source block to RC file
+# ============================================================================
 
-# Handle old aliases if they exist
-if [ "$HAS_OLD_ALIASES" = true ]; then
-# ... (existing content) ...
-    fi
-fi
+{
+    echo ""
+    echo "$MARKER_START"
+    echo "# Added by setup-git-goblin on $(date)"
+    echo "$SOURCE_FUNCTIONS"
+    echo "$SOURCE_MEGA"
+    echo "$MARKER_END"
+    echo ""
+} >> "$RC_FILE"
 
-# Add source line to RC file if not already present
-if [ "$HAS_SOURCE_LINE" = true ] && [ "$HAS_MEGA_SCRIPT_LINE" = true ]; then
-    print_info "Git Goblin bash functions are already configured in $RC_FILE"
-    print_info "No changes needed."
-else
-    print_info "Adding git-goblin source line to $RC_FILE..."
-    
-    {
-        echo ""
-        echo "# git-goblin bash functions - START"
-        echo "# Added by setup-git-goblin on $(date)"
-        echo "# You can source the main functions file (recommended):"
-        if [ "$HAS_SOURCE_LINE" = false ]; then
-            echo "$SOURCE_LINE"
-        fi
-        if [ "$HAS_MEGA_SCRIPT_LINE" = false ]; then
-            echo "$MEGA_SCRIPT_LINE"
-        fi
-        echo "# Or source individual scripts as needed:"
-        echo "# source \"$SCRIPT_DIR/hl\""
-        echo "# git-goblin bash functions - END"
-        echo ""
-    } >> "$RC_FILE"
-    
-    print_success "Source line added to $RC_FILE"
-fi
+print_ok "Source lines added to ${RC_FILE}"
 
-# Make all scripts executable (for both direct execution and sourcing)
+# ============================================================================
+# Make all scripts executable
+# ============================================================================
+
 print_info "Making scripts executable..."
-# ... (existing content) ...
+chmod_count=0
+
+# Shell scripts (no extension -- standalone commands)
+for f in gg gclo jclo h hl presto blk dst swap setup-git-goblin; do
+    if [ -f "${SCRIPT_DIR}/${f}" ]; then
+        chmod +x "${SCRIPT_DIR}/${f}"
+        chmod_count=$((chmod_count + 1))
+    fi
+done
+
+# .sh files
+while IFS= read -r -d '' file; do
+    chmod +x "$file"
+    chmod_count=$((chmod_count + 1))
+done < <(find "$SCRIPT_DIR" -maxdepth 1 -name "*.sh" -type f -print0 2>/dev/null)
+
+# .py files
+while IFS= read -r -d '' file; do
+    chmod +x "$file"
     chmod_count=$((chmod_count + 1))
 done < <(find "$SCRIPT_DIR" -maxdepth 1 -name "*.py" -type f -print0 2>/dev/null)
 
-# Make the functions file executable
-if [ -f "$SCRIPT_DIR/git-goblin-functions.sh" ]; then
-    chmod +x "$SCRIPT_DIR/git-goblin-functions.sh"
-    chmod_count=$((chmod_count + 1))
-fi
+print_ok "Made ${chmod_count} files executable"
 
-if [ -f "$SCRIPT_DIR/mega_script.sh" ]; then
-    chmod +x "$SCRIPT_DIR/mega_script.sh"
-    chmod_count=$((chmod_count + 1))
-fi
+# ============================================================================
+# Summary
+# ============================================================================
 
-print_success "Made $chmod_count files executable"
+# Count how many aliases + functions we just installed
+alias_count=$(grep -c '^alias ' "${SCRIPT_DIR}/mega_script.sh" 2>/dev/null || echo 0)
+func_count=$(grep -c '^[a-zA-Z_-]*()' "${SCRIPT_DIR}/mega_script.sh" 2>/dev/null || echo 0)
+gfunc_count=$(grep -c '^[a-zA-Z_-]*()' "${SCRIPT_DIR}/git-goblin-functions.sh" 2>/dev/null || echo 0)
+total=$((alias_count + func_count + gfunc_count))
 
-# Final instructions
-# ... (existing content) ...
+echo ""
+echo -e "${_bold}${_green}  Installation complete!${_reset}"
+echo -e "${_dim}  ────────────────────────────────────────${_reset}"
+echo ""
+echo -e "  ${_cyan}Shell:${_reset}      ${SHELL_NAME}"
+echo -e "  ${_cyan}RC file:${_reset}    ${RC_FILE}"
+echo -e "  ${_cyan}Commands:${_reset}   ~${total} aliases & functions"
+echo -e "  ${_cyan}Backup:${_reset}     ${BACKUP:-none}"
+echo ""
+echo -e "  ${_bold}Next steps:${_reset}"
+echo ""
+echo -e "    ${_green}1.${_reset} Reload your shell:"
+echo -e "       ${_dim}source ${RC_FILE}${_reset}"
+echo ""
+echo -e "    ${_green}2.${_reset} Try the G command:"
+echo -e "       ${_dim}G 'git status'${_reset}          # best-guess a shortcut"
+echo -e "       ${_dim}G${_reset}                       # interactive fuzzy finder"
+echo -e "       ${_dim}G -a 'mycmd' 'desc'${_reset}     # add your own shortcut"
+echo ""
+echo -e "    ${_green}3.${_reset} See all commands:"
+echo -e "       ${_dim}gg-help${_reset}                 # full reference table"
+echo -e "       ${_dim}gg-help docker${_reset}           # filter by section"
+echo ""
+echo -e "  ${_dim}To uninstall: ./setup-git-goblin --remove${_reset}"
+echo ""
