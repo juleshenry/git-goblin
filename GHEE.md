@@ -1,4 +1,4 @@
-# git-goblin
+# ghee
 
 Git Scripts that Get the Job Done!
 
@@ -13,17 +13,17 @@ Git Scripts that Get the Job Done!
 ### Quick Setup (Recommended)
 
 ```bash
-git clone https://github.com/juleshenry/git-goblin.git
-cd git-goblin
-chmod +x setup-git-goblin
-./setup-git-goblin
+git clone https://github.com/juleshenry/ghee.git
+cd ghee
+chmod +x setup-ghee
+./setup-ghee
 source ~/.bashrc  # or source ~/.zshrc
 ```
 
 ### One-Liner
 
 ```bash
-git clone https://github.com/juleshenry/git-goblin.git && cd git-goblin && chmod +x setup-git-goblin && ./setup-git-goblin && source ~/.bashrc
+git clone https://github.com/juleshenry/ghee.git && cd ghee && chmod +x setup-ghee && ./setup-ghee && source ~/.bashrc
 ```
 
 ### Manual Setup
@@ -31,8 +31,8 @@ git clone https://github.com/juleshenry/git-goblin.git && cd git-goblin && chmod
 If you prefer not to run the installer, add these two lines to your `~/.bashrc` or `~/.zshrc`:
 
 ```bash
-source /path/to/git-goblin/git-goblin-functions.sh
-source /path/to/git-goblin/mega_script.sh
+source /path/to/ghee/ghee-functions.sh
+source /path/to/ghee/mega_script.sh
 ```
 
 Then reload: `source ~/.bashrc`
@@ -42,24 +42,24 @@ Then reload: `source ~/.bashrc`
 - Detects your shell (bash or zsh) and finds the right RC file
 - Backs up your RC file before making any changes
 - Removes old alias-based configs if migrating from an earlier version
-- Adds source lines for `git-goblin-functions.sh` and `mega_script.sh`
+- Adds source lines for `ghee-functions.sh` and `mega_script.sh`
 - Makes all scripts executable
 
 ### Uninstall
 
 ```bash
-cd /path/to/git-goblin
-./setup-git-goblin --remove
+cd /path/to/ghee
+./setup-ghee --remove
 source ~/.bashrc
 ```
 
-This cleanly removes the git-goblin block from your RC file. Your backup is preserved.
+This cleanly removes the ghee block from your RC file. Your backup is preserved.
 
 ---
 
-## G -- The Git-Goblin Shell
+## G -- The Ghee Shell
 
-`G` is the brain of git-goblin. It has three modes:
+`G` is the brain of ghee. It has three modes:
 
 ### 1. Best-Guess Mode: `G 'command'`
 
@@ -275,12 +275,12 @@ G 'commit amend'  # -> gcam (git commit --amend -m MSG)
 
 ### 2. Add Mode: `G -a 'command' 'description'`
 
-Add your own custom shortcuts on the fly. They persist across sessions in `~/.git-goblin-custom`.
+Add your own custom shortcuts on the fly. They persist across sessions in `~/.ghee-custom`.
 
 ```bash
 G -a 'docker stats' 'Live container resource usage'
 # [ok] Added: docker stats -- Live container resource usage
-# [..] Saved to ~/.git-goblin-custom (persists across sessions).
+# [..] Saved to ~/.ghee-custom (persists across sessions).
 
 G -a 'npm run dev' 'Start local dev server'
 # [ok] Added: npm run dev -- Start local dev server
@@ -299,7 +299,7 @@ After adding, these show up in `G` lookups and interactive mode immediately.
 Launches a full-screen fuzzy-find TUI over every registered command:
 
 ```
-  G -- git-goblin shell  (380/380)
+  G -- ghee shell  (380/380)
   > docker|
 
   > dps              List running containers

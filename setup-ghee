@@ -1,11 +1,11 @@
 #!/bin/bash
-# setup-git-goblin: Automated setup script for git-goblin utilities
-# Installs git-goblin into your shell (bash or zsh) by sourcing the
+# setup-ghee: Automated setup script for ghee utilities
+# Installs ghee into your shell (bash or zsh) by sourcing the
 # function and alias files from your RC file.
 #
 # Usage:
-#   ./setup-git-goblin           # install
-#   ./setup-git-goblin --remove  # uninstall
+#   ./setup-ghee           # install
+#   ./setup-ghee --remove  # uninstall
 
 set -euo pipefail
 
@@ -74,20 +74,23 @@ RC_FILE="$(detect_rc_file)"
 # Marker lines (used to find our block in the RC file)
 # ============================================================================
 
-MARKER_START="# git-goblin bash functions - START"
-MARKER_END="# git-goblin bash functions - END"
-SOURCE_FUNCTIONS="source \"${SCRIPT_DIR}/git-goblin-functions.sh\""
-SOURCE_MEGA="source \"${SCRIPT_DIR}/mega_script.sh\""
+MARKER_START="# ghee bash functions - START"
+MARKER_END="# ghee bash functions - END"
+SOURCE_FUNCTIONS="export PATH=\"\${SCRIPT_DIR}/bin:\${SCRIPT_DIR}/tools:\$PATH\"
+source \"\${SCRIPT_DIR}/ghee-functions.sh\"
+for _gg_mod in \"\${SCRIPT_DIR}/modules\"/*.sh; do
+    source \"\$_gg_mod\"
+done"
 
 # ============================================================================
 # Uninstall mode
 # ============================================================================
 
 uninstall() {
-    print_info "Removing git-goblin from ${RC_FILE}..."
+    print_info "Removing ghee from ${RC_FILE}..."
 
     if ! grep -q "$MARKER_START" "$RC_FILE" 2>/dev/null; then
-        print_warn "git-goblin block not found in ${RC_FILE}. Nothing to remove."
+        print_warn "ghee block not found in ${RC_FILE}. Nothing to remove."
         return 0
     fi
 
@@ -106,7 +109,7 @@ uninstall() {
     " "$RC_FILE" > "$tmp"
     mv "$tmp" "$RC_FILE"
 
-    print_ok "git-goblin removed from ${RC_FILE}."
+    print_ok "ghee removed from ${RC_FILE}."
     print_info "Reload your shell:  source ${RC_FILE}"
     return 0
 }
@@ -121,7 +124,7 @@ fi
 # ============================================================================
 
 echo ""
-echo -e "${_bold}${_green}  git-goblin installer${_reset}"
+echo -e "${_bold}${_green}  ghee installer${_reset}"
 echo -e "${_dim}  ────────────────────────────────────────${_reset}"
 echo ""
 
@@ -130,7 +133,7 @@ echo ""
 # ============================================================================
 
 missing=0
-for f in git-goblin-functions.sh mega_script.sh; do
+for f in ghee-functions.sh modules/git_workflow.sh; do
     if [ ! -f "${SCRIPT_DIR}/${f}" ]; then
         print_err "Required file not found: ${SCRIPT_DIR}/${f}"
         missing=1
@@ -138,12 +141,12 @@ for f in git-goblin-functions.sh mega_script.sh; do
 done
 
 if [ "$missing" -eq 1 ]; then
-    print_err "Aborting. Please make sure you're running this from the git-goblin directory."
+    print_err "Aborting. Please make sure you're running this from the ghee directory."
     exit 1
 fi
 
-print_ok "Found git-goblin-functions.sh"
-print_ok "Found mega_script.sh"
+print_ok "Found ghee-functions.sh"
+print_ok "Found modules/ directory"
 
 # ============================================================================
 # Detect shell
@@ -170,12 +173,12 @@ fi
 # Migrate old alias-based config (if present)
 # ============================================================================
 
-if grep -q "# git-goblin aliases - START" "$RC_FILE" 2>/dev/null; then
-    print_warn "Found old git-goblin alias block. Removing it..."
+if grep -q "# ghee aliases - START" "$RC_FILE" 2>/dev/null; then
+    print_warn "Found old ghee alias block. Removing it..."
     tmp=$(mktemp)
     awk '
-        /# git-goblin aliases - START/ { skip=1; next }
-        /# git-goblin aliases - END/   { skip=0; next }
+        /# ghee aliases - START/ { skip=1; next }
+        /# ghee aliases - END/   { skip=0; next }
         !skip                          { print }
     ' "$RC_FILE" > "$tmp"
     mv "$tmp" "$RC_FILE"
@@ -183,11 +186,11 @@ if grep -q "# git-goblin aliases - START" "$RC_FILE" 2>/dev/null; then
 fi
 
 # ============================================================================
-# Remove existing git-goblin function block (for clean re-install)
+# Remove existing ghee function block (for clean re-install)
 # ============================================================================
 
 if grep -q "$MARKER_START" "$RC_FILE" 2>/dev/null; then
-    print_info "Existing git-goblin block found -- replacing it..."
+    print_info "Existing ghee block found -- replacing it..."
     tmp=$(mktemp)
     awk "
         /${MARKER_START//\//\\/}/  { skip=1; next }
@@ -204,9 +207,8 @@ fi
 {
     echo ""
     echo "$MARKER_START"
-    echo "# Added by setup-git-goblin on $(date)"
+    echo "# Added by setup-ghee on $(date)"
     echo "$SOURCE_FUNCTIONS"
-    echo "$SOURCE_MEGA"
     echo "$MARKER_END"
     echo ""
 } >> "$RC_FILE"
@@ -220,36 +222,50 @@ print_ok "Source lines added to ${RC_FILE}"
 print_info "Making scripts executable..."
 chmod_count=0
 
-# Shell scripts (no extension -- standalone commands)
-for f in gg gclo jclo h hl presto blk dst swap setup-git-goblin; do
-    if [ -f "${SCRIPT_DIR}/${f}" ]; then
-        chmod +x "${SCRIPT_DIR}/${f}"
-        chmod_count=$((chmod_count + 1))
-    fi
-done
+# Shell scripts and Python tools
+if [ -d "${SCRIPT_DIR}/bin" ]; then
+    find "${SCRIPT_DIR}/bin" -type f -exec chmod +x {} +
+    chmod_count=$((chmod_count + $(find "${SCRIPT_DIR}/bin" -type f 2>/dev/null | wc -l)))
+fi
 
-# .sh files
-while IFS= read -r -d '' file; do
-    chmod +x "$file"
-    chmod_count=$((chmod_count + 1))
-done < <(find "$SCRIPT_DIR" -maxdepth 1 -name "*.sh" -type f -print0 2>/dev/null)
+if [ -d "${SCRIPT_DIR}/tools" ]; then
+    find "${SCRIPT_DIR}/tools" -type f -exec chmod +x {} +
+    chmod_count=$((chmod_count + $(find "${SCRIPT_DIR}/tools" -type f 2>/dev/null | wc -l)))
+fi
 
-# .py files
-while IFS= read -r -d '' file; do
-    chmod +x "$file"
+if [ -f "${SCRIPT_DIR}/setup-ghee" ]; then
+    chmod +x "${SCRIPT_DIR}/setup-ghee"
     chmod_count=$((chmod_count + 1))
-done < <(find "$SCRIPT_DIR" -maxdepth 1 -name "*.py" -type f -print0 2>/dev/null)
+fi
+
+if [ -f "${SCRIPT_DIR}/ghee.py" ]; then
+    chmod +x "${SCRIPT_DIR}/ghee.py"
+    chmod_count=$((chmod_count + 1))
+fi
 
 print_ok "Made ${chmod_count} files executable"
+
+# ============================================================================
+# Setup Python Environment
+# ============================================================================
+
+print_info "Setting up Python virtual environment..."
+if command -v python3 &>/dev/null; then
+    python3 -m venv "${SCRIPT_DIR}/ghee-venv"
+    "${SCRIPT_DIR}/ghee-venv/bin/pip" install --quiet rich
+    print_ok "Python environment ready with 'rich'."
+else
+    print_warn "python3 not found. Ghee will run without rich formatting."
+fi
 
 # ============================================================================
 # Summary
 # ============================================================================
 
 # Count how many aliases + functions we just installed
-alias_count=$(grep -c '^alias ' "${SCRIPT_DIR}/mega_script.sh" 2>/dev/null || echo 0)
-func_count=$(grep -c '^[a-zA-Z_-]*()' "${SCRIPT_DIR}/mega_script.sh" 2>/dev/null || echo 0)
-gfunc_count=$(grep -c '^[a-zA-Z_-]*()' "${SCRIPT_DIR}/git-goblin-functions.sh" 2>/dev/null || echo 0)
+alias_count=$(cat "${SCRIPT_DIR}/modules"/*.sh 2>/dev/null | grep -c '^alias ' || echo 0)
+func_count=$(cat "${SCRIPT_DIR}/modules"/*.sh 2>/dev/null | grep -c '^[a-zA-Z_-]*()' || echo 0)
+gfunc_count=0
 total=$((alias_count + func_count + gfunc_count))
 
 echo ""
@@ -275,5 +291,5 @@ echo -e "    ${_green}3.${_reset} See all commands:"
 echo -e "       ${_dim}gg-help${_reset}                 # full reference table"
 echo -e "       ${_dim}gg-help docker${_reset}           # filter by section"
 echo ""
-echo -e "  ${_dim}To uninstall: ./setup-git-goblin --remove${_reset}"
+echo -e "  ${_dim}To uninstall: ./setup-ghee --remove${_reset}"
 echo ""
