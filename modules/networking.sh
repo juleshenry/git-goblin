@@ -90,3 +90,25 @@ alias headers='curl -sI'
 # 279. Download file with progress
 alias dlf='curl -L -O --progress-bar'
 
+
+_GG_REGISTRY["macspoof"]="sudo ifconfig en0 ether \$(openssl rand -hex 6 | sed 's/\(.*\)/\1:/g; s/.$//') ||| Spoof MAC address (macOS)"
+_GG_REGISTRY["dnsflush"]="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder ||| Flush DNS cache (macOS)"
+_GG_REGISTRY["listenpy"]="python3 -m http.server 8000 ||| Quick HTTP server to share files"
+_GG_REGISTRY["urlencode"]="python3 -c 'import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1]))' ||| URL Encode string"
+_GG_REGISTRY["urldecode"]="python3 -c 'import urllib.parse, sys; print(urllib.parse.unquote(sys.argv[1]))' ||| URL Decode string"
+
+# Added by Ghee Superduper Upgrade
+alias dnsflush='sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder; echo "DNS cache flushed."'
+alias listenpy='python3 -m http.server 8000'
+macspoof() {
+    local en=$(networksetup -listallhardwareports | awk "/Wi-Fi/{getline; print \$2}")
+    local mac=$(openssl rand -hex 6 | sed "s/\(..\)/\1:/g; s/.$//")
+    echo "Spoofing MAC on \$en to \$mac"
+    sudo ifconfig "\$en" ether "\$mac"
+}
+urlencode() {
+    python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1]))" "\$1"
+}
+urldecode() {
+    python3 -c "import urllib.parse, sys; print(urllib.parse.unquote(sys.argv[1]))" "\$1"
+}

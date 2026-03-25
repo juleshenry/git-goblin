@@ -255,3 +255,32 @@ alias findsuid='find / -xdev -type f -perm -4000 -ls 2>/dev/null'
 # 380. Show all logged-in users
 alias whoson='who -a 2>/dev/null || w'
 
+
+_GG_REGISTRY["b64e"]="echo -n STR | base64 ||| Base64 encode string"
+_GG_REGISTRY["b64d"]="echo -n STR | base64 --decode ||| Base64 decode string"
+_GG_REGISTRY["jwtdecode"]="jq -R 'split(\".\") | .[0],.[1] | @base64d | fromjson' ||| Decode JWT token"
+_GG_REGISTRY["shodanip"]="curl -s https://internetdb.shodan.io/IP ||| Fast Shodan IP lookup"
+_GG_REGISTRY["sshkey"]="ssh-keygen -t ed25519 -C EMAIL ||| Generate modern secure SSH key"
+
+# Added by Ghee Superduper Upgrade
+b64e() {
+    echo -n "\$1" | base64
+}
+b64d() {
+    echo -n "\$1" | base64 --decode
+}
+jwtdecode() {
+    if [ -z "\$1" ]; then
+        echo "Usage: jwtdecode <token>"
+        return 1
+    fi
+    echo "\$1" | jq -R "split(\".\") | .[0],.[1] | @base64d | fromjson" 2>/dev/null || echo "Invalid JWT or jq not installed."
+}
+shodanip() {
+    if [ -z "\$1" ]; then
+        echo "Usage: shodanip <IP>"
+        return 1
+    fi
+    curl -s "https://internetdb.shodan.io/\$1" | jq . 2>/dev/null || curl -s "https://internetdb.shodan.io/\$1"
+}
+alias sshkey='ssh-keygen -t ed25519 -C '
