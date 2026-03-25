@@ -28,11 +28,14 @@ git clone https://github.com/juleshenry/ghee.git && cd ghee && chmod +x setup-gh
 
 ### Manual Setup
 
-If you prefer not to run the installer, add these two lines to your `~/.bashrc` or `~/.zshrc`:
+If you prefer not to run the installer, add this block to your `~/.bashrc` or `~/.zshrc`:
 
 ```bash
-source /path/to/ghee/ghee-functions.sh
-source /path/to/ghee/mega_script.sh
+export PATH="/path/to/ghee/bin:/path/to/ghee/tools:$PATH"
+source "/path/to/ghee/ghee-functions.sh"
+for _gg_mod in "/path/to/ghee/modules"/*.sh; do
+    source "$_gg_mod"
+done
 ```
 
 Then reload: `source ~/.bashrc`
@@ -42,7 +45,9 @@ Then reload: `source ~/.bashrc`
 - Detects your shell (bash or zsh) and finds the right RC file
 - Backs up your RC file before making any changes
 - Removes old alias-based configs if migrating from an earlier version
-- Adds source lines for `ghee-functions.sh` and `mega_script.sh`
+- Automates the creation of a Python Virtual Environment (`ghee-venv`) with the `rich` library for the interactive CLI.
+- Exports the `bin/` and `tools/` directories globally to your `$PATH`.
+- Dynamically sources the 19 modular files inside the `modules/` directory natively into your shell.
 - Makes all scripts executable
 
 ### Uninstall
