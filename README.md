@@ -1,34 +1,39 @@
-# ghee
+# 🧈 ghee
 
-Git Scripts that Get the Job Done!
+> *Like Indian clarified butter — pure, rich, and makes everything better.*
 
-![ggob.jpeg](ggob.jpeg)
+**ghee** is a collection of **538+ shell shortcuts** for developers, devops engineers, and power users. It layers smoothly on top of your existing shell, making your CLI crispy and fast — just like the real thing.
 
-**380+ shell shortcuts** for Git, Docker, Kubernetes, AWS, GCP, Terraform, Helm, Ansible, Vagrant, npm/yarn/pnpm, Python/pip, systemd, networking, Redis, Postgres, nginx, cybersecurity/recon, and everyday CLI tools -- all searchable through the `G` command.
+Covers: Git, Docker, Kubernetes, AWS, GCP, Terraform, Heroku, Vercel, Fly.io, Railway, GitHub CLI, npm/yarn/pnpm, Python/pip, Rust, Go, Redis, PostgreSQL, MongoDB, Nginx, systemd, tmux, networking, cybersecurity/recon, AI/LLM tools, media (ffmpeg/yt-dlp), JSON/YAML/CSV, macOS power tools, and more.
 
 ---
 
-## Installation
+## ✨ Features
 
-### Quick Setup (Recommended)
+- 🔍 **`G`** — Interactive Python TUI to fuzzy-search all 538+ commands with live preview
+- ⚡ **`G 'docker logs'`** — Best-guess any shell command, copies match to clipboard
+- ➕ **`G -a 'mycmd' 'desc'`** — Add your own custom shortcut, persists to `~/.ghee-custom`
+- 📦 **Modular** — 29 topic-based modules, auto-sourced into your shell
+- 🐍 **Python-powered** — Beautiful Rich TUI with fuzzy matching and color formatting
+- 🔌 **Plug-and-play** — `./setup-ghee` sets everything up in under 30 seconds
+
+---
+
+## 🚀 Installation
+
+### Quick Setup
 
 ```bash
 git clone https://github.com/juleshenry/ghee.git
 cd ghee
 chmod +x setup-ghee
 ./setup-ghee
-source ~/.bashrc  # or source ~/.zshrc
-```
-
-### One-Liner
-
-```bash
-git clone https://github.com/juleshenry/ghee.git && cd ghee && chmod +x setup-ghee && ./setup-ghee && source ~/.bashrc
+source ~/.zshrc   # or source ~/.bashrc
 ```
 
 ### Manual Setup
 
-If you prefer not to run the installer, add this block to your `~/.bashrc` or `~/.zshrc`:
+Add this block to your `~/.bashrc` or `~/.zshrc`:
 
 ```bash
 export PATH="/path/to/ghee/bin:/path/to/ghee/tools:$PATH"
@@ -38,866 +43,779 @@ for _gg_mod in "/path/to/ghee/modules"/*.sh; do
 done
 ```
 
-Then reload: `source ~/.bashrc`
-
 ### What the Installer Does
 
-- Detects your shell (bash or zsh) and finds the right RC file
-- Backs up your RC file before making any changes
-- Removes old alias-based configs if migrating from an earlier version
-- Automates the creation of a Python Virtual Environment (`ghee-venv`) with the `rich` library for the interactive CLI.
-- Exports the `bin/` and `tools/` directories globally to your `$PATH`.
-- Dynamically sources the 19 modular files inside the `modules/` directory natively into your shell.
-- Makes all scripts executable
+- Detects your shell (bash or zsh) and backs up your RC file
+- Creates a Python virtualenv (`ghee-venv`) with `rich` for the interactive TUI
+- Exports `bin/` and `tools/` to your `$PATH`
+- Sources all 29 modules from `modules/*.sh` into your shell
 
 ### Uninstall
 
 ```bash
-cd /path/to/ghee
-./setup-ghee --remove
-source ~/.bashrc
+./setup-ghee --remove && source ~/.zshrc
 ```
-
-This cleanly removes the ghee block from your RC file. Your backup is preserved.
 
 ---
 
-## G -- The Ghee Shell
-
-`G` is the brain of ghee. It has three modes:
-
-### 1. Best-Guess Mode: `G 'command'`
-
-Pass any raw CLI command and `G` scores every registered shortcut to find the closest match. It shows the shortcut name, the underlying command, a doc blurb, and runners-up.
+## 🎮 Using the G Command
 
 ```bash
-G 'git status'
-#  G best guess for 'git status'
-#  ────────────────────────────────────────────
-#
-#  gs
-#  runs:  git status
-#  what:  Show working tree status
-#
-#  see also:
-#    gss              Short-format status
-#    ginfo            Show repo info summary
-#    gdfiles          List changed filenames
-
-G 'docker logs'
-#  dl
-#  runs:  docker logs -f CONTAINER
-#  what:  Follow container logs
-
-G 'kubectl get pods'
-#  kgp
-#  runs:  kubectl get pods
-#  what:  List pods
-
-G 'terraform plan'
-#  tfp
-#  runs:  terraform plan
-#  what:  Plan changes
+G                            # Interactive fuzzy finder — search all 538+ commands
+G 'docker logs'              # Best-guess, copies best match to clipboard
+G -a 'npm run dev' 'Start dev server'  # Add a custom shortcut (persists)
 ```
 
-The best match is automatically copied to your clipboard (macOS pbcopy / Linux xclip).
+In interactive mode: **arrows** to navigate · **Enter** to select · **Tab** to copy · **Esc** to quit.
 
-#### More G Examples -- npm, Python, Networking, Security
+---
+
+## 📦 Project Structure
+
+```
+ghee/
+├── setup-ghee              # Installer / uninstaller
+├── ghee-functions.sh       # Core init: colors, G() wrapper, registry declaration
+├── ghee.py                 # Python TUI (rich-powered fuzzy search CLI)
+├── modules/                # 29 bash modules, auto-sourced on shell start
+│   ├── git_workflow.sh       # Advanced git functions (gwip, presto, gtag...)
+│   ├── git_aliases.sh        # 90+ standard git aliases (gs, gco, glog...)
+│   ├── docker.sh             # Docker & Compose
+│   ├── kubernetes.sh         # kubectl shortcuts
+│   ├── aws_cli.sh            # AWS CLI
+│   ├── gcp_gcloud.sh         # GCP gcloud
+│   ├── terraform.sh          # Terraform
+│   ├── cloud_deploy.sh       # Heroku, Vercel, Fly.io, Railway
+│   ├── github_cli.sh         # gh CLI (PRs, issues, releases)
+│   ├── npm_yarn_pnpm.sh      # JS package managers
+│   ├── python_pip_venv.sh    # Python / pip / venv / pytest
+│   ├── rust_go.sh            # Cargo + Go tools
+│   ├── redis.sh              # Redis CLI
+│   ├── postgresql.sh         # psql shortcuts
+│   ├── mongodb.sh            # MongoDB CLI
+│   ├── nginx.sh              # Nginx management
+│   ├── systemd_services.sh   # systemctl / journalctl
+│   ├── networking.sh         # curl, dig, DNS, speed
+│   ├── cybersecurity_network_recon.sh  # nmap, tcpdump, ssl, ncat
+│   ├── ai_llm.sh             # Ollama, OpenAI API
+│   ├── media_tools.sh        # ffmpeg, yt-dlp, imagemagick
+│   ├── data_tools.sh         # jq, YAML, CSV processing
+│   ├── macos_power_tools.sh  # macOS-specific utilities
+│   ├── super_utilities.sh    # cheat, weather, UUID, timer
+│   ├── tmux.sh               # tmux session management
+│   └── shell_file_utilities.sh  # history, extract, ports, swap...
+├── bin/                    # Standalone bash scripts (added to PATH)
+└── tools/                  # Python scripts (added to PATH)
+```
+
+---
+
+## 📖 Command Reference
+
+### Ai Llm
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `ollama` | `ollama run MODEL` | Run a local LLM model via Ollama |
+| `ollmls` | `ollama list` | List locally downloaded Ollama models |
+| `ollpull` | `ollama pull MODEL` | Download an Ollama model |
+| `ollamaserv` | `ollama serve` | Start Ollama API server on port 11434 |
+| `llmchat` | `curl localhost:11434/api/generate with JSON` | Chat with local Ollama model via curl |
+| `tokcount` | `python3 -c tiktoken count tokens` | Count tokens in a string (requires tiktoken) |
+| `openai` | `curl api.openai.com/v1/chat/completions` | Send a prompt to OpenAI API via curl |
+
+### Aws Cli
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `awsid` | `aws sts get-caller-identity` | Show current AWS identity |
+| `awsls` | `aws s3 ls` | List S3 buckets |
+| `awscp` | `aws s3 cp FILE s3://BUCKET/` | Copy file to S3 |
+| `awssync` | `aws s3 sync DIR s3://BUCKET/` | Sync directory to S3 |
+| `awsec2` | `aws ec2 describe-instances` | List EC2 instances |
+| `awsecr` | `aws ecr get-login-password \| docker login` | ECR docker login |
+| `awslam` | `aws lambda list-functions` | List Lambda functions |
+| `awslog` | `aws logs tail LOG_GROUP --follow` | Tail CloudWatch logs |
+| `awseb` | `aws elasticbeanstalk describe-environments` | List EB environments |
+| `awscf` | `aws cloudformation list-stacks` | List CloudFormation stacks |
+| `awseks` | `aws eks list-clusters` | List EKS clusters |
+| `awsrds` | `aws rds describe-db-instances` | List RDS instances |
+| `awsssm` | `aws ssm start-session --target INSTANCE` | SSM session to instance |
+| `awswho` | `aws iam get-user` | Show current IAM user |
+| `awsregions` | `aws ec2 describe-regions --output table` | List all AWS regions |
+
+### Cloud Deploy
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `vdeploy` | `vercel --prod` | Deploy to Vercel production |
+| `vdev` | `vercel dev` | Start local Vercel dev server |
+| `venv` | `vercel env pull .env.local` | Pull Vercel environment variables to local |
+| `hdeploy` | `git push heroku main` | Deploy to Heroku via git |
+| `hlogs` | `heroku logs --tail` | Tail Heroku app logs |
+| `hbash` | `heroku run bash` | Open bash shell on Heroku dyno |
+| `hrestart` | `heroku restart` | Restart all Heroku dynos |
+| `rdeploy` | `railway up` | Deploy to Railway |
+| `rlogs` | `railway logs` | Show Railway deployment logs |
+| `fldeploy` | `fly deploy` | Deploy to Fly.io |
+| `fllogs` | `fly logs` | Show Fly.io logs |
+| `flssh` | `fly ssh console` | SSH into Fly.io machine |
+| `flscale` | `fly scale count N` | Scale Fly.io instance count |
+
+### Cybersecurity Network Recon
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `tn` | `telnet HOST` | Telnet to a host |
+| `tnp` | `telnet HOST PORT` | Telnet to host:port |
+| `nsa` | `netstat -an` | Netstat all connections |
+| `nstcp` | `netstat -tlnp` | Netstat listening TCP ports |
+| `nsudp` | `netstat -ulnp` | Netstat listening UDP ports |
+| `nsproc` | `netstat -tulnp` | Netstat with process info |
+| `nsest` | `netstat -an \| grep ESTABLISHED` | Netstat established connections |
+| `nquick` | `nmap -F HOST` | Nmap quick scan (top 100 ports) |
+| `nfull` | `nmap -p- HOST` | Nmap full TCP port scan |
+| `nsvc` | `nmap -sV HOST` | Nmap service version detection |
+| `nos` | `sudo nmap -O HOST` | Nmap OS detection |
+| `nagg` | `sudo nmap -A HOST` | Nmap aggressive scan (OS+ver+scripts) |
+| `nsyn` | `sudo nmap -sS HOST` | Nmap stealth SYN scan |
+| `nudp` | `sudo nmap -sU HOST` | Nmap UDP scan |
+| `nsweep` | `nmap -sn SUBNET` | Nmap ping sweep (discover hosts) |
+| `nvuln` | `nmap --script vuln HOST` | Nmap vulnerability scan |
+| `nports` | `nmap -p PORTS HOST` | Nmap scan specific ports |
+| `nscript` | `nmap -sC HOST` | Nmap scan with default scripts |
+| `nmapxml` | `nmap -oX output.xml HOST` | Nmap XML output for parsing |
+| `ncl` | `nc -lvp PORT` | Netcat listen on port |
+| `ncs` | `nc HOST PORT` | Netcat connect to host:port |
+| `ncscan` | `nc -zv HOST START-END` | Port scan with netcat |
+| `sslcheck` | `openssl s_client + x509 DOMAIN` | Check SSL certificate info |
+| `sslchain` | `openssl s_client -showcerts DOMAIN` | Show full SSL cert chain |
+| `sslciphers` | `nmap ssl-enum-ciphers -p 443 DOMAIN` | Enumerate SSL ciphers |
+| `bannergrab` | `nc -w 3 HOST PORT` | Banner grab via netcat |
+| `myports` | `lsof -i -P -n \| grep LISTEN` | Show open ports on this host |
+| `arptable` | `arp -a` | Show ARP table |
+| `routes` | `netstat -rn / ip route show` | Show routing table |
+| `fwrules` | `sudo iptables -L / pfctl -sr` | Show firewall rules |
+| `sniff` | `sudo tcpdump -i any -nn` | Packet sniffing (tcpdump) |
+| `tcapt` | `sudo tcpdump -w capture.pcap` | Capture packets to file |
+| `tcport` | `sudo tcpdump port PORT` | tcpdump filter by port |
+| `tchost` | `sudo tcpdump host HOST` | tcpdump filter by host |
+| `secheaders` | `curl -sI URL \| grep security headers` | Check HTTP security headers |
+| `hashpw` | `echo -n PW \| openssl dgst -sha512` | Hash a password (SHA-512) |
+| `genpw` | `tr -dc A-Za-z0-9... < /dev/urandom` | Generate random password |
+| `worldwrite` | `find / -perm -0002` | Find world-writable files |
+| `findsuid` | `find / -perm -4000` | Find SUID binaries |
+| `whoson` | `who -a / w` | Show all logged-in users |
+| `b64e` | `echo -n STR \| base64` | Base64 encode string |
+| `b64d` | `echo -n STR \| base64 --decode` | Base64 decode string |
+| `jwtdecode` | `jq -R 'split(\".\") \| .[0],.[1] \| @base64d \| fromjson'` | Decode JWT token |
+| `shodanip` | `curl -s https://internetdb.shodan.io/IP` | Fast Shodan IP lookup |
+| `sshkey` | `ssh-keygen -t ed25519 -C EMAIL` | Generate modern secure SSH key |
+
+### Data Tools
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `jqpp` | `cat file.json \| jq .` | Pretty-print JSON |
+| `jqkeys` | `jq 'keys'` | List top-level JSON keys |
+| `jqlen` | `jq 'length'` | Get length of JSON array or object |
+| `jqm` | `jq 'map(.FIELD)'` | Map/extract a field from JSON array |
+| `jqsel` | `jq '.[] \| select(.key==val)'` | Filter JSON array by field value |
+| `yamlcheck` | `python3 -c yaml.safe_load` | Validate YAML file syntax |
+| `yaml2json` | `python3 yaml to json` | Convert YAML file to JSON |
+| `json2yaml` | `python3 json to yaml` | Convert JSON file to YAML |
+| `csvhead` | `head -1 FILE.csv \| tr ',' '\n'` | Show CSV column headers |
+| `csvcol` | `cut -d, -f N FILE.csv` | Extract column N from CSV |
+| `sortjson` | `jq 'sort_by(.KEY)'` | Sort JSON array by a key |
+
+### Docker
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `dps` | `docker ps` | List running containers |
+| `dpsa` | `docker ps -a` | List all containers |
+| `di` | `docker images` | List images |
+| `drm` | `docker rm` | Remove a container |
+| `drmi` | `docker rmi` | Remove an image |
+| `drmf` | `docker rm -f \$(docker ps -aq)` | Force remove all containers |
+| `drmia` | `docker rmi \$(docker images -q)` | Remove all images |
+| `dex` | `docker exec -it CONTAINER bash` | Exec into container |
+| `dl` | `docker logs -f CONTAINER` | Follow container logs |
+| `dstop` | `docker stop \$(docker ps -aq)` | Stop all containers |
+| `dprune` | `docker system prune -af` | Prune everything (containers, images, networks) |
+| `dc` | `docker compose` | Docker Compose shortcut |
+| `dcu` | `docker compose up -d` | Compose up (detached) |
+| `dcd` | `docker compose down` | Compose down |
+| `dcb` | `docker compose build` | Compose build |
+| `dcl` | `docker compose logs -f` | Follow compose logs |
+| `dcr` | `docker compose restart` | Restart compose services |
+| `dvls` | `docker volume ls` | List volumes |
+| `dnls` | `docker network ls` | List networks |
+| `dbuild` | `docker build -t NAME .` | Build image from Dockerfile |
+
+### Gcp Gcloud
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `gcpid` | `gcloud config get-value project` | Show current GCP project |
+| `gcpset` | `gcloud config set project PROJECT` | Set GCP project |
+| `gcpls` | `gcloud compute instances list` | List GCE instances |
+| `gcpssh` | `gcloud compute ssh INSTANCE` | SSH into GCE instance |
+| `gcpgke` | `gcloud container clusters list` | List GKE clusters |
+| `gcpgkecreds` | `gcloud container clusters get-credentials CLUSTER` | Get GKE kubeconfig |
+| `gcpbq` | `bq ls` | List BigQuery datasets |
+| `gcpgsutil` | `gsutil ls` | List GCS buckets |
+| `gcpcp` | `gsutil cp FILE gs://BUCKET/` | Copy file to GCS |
+| `gcpsync` | `gsutil -m rsync -r DIR gs://BUCKET/` | Sync directory to GCS |
+| `gcprun` | `gcloud run services list` | List Cloud Run services |
+| `gcpfn` | `gcloud functions list` | List Cloud Functions |
+| `gcpsql` | `gcloud sql instances list` | List Cloud SQL instances |
+| `gcplog` | `gcloud logging read FILTER --limit=50` | Read GCP logs |
+| `gcpauth` | `gcloud auth login` | Authenticate with GCP |
+
+### Git Aliases
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `gs` | `git status` | Show working tree status |
+| `gss` | `git status -s` | Short-format status |
+| `ga` | `git add .` | Stage all changes |
+| `gaf` | `git add FILE` | Stage a specific file |
+| `gc` | `git commit -m MSG` | Commit with message |
+| `gca` | `git commit -a -m MSG` | Commit all tracked files |
+| `gcam` | `git commit --amend -m MSG` | Amend last commit message |
+| `gcan` | `git commit --amend --no-edit` | Amend last commit, keep message |
+| `gp` | `git push` | Push to origin |
+| `gpf` | `git push --force` | Force push |
+| `gpfl` | `git push --force-with-lease` | Force push (safer) |
+| `gpu` | `git push -u origin BRANCH` | Push and set upstream |
+| `gl` | `git pull` | Pull from origin |
+| `glr` | `git pull --rebase` | Pull with rebase |
+| `glp` | `git pull --prune` | Pull and prune dead refs |
+| `gb` | `git branch` | List local branches |
+| `gba` | `git branch -a` | List all branches (local+remote) |
+| `gbd` | `git branch -d BRANCH` | Delete a branch |
+| `gbdf` | `git branch -D BRANCH` | Force delete a branch |
+| `gco` | `git checkout BRANCH` | Checkout a branch |
+| `gcob` | `git checkout -b BRANCH` | Create + checkout new branch |
+| `gcop` | `git checkout -` | Checkout previous branch |
+| `gcom` | `git checkout main \|\| git checkout master` | Checkout main/master |
+| `gsw` | `git switch BRANCH` | Switch to branch (modern) |
+| `gswc` | `git switch -c BRANCH` | Create + switch to new branch |
+| `gm` | `git merge BRANCH` | Merge a branch |
+| `gmnf` | `git merge --no-ff BRANCH` | Merge with no fast-forward |
+| `gma` | `git merge --abort` | Abort a merge |
+| `gbm` | `git branch --merged` | Show merged branches |
+| `glog` | `git log --oneline --decorate --graph` | Pretty commit graph |
+| `gloga` | `git log --oneline --decorate --graph --all` | Pretty graph, all branches |
+| `glogd` | `git log --pretty=format:'%h %ad %s' --date=short` | Log with dates |
+| `glogs` | `git log --stat` | Log with file stats |
+| `glogp` | `git log -p` | Log with patches |
+| `glast` | `git log -1 HEAD` | Show last commit |
+| `gblame` | `git blame FILE` | Show who changed each line |
+| `gshow` | `git show` | Show last commit details |
+| `gauthor` | `git log --author NAME` | Filter log by author |
+| `gsearch` | `git log --all --grep TERM` | Search commit messages |
+| `gbv` | `git branch -v` | Branches with last commit |
+| `gbvv` | `git branch -vv` | Branches with tracking info |
+| `grl` | `git reflog` | Show reflog |
+| `gd` | `git diff` | Show unstaged diff |
+| `gds` | `git diff --staged` | Show staged diff |
+| `gdst` | `git diff --stat` | Diff with stats |
+| `gdw` | `git diff --word-diff` | Word-level diff |
+| `gdc` | `git diff --color-words` | Color word diff |
+| `gdfiles` | `git diff --name-only` | List changed filenames |
+| `gdstat` | `git diff --name-status` | Changed files with status |
+| `gdlc` | `git diff HEAD^ HEAD` | Diff of last commit |
+| `gls` | `git ls-files` | List tracked files |
+| `glsu` | `git ls-files --others` | List untracked files |
+| `gcontrib` | `git shortlog -sn` | Show contributors |
+| `gfh` | `git log --follow -p -- FILE` | Show full file history |
+| `gst` | `git stash` | Stash changes |
+| `gstm` | `git stash push -m MSG` | Stash with message |
+| `gstu` | `git stash -u` | Stash including untracked |
+| `gsta` | `git stash -a` | Stash all (including ignored) |
+| `gstl` | `git stash list` | List stashes |
+| `gsts` | `git stash show -p` | Show stash content |
+| `gstap` | `git stash apply` | Apply last stash |
+| `gstpo` | `git stash pop` | Pop last stash |
+| `gstd` | `git stash drop` | Drop a stash |
+| `gstc` | `git stash clear` | Clear all stashes |
+| `gr` | `git remote` | Show remotes |
+| `grv` | `git remote -v` | Show remotes with URLs |
+| `gra` | `git remote add NAME URL` | Add a remote |
+| `grr` | `git remote remove NAME` | Remove a remote |
+| `gf` | `git fetch` | Fetch from origin |
+| `gfa` | `git fetch --all` | Fetch all remotes |
+| `gfp` | `git fetch --prune` | Fetch with prune |
+| `gcl` | `git clone URL` | Clone a repository |
+| `gcld` | `git clone --depth 1 URL` | Shallow clone |
+| `grss` | `git reset --soft HEAD~1` | Soft reset last commit |
+| `grsm` | `git reset HEAD~1` | Mixed reset last commit |
+| `grsh` | `git reset --hard HEAD~1` | Hard reset last commit |
+| `grso` | `git reset --hard origin/BRANCH` | Reset to origin |
+| `gus` | `git reset HEAD` | Unstage all files |
+| `gusf` | `git reset HEAD -- FILE` | Unstage a specific file |
+| `gcn` | `git clean -n` | Clean dry run |
+| `gcf` | `git clean -f` | Clean untracked files |
+| `gcfd` | `git clean -fd` | Clean untracked files + dirs |
+| `gdis` | `git checkout -- FILE` | Discard changes in file |
+| `gcp` | `git cherry-pick HASH` | Cherry-pick a commit |
+| `gcpc` | `git cherry-pick --continue` | Continue cherry-pick |
+| `gcpa` | `git cherry-pick --abort` | Abort cherry-pick |
+| `grbi` | `git rebase -i HASH` | Interactive rebase |
+| `grbc` | `git rebase --continue` | Continue rebase |
+| `grba` | `git rebase --abort` | Abort rebase |
+| `grbs` | `git rebase --skip` | Skip rebase step |
+| `gt` | `git tag` | Show tags |
+| `gta` | `git tag -a TAG` | Create annotated tag |
+| `gpt` | `git push --tags` | Push all tags |
+
+### Git Workflow
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `gg` | `git add . && git commit -m MSG && git push` | Add all, commit, push in one shot |
+| `gclo` | `git clone https://github.com/USER/REPO` | Clone a GitHub repo |
+| `jclo` | `git clone https://github.com/juleshenry/REPO` | Clone a juleshenry repo |
+| `presto` | `git checkout --orphan && force-push` | DESTRUCTIVE: wipe all git history |
+| `gwip` | `git add . && git commit -m 'wip: TIME'` | Quick work-in-progress commit (no push) |
+| `gunwip` | `git reset --soft HEAD~1` | Undo last WIP commit, keep changes staged |
+| `gpristine` | `git reset --hard origin/BRANCH && git clean -fd` | Hard-reset to match remote exactly |
+| `gtag` | `git tag -a TAG -m MSG && git push origin TAG` | Create and push a git tag |
+| `gpr` | `gh pr create --title TITLE --fill` | Create a GitHub PR via gh CLI |
+| `gdiff-fancy` | `git diff --stat + git diff --shortstat` | Pretty diff summary with stats |
+| `gacp` | `git add . && git commit -m MSG && git push` | Add, commit, push (same as gg) |
+| `ginit` | `git init && git add . && git commit -m 'Initial commit'` | Init repo with first commit |
+| `ghcl` | `git clone https://github.com/USER/REPO` | Clone from GitHub |
+| `gbc` | `git checkout -b BRANCH` | Create and switch to new branch |
+| `gbdall` | `git branch -d B && git push origin --delete B` | Delete branch locally + remotely |
+| `gundo` | `git reset --soft HEAD~1` | Undo last commit, keep changes staged |
+| `gbs` | `git for-each-ref --sort=-committerdate` | Show branches sorted by last modified |
+| `gquick` | `git add . && git commit -m 'Quick update: TIME' && git push` | Commit+push with auto-timestamp |
+| `gchanged` | `git diff --name-only HEAD~N..HEAD` | Show changed files in last N commits |
+| `gsearchtext` | `git log -S TEXT` | Search for text across git history |
+| `gnew` | `git fetch origin && git checkout -b B origin/main` | Create branch from origin/main |
+| `gupdateall` | `git fetch --all && git pull` | Fetch all remotes and pull |
+| `greposize` | `git count-objects -vH` | Show repo object storage size |
+| `gfilesize` | `git ls-tree -r -t -l --full-name HEAD \| sort` | List files by size in repo |
+| `glarge` | `git rev-list --objects --all \| ...` | Find N largest blobs in history |
+| `gsyncfork` | `git fetch upstream && merge upstream/main` | Sync fork with upstream/main |
+| `gsquash` | `git reset --soft HEAD~N && git commit -m MSG` | Squash last N commits |
+| `gstats` | `git shortlog -sn --all --no-merges` | Commit count by author |
+| `garchive` | `git tag archive/B && delete branch` | Archive a branch as a tag |
+| `galias` | `alias \| grep '^g'` | List all g* aliases |
+| `ginfo` | `repo name, branch, remote, last commit` | Show repo info summary |
+| `gbackup` | `tar -czf backup.tar.gz .` | Tar.gz backup of current repo |
+
+### Github Cli
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `ghpr` | `gh pr create` | Create a GitHub pull request |
+| `ghprs` | `gh pr status` | Show status of PR for current branch |
+| `ghprl` | `gh pr list` | List open pull requests |
+| `ghprd` | `gh pr diff` | Show diff of current PR |
+| `ghprm` | `gh pr merge` | Merge current pull request |
+| `ghprco` | `gh pr checkout NUMBER` | Checkout a pull request by number |
+| `ghil` | `gh issue list` | List open GitHub issues |
+| `ghic` | `gh issue create` | Create a new GitHub issue |
+| `ghiv` | `gh issue view NUMBER` | View a specific issue |
+| `ghrl` | `gh release list` | List GitHub releases |
+| `ghrc` | `gh release create` | Create a new GitHub release |
+| `ghrepo` | `gh repo view --web` | Open current repo in browser |
+| `ghrun` | `gh run list` | List recent GitHub Actions workflow runs |
+| `ghrw` | `gh run watch` | Watch GitHub Actions run live |
+| `ghssh` | `gh auth refresh -h github.com -s admin:public_key` | Add SSH key to GitHub |
+| `ghclone` | `gh repo clone OWNER/REPO` | Clone repo using gh (auto SSH) |
+| `ghfork` | `gh repo fork --clone` | Fork and clone a GitHub repo |
+
+### Kubernetes
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `k` | `kubectl` | kubectl shortcut |
+| `kgp` | `kubectl get pods` | List pods |
+| `kgpa` | `kubectl get pods --all-namespaces` | List all pods across namespaces |
+| `kgs` | `kubectl get svc` | List services |
+| `kgn` | `kubectl get nodes` | List nodes |
+| `kgd` | `kubectl get deployments` | List deployments |
+| `kgi` | `kubectl get ingress` | List ingresses |
+| `kgns` | `kubectl get namespaces` | List namespaces |
+| `kga` | `kubectl get all` | List all resources |
+| `kdp` | `kubectl describe pod POD` | Describe a pod |
+| `kds` | `kubectl describe svc SVC` | Describe a service |
+| `kdd` | `kubectl describe deployment DEP` | Describe a deployment |
+| `kl` | `kubectl logs -f POD` | Follow pod logs |
+| `klp` | `kubectl logs -f POD -p` | Previous pod logs |
+| `kex` | `kubectl exec -it POD -- bash` | Exec into a pod |
+| `kaf` | `kubectl apply -f FILE` | Apply a manifest |
+| `kdf` | `kubectl delete -f FILE` | Delete from manifest |
+| `kctx` | `kubectl config get-contexts` | Show kube contexts |
+| `kuse` | `kubectl config use-context CTX` | Switch kube context |
+| `kns` | `kubectl config set-context --current --namespace=NS` | Set default namespace |
+| `kpf` | `kubectl port-forward POD LOCAL:REMOTE` | Port-forward to a pod |
+| `kscale` | `kubectl scale deployment DEP --replicas=N` | Scale a deployment |
+| `krollout` | `kubectl rollout status deployment DEP` | Check rollout status |
+| `krestart` | `kubectl rollout restart deployment DEP` | Restart a deployment |
+| `ktop` | `kubectl top pods` | Pod resource usage |
+| `ktopn` | `kubectl top nodes` | Node resource usage |
+
+### Macos Power Tools
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `caffeinate` | `caffeinate -d` | Prevent Mac from sleeping |
+| `hidefiles` | `defaults write com.apple.finder AppleShowAllFiles NO; killall Finder` | Hide hidden files in Finder |
+| `showfiles` | `defaults write com.apple.finder AppleShowAllFiles YES; killall Finder` | Show hidden files in Finder |
+| `flushui` | `killall Dock; killall Finder` | Restart Dock and Finder to fix UI glitches |
+| `copyurl` | `osascript -e 'tell app \"Safari\" to get URL of front document' \| pbcopy` | Copy URL of active Safari tab |
+| `copycwd` | `pwd \| tr -d '\n' \| pbcopy` | Copy current directory path to clipboard |
+| `locks` | `/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend` | Lock mac screen immediately |
+| `emptytrash` | `rm -rf ~/.Trash/*` | Empty the Trash immediately |
+
+### Media Tools
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `ytdl` | `yt-dlp URL` | Download a YouTube video (best quality) |
+| `ytmp3` | `yt-dlp -x --audio-format mp3 URL` | Download YouTube video as MP3 |
+| `ytpl` | `yt-dlp -i URL` | Download entire YouTube playlist |
+| `ffconv` | `ffmpeg -i INPUT OUTPUT` | Convert video with ffmpeg |
+| `ff2mp4` | `ffmpeg -i INPUT -c:v libx264 output.mp4` | Convert any video to H.264 mp4 |
+| `fftrim` | `ffmpeg -i INPUT -ss START -to END -c copy OUTPUT` | Trim video by time range |
+| `ffcomp` | `ffmpeg -i INPUT -crf 28 -preset fast OUTPUT.mp4` | Compress video (CRF 28) |
+| `ffvid2gif` | `ffmpeg -i INPUT -vf scale=480:-1 OUTPUT.gif` | Convert video to GIF |
+| `ffaudio` | `ffmpeg -i INPUT -vn -q:a 0 OUTPUT.mp3` | Extract audio from video |
+| `imgres` | `convert INPUT -resize WxH OUTPUT` | Resize image with ImageMagick |
+| `imgstrip` | `convert INPUT -strip OUTPUT` | Strip EXIF metadata from image |
+| `imgnorm` | `mogrify -auto-orient -strip FOLDER/*.jpg` | Normalize images in folder |
+
+### Meta
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `G` | `G [cmd] or G -a 'cmd' 'desc'` | Ghee hot-doc shell |
+| `gg-help` | `print reference table` | Full command reference |
+
+### Misc Cli Tools
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `duh` | `du -sh * \| sort -rh` | Disk usage summary (sorted) |
+| `dfh` | `df -h` | Disk free (human-readable) |
+| `fmem` | `free -h` | Free memory |
+| `cpuinfo` | `lscpu` | CPU info |
+| `w2` | `watch -n 2 CMD` | Watch a command every 2 seconds |
+| `lsofp` | `lsof -c PROCESS` | List open files by process |
+| `killname` | `pkill -f NAME` | Kill process by name |
+| `hist` | `history \| tail -50` | Last 50 history entries |
+| `cl` | `clear` | Clear terminal |
+| `reload` | `exec \$SHELL -l` | Reload shell config |
+| `erc` | `\${EDITOR:-vi} ~/.<shell>rc` | Edit shell RC file |
+| `path` | `echo \$PATH \| tr : newline` | Show PATH (one per line) |
+| `cx` | `chmod +x FILE` | Make file executable |
+| `epoch` | `date +%s` | Print Unix timestamp |
+| `isodate` | `date -u +%Y-%m-%dT%H:%M:%SZ` | Print ISO 8601 timestamp |
+| `uuid` | `python3 uuid4` | Generate a UUID |
+| `b64e` | `base64 FILE` | Base64 encode |
+| `b64d` | `base64 --decode` | Base64 decode |
+| `sha256` | `shasum -a 256 FILE` | SHA256 hash of file |
+| `md5sum` | `md5 FILE` | MD5 hash of file |
+
+### Misc Devops
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `hup` | `helm upgrade --install RELEASE CHART` | Helm upgrade/install |
+| `hls` | `helm list` | List Helm releases |
+| `hdel` | `helm uninstall RELEASE` | Uninstall Helm release |
+| `ans` | `ansible-playbook PLAYBOOK.yml` | Run Ansible playbook |
+| `vup` | `vagrant up` | Start Vagrant VM |
+| `vsh` | `vagrant ssh` | SSH into Vagrant VM |
+| `vhalt` | `vagrant halt` | Stop Vagrant VM |
+
+### Mongodb
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `mongosh` | `mongosh` | Launch MongoDB shell |
+| `mstart` | `brew services start mongodb-community` | Start MongoDB (macOS Homebrew) |
+| `mstop` | `brew services stop mongodb-community` | Stop MongoDB (macOS Homebrew) |
+| `mrestart` | `brew services restart mongodb-community` | Restart MongoDB |
+| `mdump` | `mongodump --db DB --out ./dump` | Dump a MongoDB database |
+| `mrestore` | `mongorestore --db DB ./dump/DB` | Restore a MongoDB database |
+| `mexport` | `mongoexport --db DB --collection COL --out file.json` | Export collection to JSON |
+| `mimport` | `mongoimport --db DB --collection COL --file file.json` | Import JSON into collection |
+
+### Networking
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `curlt` | `curl with timing breakdown` | curl with DNS/connect/TLS timing |
+| `curlh` | `curl -I URL` | Show HTTP response headers |
+| `curlj` | `curl -X POST -H JSON -d DATA URL` | curl POST with JSON body |
+| `wgetm` | `wget --mirror URL` | Mirror/download entire site |
+| `myip` | `curl ifconfig.me` | Show public IP address |
+| `localip` | `ipconfig getifaddr en0` | Show local IP address |
+| `ping5` | `ping -c 5 HOST` | Ping with 5 packets |
+| `digs` | `dig +short DOMAIN` | Quick DNS lookup |
+| `digr` | `dig -x IP` | Reverse DNS lookup |
+| `nsl` | `nslookup DOMAIN` | nslookup shortcut |
+| `trace` | `traceroute HOST` | Traceroute to host |
+| `nstat` | `netstat -tlnp` | Show listening ports (netstat) |
+| `ssl` | `ss -tlnp` | Show listening ports (ss) |
+| `conns` | `ss -s` | Show connection summary |
+| `portcheck` | `nc -zv HOST PORT` | Check if a port is open |
+| `speedtest` | `speedtest-cli via python` | Internet speed test |
+| `ifls` | `ifconfig / ip addr show` | List network interfaces |
+| `headers` | `curl -sI URL` | Show HTTP headers for URL |
+| `dlf` | `curl -L -O --progress-bar URL` | Download file with progress |
+| `macspoof` | `sudo ifconfig en0 ether \$(openssl rand -hex 6 \| sed 's/\(.*\)/\1:/g; s/.$//')` | Spoof MAC address (macOS) |
+| `dnsflush` | `sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder` | Flush DNS cache (macOS) |
+| `listenpy` | `python3 -m http.server 8000` | Quick HTTP server to share files |
+| `urlencode` | `python3 -c 'import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1]))'` | URL Encode string |
+| `urldecode` | `python3 -c 'import urllib.parse, sys; print(urllib.parse.unquote(sys.argv[1]))'` | URL Decode string |
+
+### Nginx
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `ngt` | `sudo nginx -t` | Test nginx config |
+| `ngr` | `sudo nginx -s reload` | Reload nginx |
+| `ngstart` | `sudo systemctl start nginx` | Start nginx |
+| `ngstop` | `sudo systemctl stop nginx` | Stop nginx |
+| `ngrestart` | `sudo systemctl restart nginx` | Restart nginx |
+| `ngstatus` | `sudo systemctl status nginx` | Nginx service status |
+| `ngedit` | `sudo vi /etc/nginx/nginx.conf` | Edit nginx config |
+| `ngacc` | `sudo tail -f /var/log/nginx/access.log` | Tail nginx access log |
+| `ngerr` | `sudo tail -f /var/log/nginx/error.log` | Tail nginx error log |
+| `ngsites` | `ls /etc/nginx/sites-enabled/` | List nginx sites-enabled |
+| `ngconf` | `sudo nginx -T` | Dump full nginx config |
+
+### Npm Yarn Pnpm
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `ni` | `npm install` | npm install |
+| `nid` | `npm install --save-dev` | npm install as dev dependency |
+| `nig` | `npm install -g` | npm install globally |
+| `nrd` | `npm run dev` | npm run dev server |
+| `nrb` | `npm run build` | npm run build |
+| `nrs` | `npm run start` | npm run start |
+| `nrt` | `npm run test` | npm run test |
+| `nrl` | `npm run lint` | npm run lint |
+| `nls` | `npm list --depth=0` | List top-level npm packages |
+| `nout` | `npm outdated` | Show outdated npm packages |
+| `nup` | `npm update` | Update npm packages |
+| `naf` | `npm audit fix` | Fix npm audit vulnerabilities |
+| `ncc` | `npm cache clean --force` | Clear npm cache |
+| `ninit` | `npm init -y` | Initialize new npm project |
+| `nx` | `npx` | npx shortcut |
+| `yi` | `yarn install` | Yarn install dependencies |
+| `ya` | `yarn add PACKAGE` | Yarn add package |
+| `yad` | `yarn add --dev PACKAGE` | Yarn add dev dependency |
+| `yrd` | `yarn dev` | Yarn dev server |
+| `yrb` | `yarn build` | Yarn build |
+| `yrs` | `yarn start` | Yarn start |
+| `yrt` | `yarn test` | Yarn test |
+| `yga` | `yarn global add PACKAGE` | Yarn global install |
+| `pi` | `pnpm install` | pnpm install dependencies |
+| `pad` | `pnpm add PACKAGE` | pnpm add package |
+| `padd` | `pnpm add -D PACKAGE` | pnpm add dev dependency |
+| `prd` | `pnpm dev` | pnpm dev server |
+| `prb` | `pnpm build` | pnpm build |
+| `prs` | `pnpm start` | pnpm start |
+| `prt` | `pnpm test` | pnpm test |
+
+### Postgresql
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `pg` | `psql` | PostgreSQL CLI |
+| `pgsu` | `sudo -u postgres psql` | psql as postgres superuser |
+| `pgls` | `psql -l` | List PostgreSQL databases |
+| `pgdb` | `psql -d DB [-U user]` | Connect to a database |
+| `pgdump` | `pg_dump DATABASE` | Dump a database |
+| `pgrestore` | `pg_restore FILE` | Restore a database dump |
+| `pgcreate` | `createdb DATABASE` | Create a database |
+| `pgdrop` | `dropdb DATABASE` | Drop a database |
+| `pgroles` | `psql -c '\\du'` | List PostgreSQL roles |
+| `pgconn` | `SELECT from pg_stat_activity` | Show active connections |
+| `pgsize` | `SELECT relname, pg_size_pretty(...)` | Show table sizes |
+| `pgrunning` | `SELECT from pg_stat_activity WHERE active` | Show running queries |
+| `pgvacuum` | `VACUUM FULL` | Run full vacuum |
+| `pgstatus` | `systemctl status postgresql` | PostgreSQL service status |
+| `pgver` | `psql --version` | PostgreSQL version |
+
+### Python Pip Venv
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `py` | `python3` | Python3 shortcut |
+| `py2` | `python2` | Python2 shortcut |
+| `pip3i` | `pip3 install PACKAGE` | pip install a package |
+| `pipr` | `pip3 install -r requirements.txt` | pip install from requirements |
+| `pipf` | `pip3 freeze > requirements.txt` | Freeze pip deps to requirements |
+| `pipl` | `pip3 list` | List installed pip packages |
+| `pipo` | `pip3 list --outdated` | List outdated pip packages |
+| `pipu` | `pip3 install --upgrade PACKAGE` | Upgrade a pip package |
+| `pipun` | `pip3 uninstall PACKAGE` | Uninstall a pip package |
+| `venv` | `python3 -m venv venv` | Create a virtual environment |
+| `va` | `source venv/bin/activate` | Activate venv |
+| `vd` | `deactivate` | Deactivate venv |
+| `pt` | `pytest` | Run pytest |
+| `ptv` | `pytest -v` | Run pytest verbose |
+| `ptc` | `pytest --cov` | Run pytest with coverage |
+| `pym` | `python3 -m MODULE` | Run Python module |
+| `ipy` | `ipython` | Launch IPython |
+| `jnb` | `jupyter notebook` | Launch Jupyter Notebook |
+| `jlab` | `jupyter lab` | Launch Jupyter Lab |
+| `pide` | `pip3 install -e .` | pip install in editable mode |
+
+### Redis
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `rd` | `redis-cli` | Redis CLI |
+| `rdping` | `redis-cli ping` | Ping Redis server |
+| `rdinfo` | `redis-cli info` | Redis server info |
+| `rdmon` | `redis-cli monitor` | Monitor Redis commands in real-time |
+| `rdkeys` | `redis-cli keys '*'` | List all Redis keys |
+| `rdget` | `redis-cli get KEY` | Get a Redis key value |
+| `rdset` | `redis-cli set KEY VAL` | Set a Redis key |
+| `rddel` | `redis-cli del KEY` | Delete a Redis key |
+| `rdflush` | `redis-cli flushdb` | Flush current Redis DB |
+| `rdflushall` | `redis-cli flushall` | Flush all Redis DBs |
+| `rdsize` | `redis-cli dbsize` | Show Redis DB key count |
+| `rdshut` | `redis-cli shutdown` | Shutdown Redis server |
+
+### Rust Go
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `cb` | `cargo build` | Build Rust project |
+| `cbr` | `cargo build --release` | Build Rust project in release mode |
+| `cr` | `cargo run` | Build and run Rust project |
+| `ct` | `cargo test` | Run Rust tests |
+| `ccheck` | `cargo check` | Fast syntax/type check (no compile) |
+| `cclippy` | `cargo clippy` | Run Rust linter (clippy) |
+| `cfmt` | `cargo fmt` | Format Rust code |
+| `cadd` | `cargo add CRATE` | Add a Rust crate dependency |
+| `gbuild` | `go build ./...` | Build Go project |
+| `grun` | `go run .` | Run Go main package |
+| `gtest` | `go test ./...` | Run all Go tests |
+| `gvet` | `go vet ./...` | Run Go static analysis |
+| `gmod` | `go mod tidy` | Tidy Go module dependencies |
+| `gfmt` | `gofmt -w .` | Format all Go files |
+| `gget` | `go get PACKAGE` | Install a Go package |
+
+### Shell File Utilities
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `h` | `history \| grep TERM` | Grep shell history |
+| `hl` | `history lucky match + exec` | Run penultimate history match |
+| `dst` | `find . -name '.DS_Store' -exec rm` | Remove .DS_Store files recursively |
+| `dust-kash` | `find . -name '*.kash' -exec rm` | Remove .kash cache files recursively |
+| `date-file-maker` | `touch MM-DD-YY-HH:MM:SS.txt` | Create a UTC-timestamped file |
+| `swap` | `mv file1 tmp && mv file2 file1 && mv tmp file2` | Swap names of two files |
+| `mkcd` | `mkdir -p DIR && cd DIR` | mkdir + cd in one step |
+| `extract` | `tar/unzip/7z/etc` | Universal archive extractor |
+| `tre` | `tree -I '.git\|node_modules'` | tree with junk dirs ignored |
+| `ports` | `lsof -iTCP -sTCP:LISTEN` | Show listening TCP ports |
+| `sizeof` | `du -sh PATH` | Human-readable size of file/dir |
+| `blk` | `python3 -m black FILE` | Run Python Black formatter |
+| `serve` | `python3 -m http.server PORT` | Quick HTTP server |
+| `jql` | `jq -C '.' FILE \| less -R` | Pretty-print JSON with less |
+| `rmdstore` | `find . -name '.DS_Store' -delete` | Remove .DS_Store with feedback |
+| `rmnodemodules` | `find+rm node_modules` | Interactively remove node_modules dirs |
+| `countext` | `find . -type f \| sed/sort/uniq` | Count files by extension |
+| `findlarge` | `find . -type f -size +N` | Find files larger than N |
+
+### Super Utilities
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `cheat` | `curl cheat.sh/CMD` | Get cheat sheet for any CLI command |
+| `weather` | `curl wttr.in/LOCATION` | Get the weather forecast in terminal |
+| `qrgen` | `curl qrencode.com/STRING` | Generate a QR code in the terminal |
+| `uuid` | `uuidgen \| tr '[:upper:]' '[:lower:]'` | Generate a random UUIDv4 |
+| `epoch` | `date +%s` | Get current Unix Epoch timestamp |
+| `stopwatch` | `time read` | Start a simple stopwatch (press Enter to stop) |
+| `timer` | `sleep N && echo 'Time is up!'` | Simple countdown timer |
+| `matrix` | `Pure Bash Matrix Effect` | Run the Matrix digital rain in your terminal |
+
+### Systemd Services
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `scs` | `sudo systemctl status SERVICE` | Show service status |
+| `scstart` | `sudo systemctl start SERVICE` | Start a service |
+| `scstop` | `sudo systemctl stop SERVICE` | Stop a service |
+| `screstart` | `sudo systemctl restart SERVICE` | Restart a service |
+| `scenable` | `sudo systemctl enable SERVICE` | Enable service at boot |
+| `scdisable` | `sudo systemctl disable SERVICE` | Disable service at boot |
+| `screload` | `sudo systemctl reload SERVICE` | Reload service config |
+| `scdaemon` | `sudo systemctl daemon-reload` | Reload systemd daemon |
+| `jctl` | `sudo journalctl -f` | Follow system journal |
+| `jctlu` | `sudo journalctl -u SERVICE` | Journal for a specific unit |
+| `jctlt` | `sudo journalctl --since today` | Journal since today |
+| `scls` | `systemctl list-units --type=service` | List active services |
+| `scfail` | `systemctl --failed` | List failed services |
+| `scactive` | `systemctl is-active SERVICE` | Check if service is active |
+| `scenabled` | `systemctl is-enabled SERVICE` | Check if service is enabled |
+
+### Terraform
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `tf` | `terraform` | Terraform shortcut |
+| `tfi` | `terraform init` | Initialize Terraform |
+| `tfp` | `terraform plan` | Plan changes |
+| `tfa` | `terraform apply` | Apply changes |
+| `tfaa` | `terraform apply -auto-approve` | Apply without prompt |
+| `tfd` | `terraform destroy` | Destroy infrastructure |
+| `tfs` | `terraform state list` | List state resources |
+| `tfo` | `terraform output` | Show outputs |
+| `tfv` | `terraform validate` | Validate config |
+| `tff` | `terraform fmt -recursive` | Format all .tf files |
+| `tfw` | `terraform workspace list` | List workspaces |
+
+### Tmux
+
+| Alias | Runs | Description |
+|-------|------|-------------|
+| `tnew` | `tmux new -s NAME` | Create a new named tmux session |
+| `tls` | `tmux ls` | List tmux sessions |
+| `tat` | `tmux attach -t NAME` | Attach to a tmux session |
+| `tkill` | `tmux kill-session -t NAME` | Kill a tmux session |
+| `tkillall` | `tmux kill-server` | Kill all tmux sessions |
+| `treload` | `tmux source ~/.tmux.conf` | Reload tmux config |
+| `tsplit` | `tmux split-window -h` | Split tmux pane horizontally |
+| `tsplitv` | `tmux split-window -v` | Split tmux pane vertically |
+
+---
+
+## 🛠️ Adding Custom Shortcuts
 
 ```bash
-G 'npm install'
-#  ni
-#  runs:  npm install
-#  what:  npm install
-#
-#  see also:
-#    nid              npm install as dev dependency
-#    nig              npm install globally
-#    ninit            Initialize new npm project
+# Add any command permanently
+G -a 'python manage.py runserver' 'Start Django dev server'
 
-G 'yarn add'
-#  ya
-#  runs:  yarn add PACKAGE
-#  what:  Yarn add package
-
-G 'pnpm dev'
-#  prd
-#  runs:  pnpm dev
-#  what:  pnpm dev server
-
-G 'pip install'
-#  pip3i
-#  runs:  pip3 install PACKAGE
-#  what:  pip install a package
-#
-#  see also:
-#    pipr             pip install from requirements
-#    pipu             Upgrade a pip package
-#    pide             pip install in editable mode
-
-G 'python venv'
-#  venv
-#  runs:  python3 -m venv venv
-#  what:  Create a virtual environment
-#
-#  see also:
-#    va               Activate venv
-#    vd               Deactivate venv
-
-G 'pytest'
-#  pt
-#  runs:  pytest
-#  what:  Run pytest
-#
-#  see also:
-#    ptv              Run pytest verbose
-#    ptc              Run pytest with coverage
-
-G 'systemctl restart'
-#  screstart
-#  runs:  sudo systemctl restart SERVICE
-#  what:  Restart a service
-
-G 'curl POST json'
-#  curlj
-#  runs:  curl -X POST -H JSON -d DATA URL
-#  what:  curl POST with JSON body
-
-G 'dns lookup'
-#  digs
-#  runs:  dig +short DOMAIN
-#  what:  Quick DNS lookup
-#
-#  see also:
-#    nsl              nslookup shortcut
-#    digr             Reverse DNS lookup
-
-G 'my public ip'
-#  myip
-#  runs:  curl ifconfig.me
-#  what:  Show public IP address
-
-G 'redis keys'
-#  rdkeys
-#  runs:  redis-cli keys '*'
-#  what:  List all Redis keys
-
-G 'postgres connections'
-#  pgconn
-#  runs:  SELECT from pg_stat_activity
-#  what:  Show active connections
-
-G 'nginx reload'
-#  ngr
-#  runs:  sudo nginx -s reload
-#  what:  Reload nginx
-
-G 'port scan'
-#  nquick
-#  runs:  nmap -F HOST
-#  what:  Nmap quick scan (top 100 ports)
-#
-#  see also:
-#    nfull            Nmap full TCP port scan
-#    ncscan           Port scan with netcat
-#    portcheck        Check if a port is open
-
-G 'nmap vulnerability'
-#  nvuln
-#  runs:  nmap --script vuln HOST
-#  what:  Nmap vulnerability scan
-
-G 'ssl certificate'
-#  sslcheck
-#  runs:  openssl s_client + x509 DOMAIN
-#  what:  Check SSL certificate info
-#
-#  see also:
-#    sslchain         Show full SSL cert chain
-#    sslciphers       Enumerate SSL ciphers
-
-G 'tcpdump'
-#  sniff
-#  runs:  sudo tcpdump -i any -nn
-#  what:  Packet sniffing (tcpdump)
-#
-#  see also:
-#    tcapt            Capture packets to file
-#    tcport           tcpdump filter by port
-#    tchost           tcpdump filter by host
-
-G 'banner grab'
-#  bannergrab
-#  runs:  nc -w 3 HOST PORT
-#  what:  Banner grab via netcat
-
-G 'generate password'
-#  genpw
-#  runs:  tr -dc A-Za-z0-9... < /dev/urandom
-#  what:  Generate random password
-
-G 'netstat listening'
-#  nstcp
-#  runs:  netstat -tlnp
-#  what:  Netstat listening TCP ports
-#
-#  see also:
-#    nstat            Show listening ports (netstat)
-#    ssl              Show listening ports (ss)
-#    myports          Show open ports on this host
-
-G 'telnet'
-#  tn
-#  runs:  telnet HOST
-#  what:  Telnet to a host
-
-G 'base64'
-#  b64e
-#  runs:  base64 FILE
-#  what:  Base64 encode
-#
-#  see also:
-#    b64d             Base64 decode
-
-G 'uuid'
-#  uuid
-#  runs:  python3 uuid4
-#  what:  Generate a UUID
-```
-
-#### Partial and Misspelled Queries
-
-`G` uses word-overlap scoring, so partial matches still work:
-
-```bash
-G 'push force'    # -> gpf (git push --force)
-G 'stash pop'     # -> gstpo (git stash pop)
-G 'compose up'    # -> dcu (docker compose up -d)
-G 'branch delete' # -> gbd (git branch -d BRANCH)
-G 'pods all'      # -> kgpa (kubectl get pods --all-namespaces)
-G 'commit amend'  # -> gcam (git commit --amend -m MSG)
-```
-
-### 2. Add Mode: `G -a 'command' 'description'`
-
-Add your own custom shortcuts on the fly. They persist across sessions in `~/.ghee-custom`.
-
-```bash
-G -a 'docker stats' 'Live container resource usage'
-# [ok] Added: docker stats -- Live container resource usage
-# [..] Saved to ~/.ghee-custom (persists across sessions).
-
-G -a 'npm run dev' 'Start local dev server'
-# [ok] Added: npm run dev -- Start local dev server
-
-G -a 'ssh -L 8080:localhost:80 server' 'SSH tunnel port 80 to local 8080'
-# [ok] Added
-
-G -a 'rsync -avz src/ dest/' 'Rsync with compression'
-# [ok] Added
-```
-
-After adding, these show up in `G` lookups and interactive mode immediately.
-
-### 3. Interactive Mode: `G` (no args)
-
-Launches a full-screen fuzzy-find TUI over every registered command:
-
-```
-  G -- ghee shell  (380/380)
-  > docker|
-
-  > dps              List running containers
-    dpsa             List all containers
-    di               List images
-    dex              Exec into container
-    dl               Follow container logs
-    ...
-
-  [arrows] navigate  [enter] select+show  [tab] copy  [esc] quit
-```
-
-Type to filter, arrows to navigate, Enter to see full details, Tab to copy, Esc to quit. Fuzzy matching -- you don't need exact strings.
-
-### gg-help: Built-in Reference
-
-```bash
-gg-help             # show everything
-gg-help docker      # filter to docker commands
-gg-help kubernetes  # filter to k8s commands
-gg-help aws         # filter to AWS commands
-gg-help terraform   # filter to terraform commands
-gg-help npm         # filter to npm/yarn/pnpm commands
-gg-help python      # filter to python/pip commands
-gg-help redis       # filter to redis commands
-gg-help nmap        # filter to security/recon commands
-gg-help nginx       # filter to nginx commands
+# Saved to ~/.ghee-custom — shows up in G search immediately
+# Edit ~/.ghee-custom directly for bulk additions:
+# alias_name|||the actual command|||description of what it does
 ```
 
 ---
 
-## Git Workflow Commands
+## 🎨 Why "ghee"?
 
-| Command | What it does |
-|---------|-------------|
-| `gg "msg"` | `git add . && commit && push` in one shot |
-| `gacp "msg"` | Same as `gg` (alias) |
-| `gclo user/repo` | `git clone https://github.com/user/repo` |
-| `jclo repo` | Clone from `juleshenry/repo` |
-| `presto` | **DESTRUCTIVE**: wipe all git history, fresh start |
-| `gwip` | Quick WIP commit with timestamp (no push) |
-| `gunwip` | Undo last WIP commit, keep changes staged |
-| `gpristine` | Hard-reset to match remote exactly |
-| `gtag v1.0 "msg"` | Create + push an annotated tag |
-| `gpr "title"` | Create a GitHub PR via `gh` CLI |
-| `gdiff-fancy` | Pretty diff summary with stats |
-| `ginit` | `git init` with initial commit |
-| `ghcl user/repo` | Clone from GitHub |
-| `gbc branch` | Create + checkout new branch |
-| `gbdall branch` | Delete branch locally and remotely |
-| `gundo` | Undo last commit, keep changes staged |
-| `gbs` | Branches sorted by last modified |
-| `gquick` | Commit + push with auto-timestamp |
-| `gchanged N` | Files changed in last N commits |
-| `gsearchtext "text"` | Search for string across git history |
-| `gnew branch` | New branch from `origin/main` |
-| `gupdateall` | Fetch all remotes + pull |
-| `greposize` | Repo object storage size |
-| `gfilesize` | List tracked files by size |
-| `glarge N` | Find N largest blobs in history |
-| `gsyncfork` | Sync fork with upstream/main |
-| `gsquash N "msg"` | Squash last N commits |
-| `gstats` | Commit count by author |
-| `garchive branch` | Archive branch as tag, delete it |
-| `galias` | List all `g*` aliases |
-| `ginfo` | Repo name, branch, remote, last commit |
-| `gbackup` | Tar.gz backup of current repo |
-
-## Git Aliases (101 shortcuts)
-
-All from `mega_script.sh`. Examples:
-
-| Alias | Expands to |
-|-------|-----------|
-| `gs` | `git status` |
-| `gss` | `git status -s` |
-| `ga` | `git add .` |
-| `gc` | `git commit -m` |
-| `gp` | `git push` |
-| `gl` | `git pull` |
-| `glr` | `git pull --rebase` |
-| `gb` | `git branch` |
-| `gco` | `git checkout` |
-| `gcob` | `git checkout -b` |
-| `gcom` | `git checkout main` |
-| `gsw` | `git switch` |
-| `gm` | `git merge` |
-| `glog` | `git log --oneline --decorate --graph` |
-| `glast` | `git log -1 HEAD` |
-| `gblame` | `git blame` |
-| `gd` | `git diff` |
-| `gds` | `git diff --staged` |
-| `gdlc` | `git diff HEAD^ HEAD` |
-| `gst` | `git stash` |
-| `gstpo` | `git stash pop` |
-| `gf` | `git fetch` |
-| `gcl` | `git clone` |
-| `grss` | `git reset --soft HEAD~1` |
-| `grsh` | `git reset --hard HEAD~1` |
-| `gcp` | `git cherry-pick` |
-| `grbi` | `git rebase -i` |
-| `gt` | `git tag` |
-| `gpt` | `git push --tags` |
-
-Run `gg-help` or `gg-help git` for the full list.
+Ghee is clarified Indian butter — everything impure is removed, leaving only the richest, purest fat. That's this toolkit. No bloat, no noise — just the good stuff, clarified down to its most useful essence, making everything it touches smoother and more delicious. 🧈
 
 ---
 
-## Docker Shortcuts (20 commands)
+## 📄 License
 
-| Command | What it does |
-|---------|-------------|
-| `dps` | `docker ps` -- list running containers |
-| `dpsa` | `docker ps -a` -- list all containers |
-| `di` | `docker images` -- list images |
-| `drm` | `docker rm` -- remove a container |
-| `drmi` | `docker rmi` -- remove an image |
-| `drmf` | Force-remove all containers |
-| `drmia` | Remove all images |
-| `dex CONTAINER` | `docker exec -it CONTAINER bash` |
-| `dl` | `docker logs -f` -- follow logs |
-| `dstop` | Stop all running containers |
-| `dprune` | `docker system prune -af` |
-| `dc` | `docker compose` |
-| `dcu` | `docker compose up -d` |
-| `dcd` | `docker compose down` |
-| `dcb` | `docker compose build` |
-| `dcl` | `docker compose logs -f` |
-| `dcr` | `docker compose restart` |
-| `dvls` | `docker volume ls` |
-| `dnls` | `docker network ls` |
-| `dbuild NAME` | `docker build -t NAME .` |
-
----
-
-## Kubernetes Shortcuts (26 commands)
-
-| Command | What it does |
-|---------|-------------|
-| `k` | `kubectl` |
-| `kgp` | `kubectl get pods` |
-| `kgpa` | `kubectl get pods --all-namespaces` |
-| `kgs` | `kubectl get svc` |
-| `kgn` | `kubectl get nodes` |
-| `kgd` | `kubectl get deployments` |
-| `kgi` | `kubectl get ingress` |
-| `kgns` | `kubectl get namespaces` |
-| `kga` | `kubectl get all` |
-| `kdp` | `kubectl describe pod` |
-| `kds` | `kubectl describe svc` |
-| `kdd` | `kubectl describe deployment` |
-| `kl POD` | `kubectl logs -f POD` |
-| `klp POD` | Previous container logs |
-| `kex POD` | `kubectl exec -it POD -- bash` |
-| `kaf FILE` | `kubectl apply -f FILE` |
-| `kdf FILE` | `kubectl delete -f FILE` |
-| `kctx` | List kube contexts |
-| `kuse CTX` | Switch kube context |
-| `kns NS` | Set default namespace |
-| `kpf` | `kubectl port-forward` |
-| `kscale DEP N` | Scale deployment to N replicas |
-| `krollout DEP` | Check rollout status |
-| `krestart DEP` | Restart a deployment |
-| `ktop` | Pod resource usage |
-| `ktopn` | Node resource usage |
-
----
-
-## AWS CLI Shortcuts (15 commands)
-
-| Command | What it does |
-|---------|-------------|
-| `awsid` | `aws sts get-caller-identity` |
-| `awsls` | `aws s3 ls` -- list S3 buckets |
-| `awscp` | `aws s3 cp` -- copy to S3 |
-| `awssync` | `aws s3 sync` -- sync dir to S3 |
-| `awsec2` | List EC2 instances (table) |
-| `awsecr [region]` | ECR docker login |
-| `awslam` | List Lambda functions |
-| `awslog LOG_GROUP` | Tail CloudWatch logs |
-| `awseb` | List Elastic Beanstalk environments |
-| `awscf` | List CloudFormation stacks |
-| `awseks` | List EKS clusters |
-| `awsrds` | List RDS instances |
-| `awsssm INSTANCE` | SSM session to EC2 |
-| `awswho` | Show current IAM user |
-| `awsregions` | List all AWS regions |
-
----
-
-## GCP / gcloud Shortcuts (15 commands)
-
-| Command | What it does |
-|---------|-------------|
-| `gcpid` | Show current GCP project |
-| `gcpset PROJECT` | Set GCP project |
-| `gcpls` | List GCE instances |
-| `gcpssh INSTANCE` | SSH into GCE instance |
-| `gcpgke` | List GKE clusters |
-| `gcpgkecreds CLUSTER` | Get GKE kubeconfig |
-| `gcpbq` | List BigQuery datasets |
-| `gcpgsutil` | List GCS buckets |
-| `gcpcp` | Copy file to GCS |
-| `gcpsync` | Sync directory to GCS |
-| `gcprun` | List Cloud Run services |
-| `gcpfn` | List Cloud Functions |
-| `gcpsql` | List Cloud SQL instances |
-| `gcplog` | Read GCP logs |
-| `gcpauth` | `gcloud auth login` |
-
----
-
-## Terraform Shortcuts (11 commands)
-
-| Command | What it does |
-|---------|-------------|
-| `tf` | `terraform` |
-| `tfi` | `terraform init` |
-| `tfp` | `terraform plan` |
-| `tfa` | `terraform apply` |
-| `tfaa` | `terraform apply -auto-approve` |
-| `tfd` | `terraform destroy` |
-| `tfs` | `terraform state list` |
-| `tfo` | `terraform output` |
-| `tfv` | `terraform validate` |
-| `tff` | `terraform fmt -recursive` |
-| `tfw` | `terraform workspace list` |
-
----
-
-## Helm / Ansible / Vagrant (7 commands)
-
-| Command | What it does |
-|---------|-------------|
-| `hup` | `helm upgrade --install` |
-| `hls` | `helm list` |
-| `hdel` | `helm uninstall` |
-| `ans` | `ansible-playbook` |
-| `vup` | `vagrant up` |
-| `vsh` | `vagrant ssh` |
-| `vhalt` | `vagrant halt` |
-
----
-
-## npm / yarn / pnpm (30 commands)
-
-| Command | What it does |
-|---------|-------------|
-| `ni` | `npm install` |
-| `nid` | `npm install --save-dev` |
-| `nig` | `npm install -g` |
-| `nrd` | `npm run dev` |
-| `nrb` | `npm run build` |
-| `nrs` | `npm run start` |
-| `nrt` | `npm run test` |
-| `nrl` | `npm run lint` |
-| `nls` | `npm list --depth=0` |
-| `nout` | `npm outdated` |
-| `nup` | `npm update` |
-| `naf` | `npm audit fix` |
-| `ncc` | `npm cache clean --force` |
-| `ninit` | `npm init -y` |
-| `nx` | `npx` |
-| `yi` | `yarn install` |
-| `ya` | `yarn add` |
-| `yad` | `yarn add --dev` |
-| `yrd` | `yarn dev` |
-| `yrb` | `yarn build` |
-| `yrs` | `yarn start` |
-| `yrt` | `yarn test` |
-| `yga` | `yarn global add` |
-| `pi` | `pnpm install` |
-| `pad` | `pnpm add` |
-| `padd` | `pnpm add -D` |
-| `prd` | `pnpm dev` |
-| `prb` | `pnpm build` |
-| `prs` | `pnpm start` |
-| `prt` | `pnpm test` |
-
----
-
-## Python / pip / venv (20 commands)
-
-| Command | What it does |
-|---------|-------------|
-| `py` | `python3` |
-| `py2` | `python2` |
-| `pip3i` | `pip3 install` |
-| `pipr` | `pip3 install -r requirements.txt` |
-| `pipf` | `pip3 freeze > requirements.txt` |
-| `pipl` | `pip3 list` |
-| `pipo` | `pip3 list --outdated` |
-| `pipu` | `pip3 install --upgrade` |
-| `pipun` | `pip3 uninstall` |
-| `venv` | `python3 -m venv venv` |
-| `va` | `source venv/bin/activate` |
-| `vd` | `deactivate` |
-| `pt` | `pytest` |
-| `ptv` | `pytest -v` |
-| `ptc` | `pytest --cov` |
-| `pym` | `python3 -m MODULE` |
-| `ipy` | `ipython` |
-| `jnb` | `jupyter notebook` |
-| `jlab` | `jupyter lab` |
-| `pide` | `pip3 install -e .` |
-
----
-
-## systemd / Services (15 commands)
-
-| Command | What it does |
-|---------|-------------|
-| `scs` | `sudo systemctl status` |
-| `scstart` | `sudo systemctl start` |
-| `scstop` | `sudo systemctl stop` |
-| `screstart` | `sudo systemctl restart` |
-| `scenable` | `sudo systemctl enable` |
-| `scdisable` | `sudo systemctl disable` |
-| `screload` | `sudo systemctl reload` |
-| `scdaemon` | `sudo systemctl daemon-reload` |
-| `jctl` | `sudo journalctl -f` |
-| `jctlu` | `sudo journalctl -u UNIT` |
-| `jctlt` | `sudo journalctl --since today` |
-| `scls` | `systemctl list-units --type=service` |
-| `scfail` | `systemctl --failed` |
-| `scactive` | `systemctl is-active` |
-| `scenabled` | `systemctl is-enabled` |
-
----
-
-## Networking (20 commands)
-
-| Command | What it does |
-|---------|-------------|
-| `curlt` | `curl` with DNS/connect/TLS timing breakdown |
-| `curlh` | `curl -I` -- show HTTP headers |
-| `curlj URL DATA` | `curl -X POST` with JSON body |
-| `wgetm` | `wget --mirror` -- mirror a site |
-| `myip` | Show public IP (`curl ifconfig.me`) |
-| `localip` | Show local IP address |
-| `ping5` | `ping -c 5` |
-| `digs` | `dig +short` -- quick DNS lookup |
-| `digr` | `dig -x` -- reverse DNS |
-| `nsl` | `nslookup` |
-| `trace` | `traceroute` |
-| `nstat` | `netstat -tlnp` -- listening ports |
-| `ssl` | `ss -tlnp` -- listening ports |
-| `conns` | `ss -s` -- connection summary |
-| `portcheck HOST PORT` | Check if a port is open (via `nc`) |
-| `speedtest` | Internet speed test |
-| `ifls` | List network interfaces |
-| `headers` | `curl -sI` -- HTTP headers for URL |
-| `dlf` | `curl -L -O` -- download file |
-| `whois` | Whois lookup |
-
----
-
-## Redis (12 commands)
-
-| Command | What it does |
-|---------|-------------|
-| `rd` | `redis-cli` |
-| `rdping` | `redis-cli ping` |
-| `rdinfo` | `redis-cli info` |
-| `rdmon` | `redis-cli monitor` |
-| `rdkeys` | `redis-cli keys "*"` |
-| `rdget` | `redis-cli get KEY` |
-| `rdset` | `redis-cli set KEY VAL` |
-| `rddel` | `redis-cli del KEY` |
-| `rdflush` | `redis-cli flushdb` |
-| `rdflushall` | `redis-cli flushall` |
-| `rdsize` | `redis-cli dbsize` |
-| `rdshut` | `redis-cli shutdown` |
-
----
-
-## PostgreSQL (15 commands)
-
-| Command | What it does |
-|---------|-------------|
-| `pg` | `psql` |
-| `pgsu` | `sudo -u postgres psql` |
-| `pgls` | `psql -l` -- list databases |
-| `pgdb DB [user]` | Connect to a database |
-| `pgdump` | `pg_dump` |
-| `pgrestore` | `pg_restore` |
-| `pgcreate` | `createdb` |
-| `pgdrop` | `dropdb` |
-| `pgroles` | List PostgreSQL roles |
-| `pgconn` | Show active connections |
-| `pgsize` | Show table sizes |
-| `pgrunning` | Show running queries |
-| `pgvacuum` | Run `VACUUM FULL` |
-| `pgstatus` | PostgreSQL service status |
-| `pgver` | `psql --version` |
-
----
-
-## nginx (11 commands)
-
-| Command | What it does |
-|---------|-------------|
-| `ngt` | `nginx -t` -- test config |
-| `ngr` | `nginx -s reload` |
-| `ngstart` | Start nginx |
-| `ngstop` | Stop nginx |
-| `ngrestart` | Restart nginx |
-| `ngstatus` | nginx service status |
-| `ngedit` | Edit `/etc/nginx/nginx.conf` |
-| `ngacc` | Tail nginx access log |
-| `ngerr` | Tail nginx error log |
-| `ngsites` | List sites-enabled |
-| `ngconf` | Dump full nginx config |
-
----
-
-## Cybersecurity / Network Recon (40 commands)
-
-| Command | What it does |
-|---------|-------------|
-| **Telnet / Netstat** | |
-| `tn` | `telnet HOST` |
-| `tnp HOST PORT` | Telnet to host:port |
-| `nsa` | `netstat -an` -- all connections |
-| `nstcp` | `netstat -tlnp` -- listening TCP |
-| `nsudp` | `netstat -ulnp` -- listening UDP |
-| `nsproc` | `netstat -tulnp` -- with process info |
-| `nsest` | Netstat established connections |
-| **Nmap** | |
-| `nquick` | `nmap -F` -- quick scan (top 100 ports) |
-| `nfull` | `nmap -p-` -- full TCP port scan |
-| `nsvc` | `nmap -sV` -- service version detection |
-| `nos` | `nmap -O` -- OS detection (root) |
-| `nagg` | `nmap -A` -- aggressive scan |
-| `nsyn` | `nmap -sS` -- stealth SYN scan (root) |
-| `nudp` | `nmap -sU` -- UDP scan (root) |
-| `nsweep` | `nmap -sn` -- ping sweep subnet |
-| `nvuln` | `nmap --script vuln` -- vulnerability scan |
-| `nports HOST PORTS` | Scan specific ports |
-| `nscript` | `nmap -sC` -- scan with default scripts |
-| `nmapxml HOST [file]` | Nmap with XML output |
-| **Netcat** | |
-| `ncl PORT` | `nc -lvp` -- listen on port |
-| `ncs HOST PORT` | `nc` -- connect to host:port |
-| `ncscan HOST RANGE` | Port scan with netcat (no nmap needed) |
-| **SSL/TLS** | |
-| `sslcheck DOMAIN` | Check SSL certificate dates/subject/issuer |
-| `sslchain DOMAIN` | Show full SSL certificate chain |
-| `sslciphers DOMAIN` | Enumerate SSL ciphers |
-| **Recon** | |
-| `bannergrab HOST PORT` | Banner grab via netcat |
-| `myports` | Show open ports on this host |
-| `arptable` | Show ARP table |
-| `routes` | Show routing table |
-| `fwrules` | Show firewall rules (iptables/pf) |
-| **Packet Capture** | |
-| `sniff` | `tcpdump -i any` (root) |
-| `tcapt IFACE [file]` | Capture packets to pcap file |
-| `tcport PORT` | tcpdump filter by port |
-| `tchost HOST` | tcpdump filter by host |
-| **Security Checks** | |
-| `secheaders URL` | Check HTTP security headers |
-| `hashpw PASSWORD` | Hash password with SHA-512 |
-| `genpw [length]` | Generate random password (default 32) |
-| `worldwrite` | Find world-writable files |
-| `findsuid` | Find SUID binaries |
-| `whoson` | Show logged-in users |
-
----
-
-## Misc CLI Tools (22 commands)
-
-| Command | What it does |
-|---------|-------------|
-| `duh` | `du -sh * \| sort -rh` -- disk usage sorted |
-| `dfh` | `df -h` -- disk free |
-| `fmem` | `free -h` -- memory usage |
-| `cpuinfo` | CPU information |
-| `w2` | `watch -n 2` -- watch command every 2s |
-| `lsofp` | `lsof -c PROCESS` |
-| `killname` | `pkill -f NAME` |
-| `hist` | Last 50 history entries |
-| `cl` | `clear` |
-| `reload` | Reload shell config |
-| `erc` | Edit shell RC file |
-| `path` | Show `$PATH` (one per line) |
-| `cx` | `chmod +x FILE` |
-| `epoch` | Print Unix timestamp |
-| `isodate` | Print ISO 8601 timestamp |
-| `uuid` | Generate UUID |
-| `b64e` | Base64 encode |
-| `b64d` | Base64 decode |
-| `sha256` | SHA256 hash of file |
-| `md5sum` | MD5 hash of file |
-
----
-
-## Shell & File Utilities
-
-| Command | What it does |
-|---------|-------------|
-| `h term` | Grep shell history |
-| `hl term` | History "I'm feeling lucky" -- run penultimate match |
-| `dst` | Remove all `.DS_Store` files recursively |
-| `dust-kash` | Remove all `.kash` cache files recursively |
-| `cruft` | Find files larger than 1G from root, sorted by size |
-| `date-file-maker` | Create a UTC-timestamped `.txt` file |
-| `swap f1 f2` | Swap the names of two files |
-| `mkcd dir` | `mkdir -p` + `cd` in one step |
-| `extract archive` | Universal extractor (tar/gz/zip/7z/rar) |
-| `tre [path]` | `tree` with `.git`/`node_modules` ignored |
-| `ports` | Show listening TCP ports |
-| `sizeof path` | Human-readable size of file or dir |
-| `blk file.py` | Run Python Black formatter |
-| `serve [port]` | Quick HTTP server (default port 8000) |
-| `jql file.json` | Pretty-print JSON through `jq` + `less` |
-| `rmdstore` | Remove `.DS_Store` files with feedback |
-| `rmnodemodules` | Interactively remove `node_modules` dirs |
-| `countext` | Count files by extension |
-| `findlarge [size]` | Find files larger than N (default 10M) |
-
----
-
-## Python Utilities
-
-### kash
-A Python decorator for caching function results to `.kash` files (JSON).
-
-```python
-from kash import kash
-
-@kash("my_cache")
-def expensive_function(x, y):
-    return x ** y
-
-expensive_function(2, 10)  # computes and caches
-expensive_function(2, 10)  # returns cached result
-```
-
-Cache key uses `int`, `str`, and `float` args only. Clear cache with `dust-kash`.
-
-### autosave-git-recursively.py
-Walks child directories, finds all `.git` repos, auto-commits and pushes each.
-
-```bash
-python3 autosave-git-recursively.py
-```
-
-### repoinspector.py
-Fetches open issues across a GitHub user's repos. Requires `requests`.
-
-```bash
-python3 repoinspector.py [username]
-```
-
-### add_mit_license.py
-Adds MIT LICENSE (with croc-shades ASCII art) to all of a user's GitHub repos.
-
-```bash
-python3 add_mit_license.py [--dry-run]
-```
-
-### rename_recursively.py
-Recursively renames files to their last 5 characters. **Destructive**.
-
-```bash
-python3 rename_recursively.py /path/to/dir
-```
-
----
-
-## Full Command Reference
-
-Run `gg-help` for the complete reference table with all 380+ commands:
-
-```bash
-gg-help             # show everything
-gg-help docker      # filter to docker commands
-gg-help kubernetes  # filter to k8s commands
-gg-help aws         # filter to AWS commands
-gg-help terraform   # filter to terraform commands
-gg-help npm         # filter to npm/yarn/pnpm
-gg-help python      # filter to python/pip
-gg-help systemd     # filter to systemd/services
-gg-help redis       # filter to redis
-gg-help postgres    # filter to postgresql
-gg-help nginx       # filter to nginx
-gg-help nmap        # filter to nmap/security
-gg-help ssl         # filter to SSL/TLS
-gg-help tcpdump     # filter to packet capture
-```
-
----
-
-## License
-See [LICENSE](LICENSE) file for details.
+MIT — use it, fork it, spread it like butter.
