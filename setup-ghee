@@ -76,9 +76,9 @@ RC_FILE="$(detect_rc_file)"
 
 MARKER_START="# ghee bash functions - START"
 MARKER_END="# ghee bash functions - END"
-SOURCE_FUNCTIONS="export PATH=\"\${SCRIPT_DIR}/bin:\${SCRIPT_DIR}/tools:\$PATH\"
-source \"\${SCRIPT_DIR}/ghee-functions.sh\"
-for _gg_mod in \"\${SCRIPT_DIR}/modules\"/*.sh; do
+SOURCE_FUNCTIONS="export PATH=\"${SCRIPT_DIR}/bin:${SCRIPT_DIR}/tools:\$PATH\"
+source \"${SCRIPT_DIR}/ghee-functions.sh\"
+for _gg_mod in \"${SCRIPT_DIR}/modules\"/*.sh; do
     source \"\$_gg_mod\"
 done"
 
