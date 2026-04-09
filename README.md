@@ -1,5 +1,9 @@
 # 🧈 ghee
 
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Shell](https://img.shields.io/badge/shell-bash%20%7C%20zsh-yellow)
+![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+
 > *Like Indian clarified butter — pure, rich, and makes everything better.*
 
 **ghee** is a collection of **538+ shell shortcuts** for developers, devops engineers, and power users. It layers smoothly on top of your existing shell, making your CLI crispy and fast — just like the real thing.
@@ -8,14 +12,38 @@ Covers: Git, Docker, Kubernetes, AWS, GCP, Terraform, Heroku, Vercel, Fly.io, Ra
 
 ---
 
+## 📑 Table of Contents
+
+- [✨ Features](#-features)
+- [✅ Prerequisites](#-prerequisites)
+- [🚀 Installation](#-installation)
+- [🎮 Using the g Command](#-using-the-g-command)
+- [📦 Project Structure](#-project-structure)
+- [📖 Command Reference](#-command-reference)
+- [🛠️ Adding Custom Shortcuts](#️-adding-custom-shortcuts)
+- [🤝 Contributing](#-contributing)
+- [🎨 Why "ghee"?](#-why-ghee)
+- [📄 License](#-license)
+
+---
+
 ## ✨ Features
 
-- 🔍 **`G`** — Interactive Python TUI to fuzzy-search all 538+ commands with live preview
-- ⚡ **`G 'docker logs'`** — Best-guess any shell command, copies match to clipboard
-- ➕ **`G -a 'mycmd' 'desc'`** — Add your own custom shortcut, persists to `~/.ghee-custom`
+- 🔍 **`g`** — Interactive Python TUI to fuzzy-search all 538+ commands with live preview
+- ⚡ **`g 'docker logs'`** — Best-guess any shell command, copies match to clipboard
+- ➕ **`g -a 'mycmd' 'desc'`** — Add your own custom shortcut, persists to `~/.ghee-custom`
 - 📦 **Modular** — 29 topic-based modules, auto-sourced into your shell
 - 🐍 **Python-powered** — Beautiful Rich TUI with fuzzy matching and color formatting
 - 🔌 **Plug-and-play** — `./setup-ghee` sets everything up in under 30 seconds
+
+---
+
+## ✅ Prerequisites
+
+- **OS:** macOS or Linux
+- **Shell:** `bash` or `zsh`
+- **Python:** `python3` (3.8 or newer recommended)
+- **Git:** Required to clone the repository
 
 ---
 
@@ -58,12 +86,12 @@ done
 
 ---
 
-## 🎮 Using the G Command
+## 🎮 Using the g Command
 
 ```bash
-G                            # Interactive fuzzy finder — search all 538+ commands
-G 'docker logs'              # Best-guess, copies best match to clipboard
-G -a 'npm run dev' 'Start dev server'  # Add a custom shortcut (persists)
+g                            # Interactive fuzzy finder — search all 538+ commands
+g 'docker logs'              # Best-guess, copies best match to clipboard
+g -a 'npm run dev' 'Start dev server'  # Add a custom shortcut (persists)
 ```
 
 In interactive mode: **arrows** to navigate · **Enter** to select · **Tab** to copy · **Esc** to quit.
@@ -75,7 +103,7 @@ In interactive mode: **arrows** to navigate · **Enter** to select · **Tab** to
 ```
 ghee/
 ├── setup-ghee              # Installer / uninstaller
-├── ghee-functions.sh       # Core init: colors, G() wrapper, registry declaration
+├── ghee-functions.sh       # Core init: colors, g() wrapper, registry declaration
 ├── ghee.py                 # Python TUI (rich-powered fuzzy search CLI)
 ├── modules/                # 29 bash modules, auto-sourced on shell start
 │   ├── git_workflow.sh       # Advanced git functions (gwip, presto, gtag...)
@@ -495,8 +523,9 @@ ghee/
 
 | Alias | Runs | Description |
 |-------|------|-------------|
-| `G` | `G [cmd] or G -a 'cmd' 'desc'` | Ghee hot-doc shell |
+| `g` | `g [cmd] or g -a 'cmd' 'desc'` | Ghee hot-doc shell |
 | `gg-help` | `print reference table` | Full command reference |
+| `gupdate` | `git pull && ./setup-ghee` | Auto-update ghee to latest version |
 
 ### Misc Cli Tools
 
@@ -801,12 +830,24 @@ ghee/
 
 ```bash
 # Add any command permanently
-G -a 'python manage.py runserver' 'Start Django dev server'
+g -a 'python manage.py runserver' 'Start Django dev server'
 
-# Saved to ~/.ghee-custom — shows up in G search immediately
+# Saved to ~/.ghee-custom — shows up in g search immediately
 # Edit ~/.ghee-custom directly for bulk additions:
 # alias_name|||the actual command|||description of what it does
 ```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! If you want to add new commands or modules, please follow these steps:
+
+1. **Fork** the repository and create your branch (`git checkout -b feature/new-module`).
+2. Add your aliases to an existing module in `modules/` or create a new `.sh` file if it's a completely new category.
+3. Make sure you use the standard structure for your aliases and keep descriptions clear and concise.
+4. **Test** the installer script (`./setup-ghee`) locally to ensure your changes don't break existing setups.
+5. Submit a **Pull Request**.
 
 ---
 
