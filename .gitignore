@@ -8,3 +8,7 @@ __pycache__/
 .pytest_cache/
 .DS_Store
 .rosetta_cache.json
+dist/
+build/
+*.egg-info/
+src/*.egg-info/

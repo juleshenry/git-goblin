@@ -1,0 +1,9 @@
+include README.md
+include CHANGELOG.md
+include LICENSE
+include pyproject.toml
+recursive-include modules *.sh
+recursive-include bin *
+recursive-include tools *
+include ghee-functions.sh
+include ghee.py

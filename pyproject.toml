@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ghee-cli"
+version = "0.1.0"
+description = "538+ shell shortcuts for developers, DevOps engineers, and power users"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Jules Henry", email = "juleshenry@users.noreply.github.com"}
+]
+keywords = ["cli", "shell", "shortcuts", "devops", "developer-tools", "bash", "zsh", "git", "docker", "kubernetes"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: System :: Shells",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "rich>=10.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "build",
+    "twine",
+]
+
+[project.urls]
+Homepage = "https://github.com/juleshenry/ghee"
+Repository = "https://github.com/juleshenry/ghee.git"
+"Bug Tracker" = "https://github.com/juleshenry/ghee/issues"
+Documentation = "https://github.com/juleshenry/ghee#readme"
+
+[project.scripts]
+ghee = "ghee_cli:main"
+g = "ghee_cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+ghee_cli = ["*.md", "*.txt"]
