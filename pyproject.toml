@@ -7,7 +7,7 @@ name = "ghee-cli"
 version = "0.1.0"
 description = "538+ shell shortcuts for developers, DevOps engineers, and power users"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
 authors = [
     {name = "Jules Henry", email = "juleshenry@users.noreply.github.com"}
 ]
@@ -17,7 +17,6 @@ classifiers = [
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: MacOS :: MacOS X",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
