@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Meta
+# Description: Ghee shortcuts and utilities for Meta.
+# ============================================================================
+
 # Meta
 
 _GG_REGISTRY["G"]="G [cmd] or G -a 'cmd' 'desc' ||| Ghee hot-doc shell"]

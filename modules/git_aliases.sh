@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Git Aliases
+# Description: Ghee shortcuts and utilities for Git Aliases.
+# ============================================================================
+
 # Git Aliases (mega_script)
 
 _GG_REGISTRY["gs"]="git status ||| Show working tree status"]

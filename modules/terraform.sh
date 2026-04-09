@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Terraform
+# Description: Ghee shortcuts and utilities for Terraform.
+# ============================================================================
+
 # Terraform
 
 _GG_REGISTRY["tf"]="terraform ||| Terraform shortcut"]

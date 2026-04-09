@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Npm Yarn Pnpm
+# Description: Ghee shortcuts and utilities for Npm Yarn Pnpm.
+# ============================================================================
+
 # npm / yarn / pnpm
 
 _GG_REGISTRY["ni"]="npm install ||| npm install"]

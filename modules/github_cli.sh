@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Github Cli
+# Description: Ghee shortcuts and utilities for Github Cli.
+# ============================================================================
+
 # GitHub CLI (gh) Shortcuts
 
 _GG_REGISTRY["ghpr"]="gh pr create ||| Create a GitHub pull request"

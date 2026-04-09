@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Misc Cli Tools
+# Description: Ghee shortcuts and utilities for Misc Cli Tools.
+# ============================================================================
+
 # Misc CLI Tools
 
 _GG_REGISTRY["duh"]="du -sh * | sort -rh ||| Disk usage summary (sorted)"]

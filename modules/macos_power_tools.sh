@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Macos Power Tools
+# Description: Ghee shortcuts and utilities for Macos Power Tools.
+# ============================================================================
+
 # macOS Power Tools
 
 _GG_REGISTRY["caffeinate"]="caffeinate -d ||| Prevent Mac from sleeping"

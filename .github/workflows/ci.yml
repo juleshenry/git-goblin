@@ -1,0 +1,28 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install pytest rich
+      - name: Run pytest
+        run: pytest tests/test_ghee.py
+
+  test-bash:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Bats
+        uses: migalhas/setup-bats@v1
+        with:
+          bats-version: 1.9.0
+      - name: Run Bats Tests
+        run: bats tests/test_modules.bats

@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Nginx
+# Description: Ghee shortcuts and utilities for Nginx.
+# ============================================================================
+
 # Nginx
 
 _GG_REGISTRY["ngt"]="sudo nginx -t ||| Test nginx config"]

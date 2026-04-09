@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(command *)",
+      "Bash(type *)",
+      "Bash(pip install *)",
+      "Bash(pip3 install *)"
+    ]
+  },
+  "$version": 3
+}

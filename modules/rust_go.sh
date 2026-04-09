@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Rust Go
+# Description: Ghee shortcuts and utilities for Rust Go.
+# ============================================================================
+
 # Rust & Go Developer Tools
 
 _GG_REGISTRY["cb"]="cargo build ||| Build Rust project"

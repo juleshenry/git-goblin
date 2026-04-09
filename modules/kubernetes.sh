@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Kubernetes
+# Description: Ghee shortcuts and utilities for Kubernetes.
+# ============================================================================
+
 # Kubernetes
 
 _GG_REGISTRY["k"]="kubectl ||| kubectl shortcut"]

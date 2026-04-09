@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Systemd Services
+# Description: Ghee shortcuts and utilities for Systemd Services.
+# ============================================================================
+
 # Systemd / Services
 
 _GG_REGISTRY["scs"]="sudo systemctl status SERVICE ||| Show service status"]

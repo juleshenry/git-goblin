@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Cloud Deploy
+# Description: Ghee shortcuts and utilities for Cloud Deploy.
+# ============================================================================
+
 # Cloud Deployment (Heroku, Vercel, Railway, Fly.io)
 
 _GG_REGISTRY["vdeploy"]="vercel --prod ||| Deploy to Vercel production"

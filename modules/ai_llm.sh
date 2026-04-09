@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Ai Llm
+# Description: Ghee shortcuts and utilities for Ai Llm.
+# ============================================================================
+
 # AI / LLM CLI Tools
 
 _GG_REGISTRY["ollama"]="ollama run MODEL ||| Run a local LLM model via Ollama"

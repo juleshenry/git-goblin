@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Postgresql
+# Description: Ghee shortcuts and utilities for Postgresql.
+# ============================================================================
+
 # PostgreSQL
 
 _GG_REGISTRY["pg"]="psql ||| PostgreSQL CLI"]

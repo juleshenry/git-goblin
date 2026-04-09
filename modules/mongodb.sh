@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Mongodb
+# Description: Ghee shortcuts and utilities for Mongodb.
+# ============================================================================
+
 # MongoDB & Mongoose CLI Tools
 
 _GG_REGISTRY["mongosh"]="mongosh ||| Launch MongoDB shell"

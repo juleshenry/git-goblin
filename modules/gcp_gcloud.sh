@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Gcp Gcloud
+# Description: Ghee shortcuts and utilities for Gcp Gcloud.
+# ============================================================================
+
 # GCP / gcloud
 
 _GG_REGISTRY["gcpid"]="gcloud config get-value project ||| Show current GCP project"]

@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Git Workflow
+# Description: Ghee shortcuts and utilities for Git Workflow.
+# ============================================================================
+
 # Git Workflow
 
 _GG_REGISTRY["gg"]="git add . && git commit -m MSG && git push ||| Add all, commit, push in one shot"]

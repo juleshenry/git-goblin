@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Cybersecurity Network Recon
+# Description: Ghee shortcuts and utilities for Cybersecurity Network Recon.
+# ============================================================================
+
 # Cybersecurity / Network Recon
 
 _GG_REGISTRY["tn"]="telnet HOST ||| Telnet to a host"]

@@ -32,6 +32,8 @@ g() {
     local script_dir="$(dirname "${BASH_SOURCE[0]}")"
     if [ -f "$script_dir/ghee-venv/bin/python" ]; then
         "$script_dir/ghee-venv/bin/python" "$script_dir/ghee.py" "$@"
+    elif [ -f "$script_dir/ghee-venv/Scripts/python.exe" ]; then
+        "$script_dir/ghee-venv/Scripts/python.exe" "$script_dir/ghee.py" "$@"
     else
         python3 "$script_dir/ghee.py" "$@"
     fi

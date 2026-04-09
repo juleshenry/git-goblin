@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Python Pip Venv
+# Description: Ghee shortcuts and utilities for Python Pip Venv.
+# ============================================================================
+
 # Python / pip / venv
 
 _GG_REGISTRY["py"]="python3 ||| Python3 shortcut"]

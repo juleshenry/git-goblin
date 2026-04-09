@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Networking
+# Description: Ghee shortcuts and utilities for Networking.
+# ============================================================================
+
 # Networking
 
 _GG_REGISTRY["curlt"]="curl with timing breakdown ||| curl with DNS/connect/TLS timing"]

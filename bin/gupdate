@@ -1,0 +1,29 @@
+#!/bin/bash
+# gupdate: Auto-updates ghee to the latest master branch and re-runs the installer
+
+set -euo pipefail
+
+# Find the real directory of this script, handling symlinks
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+GHEE_DIR="$( cd -P "$( dirname "$SOURCE" )/.." && pwd )"
+
+echo -e "\033[0;36m[..]\033[0m Updating ghee..."
+cd "$GHEE_DIR"
+
+if [ -d ".git" ]; then
+    echo -e "\033[0;36m[..]\033[0m Pulling latest changes from master..."
+    git pull origin master || git pull origin main
+    
+    echo -e "\033[0;36m[..]\033[0m Re-running setup-ghee..."
+    ./setup-ghee
+    
+    echo -e "\033[0;32m[ok]\033[0m Update complete! Please run 'exec \$SHELL' or 'source ~/.zshrc' (or ~/.bashrc) to apply."
+else
+    echo -e "\033[0;31m[ERR]\033[0m Ghee does not appear to be a git repository at $GHEE_DIR. Cannot auto-update."
+    exit 1
+fi

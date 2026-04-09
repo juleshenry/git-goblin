@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Super Utilities
+# Description: Ghee shortcuts and utilities for Super Utilities.
+# ============================================================================
+
 # Super Utilities
 
 _GG_REGISTRY["cheat"]="curl cheat.sh/CMD ||| Get cheat sheet for any CLI command"

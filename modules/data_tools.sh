@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Data Tools
+# Description: Ghee shortcuts and utilities for Data Tools.
+# ============================================================================
+
 # JSON / YAML / Data Processing
 
 _GG_REGISTRY["jqpp"]="cat file.json | jq . ||| Pretty-print JSON"

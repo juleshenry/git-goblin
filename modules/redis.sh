@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Redis
+# Description: Ghee shortcuts and utilities for Redis.
+# ============================================================================
+
 # Redis
 
 _GG_REGISTRY["rd"]="redis-cli ||| Redis CLI"]

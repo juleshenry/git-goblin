@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Shell File Utilities
+# Description: Ghee shortcuts and utilities for Shell File Utilities.
+# ============================================================================
+
 # Shell / File Utilities
 
 _GG_REGISTRY["h"]="history | grep TERM ||| Grep shell history"]

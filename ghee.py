@@ -166,7 +166,7 @@ def load_registry() -> Dict[str, Dict[str, str]]:
                     key = m.group(1).strip()
                     cmd = m.group(2).strip()
                     desc = m.group(3).strip()
-                    registry[key] = {"cmd": cmd, "desc": desc}
+                    registry[key] = {"cmd": cmd, "desc": desc, "module": mod_file.stem}
             except IOError as e:
                 print_err(f"Failed to read module {mod_file}: {e}")
 
@@ -180,7 +180,8 @@ def load_registry() -> Dict[str, Dict[str, str]]:
                         # format: key|||cmd|||desc
                         registry[parts[0].strip()] = {
                             "cmd": parts[1].strip(),
-                            "desc": parts[2].strip()
+                            "desc": parts[2].strip(),
+                            "module": "custom"
                         }
         except IOError as e:
             print_err(f"Failed to read custom file: {e}")
@@ -242,45 +243,125 @@ def save_registry_cache(registry: Dict[str, Dict[str, str]]) -> None:
     except IOError as e:
         print_err(f"Failed to save cache: {e}")
 
-def add_custom(alias, desc):
-    cmd = alias # In the bash version, the shortcut runs itself? No, g -a 'npm run dev' 'desc' makes alias='npm run dev' and cmd='npm run dev'
-    with open(CUSTOM_FILE, "a") as f:
-        f.write(f"{alias}|||{cmd}|||{desc}\n")
-    print_ok(f"Added: [bold]{alias}[/bold] -- {desc}" if RICH_AVAILABLE else f"Added: {alias} -- {desc}")
-    print_info(f"Saved to {CUSTOM_FILE}")
+def add_custom(alias: str, desc: str) -> None:
+    """
+    Add a custom shortcut to the registry.
 
-def score_match(query, key, cmd, desc):
+    Validates inputs for safety and correctness before adding to the custom file.
+
+    Args:
+        alias: The command/shortcut to add
+        desc: A description of what the command does
+    """
+    # Validate inputs
+    alias_valid, alias_err = validate_alias_input(alias)
+    if not alias_valid:
+        print_err(f"Invalid alias: {alias_err}")
+        sys.exit(1)
+
+    desc_valid, desc_err = validate_desc_input(desc)
+    if not desc_valid:
+        print_err(f"Invalid description: {desc_err}")
+        sys.exit(1)
+
+    cmd_valid, cmd_err = validate_command_input(alias)
+    if not cmd_valid:
+        print_err(f"Invalid command: {cmd_err}")
+        sys.exit(1)
+
+    cmd = alias  # The alias IS the command in this context
+    try:
+        with open(CUSTOM_FILE, "a") as f:
+            f.write(f"{alias}|||{cmd}|||{desc}\n")
+        print_ok(f"Added: [bold]{alias}[/bold] -- {desc}" if RICH_AVAILABLE else f"Added: {alias} -- {desc}")
+        print_info(f"Saved to {CUSTOM_FILE}")
+        
+        # Invalidate cache after adding custom command
+        if CACHE_FILE.exists():
+            try:
+                CACHE_FILE.unlink()
+            except IOError:
+                pass
+    except IOError as e:
+        print_err(f"Failed to write to custom file: {e}")
+        sys.exit(1)
+
+def score_match(query: str, key: str, cmd: str, desc: str) -> int:
     """
     Score the match of a query against a command alias, actual command, and description.
-    
-    Implements a word-overlap fuzzy scoring algorithm. 
+
+    Implements an improved word-overlap fuzzy scoring algorithm.
     Higher scores indicate a better match. Exact alias matches get the highest score.
-    
+
     Args:
         query (str): The search string provided by the user.
         key (str): The alias name.
         cmd (str): The underlying shell command.
         desc (str): A description of what the command does.
-        
+
     Returns:
         int: The match score (0 if no match at all).
     """
-    query = query.lower()
+    query = query.lower().strip()
     key = key.lower()
     cmd = cmd.lower()
     desc = desc.lower()
-    
+
+    if not query:
+        return 0
+
     score = 0
-    if cmd == query: score += 1000
-    if query in cmd: score += 500
-    if cmd in query and cmd: score += 400
-    if key == query: score += 900
-    
-    for word in query.split():
-        if word in cmd: score += 50
-        if word in desc: score += 30
-        if word in key: score += 40
-        
+
+    # Exact matches get highest priority
+    if cmd == query:
+        score += 1000
+    if key == query:
+        score += 900
+
+    # Substring matches
+    if query in cmd:
+        score += 500
+    if cmd in query and cmd:
+        score += 400
+    if query in key:
+        score += 300
+    if query in desc:
+        score += 200
+
+    # Word-level matching (more nuanced)
+    query_words = query.split()
+    cmd_words = cmd.split()
+    desc_words = desc.split()
+    key_words = re.split(r'[\s\-_]+', key)
+
+    for qword in query_words:
+        if len(qword) < 2:  # Skip very short words
+            continue
+
+        # Check for substring matches in any word (fuzzy)
+        for cword in cmd_words:
+            if qword in cword or cword in qword:
+                score += 75
+                break
+
+        for dword in desc_words:
+            if qword in dword or dword in qword:
+                score += 40
+                break
+
+        for kword in key_words:
+            if qword in kword or kword in qword:
+                score += 50
+                break
+
+    # Consecutive character bonus (for partial typing)
+    for i in range(len(query) - 2):
+        substr = query[i:i+3]
+        if substr in cmd:
+            score += 20
+        if substr in key:
+            score += 15
+
     return score
 
 def get_ollama_model():
@@ -322,25 +403,99 @@ def ask_ollama(query, model):
         print_err(f"Ollama error: {e}")
         return None
 
-def getch():
-    """Read a single keypress (Unix)."""
-    import termios, tty, sys
-    fd = sys.stdin.fileno()
-    old_settings = termios.tcgetattr(fd)
-    try:
-        tty.setraw(sys.stdin.fileno())
-        ch = sys.stdin.read(1)
-    finally:
-        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-    return ch
+def getch() -> str:
+    """Read a single keypress (Cross-platform)."""
+    if sys.platform == "win32":
+        import msvcrt
+        return msvcrt.getch().decode('utf-8', 'ignore')
+    else:
+        import termios, tty
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(sys.stdin.fileno())
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch
 
-def best_guess(query, registry):
+def copy_to_clipboard(text: str) -> bool:
+    """
+    Copy text to the system clipboard.
+    
+    Args:
+        text: The text to copy
+        
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        if sys.platform == "darwin":
+            subprocess.run(["pbcopy"], input=text.encode("utf-8"), check=True, timeout=5)
+            return True
+        elif sys.platform == "win32" or sys.platform == "cygwin" or sys.platform == "msys":
+            subprocess.run(["clip.exe"], input=text.encode("utf-8"), check=True, timeout=5)
+            return True
+        elif sys.platform.startswith("linux"):
+            # Try xclip first, then xsel
+            try:
+                subprocess.run(["xclip", "-selection", "clipboard"], 
+                             input=text.encode("utf-8"), check=True, timeout=5)
+                return True
+            except FileNotFoundError:
+                subprocess.run(["xsel", "--clipboard", "--input"], 
+                             input=text.encode("utf-8"), check=True, timeout=5)
+                return True
+    except FileNotFoundError:
+        print_err("No clipboard utility found. Install xclip or xsel on Linux.")
+    except subprocess.TimeoutExpired:
+        print_err("Clipboard operation timed out.")
+    except Exception as e:
+        print_err(f"Failed to copy to clipboard: {e}")
+    return False
+
+def run_ollama(query: str):
+    """Explicitly ask Ollama to generate a command."""
+    model = get_ollama_model()
+    if not model:
+        print_err("No active Ollama models found. Is Ollama running?")
+        return
+        
+    cmd = ask_ollama(query, model)
+    if cmd:
+        if RICH_AVAILABLE:
+            console.print(Panel(f"[bold green]{cmd}[/bold green]", 
+                               title=f"🤖 AI Suggestion ({model})", 
+                               box=box.ROUNDED, expand=False))
+            console.print("[dim]Press [bold]Enter[/bold] to run, [bold]Esc[/bold] to cancel, [bold]c[/bold] to copy...[/dim]")
+        else:
+            print(f"\n--- AI Suggestion ({model}) ---")
+            print(f"  {cmd}")
+            print("Press Enter to run, Esc to cancel, or c to copy...")
+
+        while True:
+            ch = getch()
+            if ch == '\r' or ch == '\n':
+                print_info(f"Running: {cmd}")
+                os.system(cmd)
+                return
+            elif ch == '\x1b':  # Escape
+                print_info("Cancelled.")
+                return
+            elif ch.lower() == 'c':
+                copy_to_clipboard(cmd)
+                print_info("Copied to clipboard.")
+                return
+    else:
+        print_err("Failed to generate a command.")
+
+def best_guess(query: str, registry: Dict[str, Dict[str, str]]) -> None:
     """
     Finds the best matching command for the given query and presents it.
-    
+
     If it finds matches, it shows the highest-scoring match and up to 4 alternatives.
     It automatically copies the best match command to the user's clipboard.
-    
+
     Args:
         query (str): The search query to look up.
         registry (dict): The loaded command registry containing available aliases.
@@ -348,7 +503,9 @@ def best_guess(query, registry):
     best_key = None
     best_score = 0
     stats = load_stats()
-    
+    config = load_config()
+    auto_copy = config.get("auto_copy_to_clipboard", True)
+
     scores = []
     for key, data in registry.items():
         s = score_match(query, key, data["cmd"], data["desc"])
@@ -356,50 +513,16 @@ def best_guess(query, registry):
             # Boost score based on usage frequency (capped at 200 points max)
             s += min(200, stats.get(key, 0) * 10)
             scores.append((s, key, data))
-            
+
     scores.sort(key=lambda x: x[0], reverse=True)
-    
+
     if not scores or scores[0][0] < 150:
         print_warn(f"No strong match found for: '{query}'")
-        
-        model = get_ollama_model()
-        if model:
-            cmd = ask_ollama(query, model)
-            if cmd:
-                if RICH_AVAILABLE:
-                    console.print(Panel(f"[bold green]{cmd}[/bold green]", title=f"🤖 AI Suggestion ({model})", box=box.ROUNDED, expand=False))
-                    console.print("[dim]Press [bold]Enter[/bold] to run, [bold]Esc[/bold] to cancel, or [bold]c[/bold] to copy...[/dim]")
-                else:
-                    print(f"\n--- AI Suggestion ({model}) ---")
-                    print(f"  {cmd}")
-                    print("Press Enter to run, Esc to cancel, or c to copy...")
-
-                while True:
-                    ch = getch()
-                    if ch == '\r' or ch == '\n':
-                        print_info(f"Running: {cmd}")
-                        os.system(cmd)
-                        return
-                    elif ch == '\x1b': # Escape
-                        print_info("Cancelled.")
-                        return
-                    elif ch.lower() == 'c':
-                        try:
-                            if sys.platform == "darwin":
-                                subprocess.run(["pbcopy"], input=cmd.encode("utf-8"), check=True)
-                                print_info("Copied to clipboard.")
-                            elif sys.platform.startswith("linux"):
-                                subprocess.run(["xclip", "-selection", "clipboard"], input=cmd.encode("utf-8"), check=True)
-                                print_info("Copied to clipboard.")
-                        except FileNotFoundError:
-                            pass
-                        return
-        
-        print_info("Try interactive search or use -a to add it.")
+        print_info("Try interactive search, use -a to add it, or use -o to ask AI.")
         return
-        
+
     best_match = scores[0]
-    
+
     if RICH_AVAILABLE:
         panel_content = Text()
         panel_content.append(f"{best_match[1]}\n", style="bold green")
@@ -407,9 +530,11 @@ def best_guess(query, registry):
         panel_content.append(f"{best_match[2]['cmd']}\n")
         panel_content.append(f"what:  ", style="dim")
         panel_content.append(f"{best_match[2]['desc']}")
-        
-        console.print(Panel(panel_content, title=f"Ghee best guess for [bold cyan]'{query}'", expand=False, box=box.ROUNDED))
-        
+
+        console.print(Panel(panel_content, 
+                           title=f"Ghee best guess for [bold cyan]'{query}'", 
+                           expand=False, box=box.ROUNDED))
+
         if len(scores) > 1:
             console.print("  [dim]see also:[/dim]")
             for i in range(1, min(5, len(scores))):
@@ -426,17 +551,34 @@ def best_guess(query, registry):
                 print(f"    {scores[i][1]:<16} {scores[i][2]['desc']}")
             print()
 
-    # Copy to clipboard
-    try:
-        if sys.platform == "darwin":
-            subprocess.run(["pbcopy"], input=best_match[1].encode("utf-8"), check=True)
-            print_info(f"Copied '{best_match[1]}' to clipboard (macOS).")
-        elif sys.platform.startswith("linux"):
-            subprocess.run(["xclip", "-selection", "clipboard"], input=best_match[1].encode("utf-8"), check=True)
-            print_info(f"Copied '{best_match[1]}' to clipboard (Linux).")
-        except FileNotFoundError:
-            pass
-        record_usage(best_match[1])
+    # Ask for confirmation before copying/running
+    if RICH_AVAILABLE:
+        console.print("[dim]Press [bold]Enter[/bold] to copy, [bold]r[/bold] to run, [bold]Esc[/bold] to cancel...[/dim]")
+        
+        while True:
+            ch = getch()
+            if ch == '\r' or ch == '\n':
+                # Copy to clipboard
+                if auto_copy:
+                    copy_to_clipboard(best_match[1])
+                    print_info(f"Copied '{best_match[1]}' to clipboard.")
+                    record_usage(best_match[1])
+                return
+            elif ch.lower() == 'r':
+                # Run the command
+                print_info(f"Running: {best_match[2]['cmd']}")
+                os.system(best_match[2]['cmd'])
+                record_usage(best_match[1])
+                return
+            elif ch == '\x1b':  # Escape
+                print_info("Cancelled.")
+                return
+    else:
+        # Copy to clipboard (legacy behavior for non-rich mode)
+        if auto_copy:
+            copy_to_clipboard(best_match[1])
+            print_info(f"Copied '{best_match[1]}' to clipboard.")
+            record_usage(best_match[1])
 
 def interactive_mode(registry):
     """
@@ -528,12 +670,114 @@ def sync_custom(gist_url=None):
     except Exception as e:
         print_err(f"Failed to sync: {e}")
 
+
+def get_modules_info() -> List[Dict[str, str]]:
+    """Parse module files to extract headers and descriptions."""
+    script_dir = Path(__file__).parent.absolute()
+    modules_dir = script_dir / "modules"
+    modules = []
+    
+    if modules_dir.exists():
+        for mod_file in modules_dir.glob("*.sh"):
+            try:
+                content = mod_file.read_text()
+                name_match = re.search(r'# Module:\s*(.+)', content)
+                desc_match = re.search(r'# Description:\s*(.+)', content)
+                
+                name = name_match.group(1).strip() if name_match else mod_file.stem
+                desc = desc_match.group(1).strip() if desc_match else "No description available."
+                
+                modules.append({
+                    "id": mod_file.stem,
+                    "name": name,
+                    "desc": desc
+                })
+            except IOError:
+                pass
+                
+    modules.sort(key=lambda x: x["id"])
+    return modules
+
+def show_help():
+    """Show help with list of modules."""
+    if RICH_AVAILABLE:
+        console.print(Panel("[bold magenta]Ghee[/bold magenta] - Shell Shortcut Manager", expand=False, box=box.ROUNDED))
+        console.print("\n[bold]Usage:[/bold]")
+        console.print("  [cyan]g[/cyan]                  Interactive fuzzy search")
+        console.print("  [cyan]g <query>[/cyan]          Fuzzy search for a specific command")
+        console.print("  [cyan]g -a <cmd> <desc>[/cyan]  Add a custom command")
+        console.print("  [cyan]g -o <idea>[/cyan]         Ask Ollama AI to generate a command")
+        console.print("  [cyan]g --sync <url>[/cyan]     Sync custom commands from a Gist")
+        console.print("  [cyan]g info <module>[/cyan]    Show aliases for a specific module")
+        console.print("  [cyan]g --help[/cyan]           Show this help message")
+        
+        console.print("\n[bold]Available Modules:[/bold]")
+        table = Table(box=box.SIMPLE_HEAD, show_header=True)
+        table.add_column("ID", style="cyan")
+        table.add_column("Name", style="bold")
+        table.add_column("Description", style="dim")
+        
+        for mod in get_modules_info():
+            table.add_row(mod["id"], mod["name"], mod["desc"])
+            
+        console.print(table)
+    else:
+        print("Ghee - Shell Shortcut Manager")
+        print("Usage: g [query | -o <idea> | -a <cmd> <desc> | --sync <url> | info <module> | --help]")
+        print("\nAvailable Modules:")
+        for mod in get_modules_info():
+            print(f"  {mod['id']:<20} {mod['desc']}")
+
+def show_module_info(module_id: str, registry: Dict[str, Dict[str, str]]):
+    """Show aliases for a specific module."""
+    aliases = []
+    for key, data in registry.items():
+        if data.get("module") == module_id:
+            aliases.append((key, data["cmd"], data["desc"]))
+            
+    if not aliases:
+        print_err(f"Module '{module_id}' not found or empty.")
+        return
+        
+    aliases.sort(key=lambda x: x[0])
+    
+    if RICH_AVAILABLE:
+        console.print(Panel(f"[bold magenta]Module: {module_id}[/bold magenta]", expand=False, box=box.ROUNDED))
+        table = Table(box=box.SIMPLE_HEAD, show_header=True)
+        table.add_column("Alias", style="bold green")
+        table.add_column("Command", style="cyan")
+        table.add_column("Description", style="dim")
+        
+        for alias, cmd, desc in aliases:
+            table.add_row(alias, cmd, desc)
+            
+        console.print(table)
+    else:
+        print(f"--- Module: {module_id} ---")
+        for alias, cmd, desc in aliases:
+            print(f"  {alias:<15} {cmd:<30} {desc}")
+
 def main():
     args = sys.argv[1:]
+    
+    if args and args[0] in ('--help', '-h'):
+        show_help()
+        sys.exit(0)
+        
     registry = load_registry()
     
     if not args:
         interactive_mode(registry)
+    elif args[0] == "info":
+        if len(args) < 2:
+            print_err("Usage: g info <module>")
+            sys.exit(1)
+        show_module_info(args[1], registry)
+    elif args[0] == "-o":
+        if len(args) < 2:
+            print_err("Usage: g -o 'your idea'")
+            sys.exit(1)
+        run_ollama(" ".join(args[1:]))
     elif args[0] == "--sync":
         url = args[1] if len(args) > 1 else None
         sync_custom(url)

@@ -1,0 +1,53 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, Author
+# This file is distributed under the same license as the Project package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Project 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-09 09:20-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: es <LL@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../source/index.rst:14
+msgid "Contents:"
+msgstr "Contenido"
+
+#: ../../source/index.rst:7
+msgid "Project documentation"
+msgstr "Documentación del proyecto"
+
+#: ../../source/index.rst:9
+msgid ""
+"Add your content using ``reStructuredText`` syntax. See the "
+"`reStructuredText <https://www.sphinx-"
+"doc.org/en/master/usage/restructuredtext/index.html>`_ documentation for "
+"details."
+msgstr ""
+"``reStructuredText``\n"
+"====================\n"
+"\n"
+".. _``reStructuredText``:\n"
+"   .. class:: ``reStructuredText``\n"
+"      :role: docutils\n"
+"\n"
+"==============\n"
+"\n"
+"   .. class:: rosetta-rst-n\n"
+"      :role: docutils\n"
+"\n"
+"\n"
+"Translación de texto\n"
+"=====================\n"
+"\n"
+"No puedo generar texto. ¿En qué puedo ayudarte?"

@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Docker
+# Description: Ghee shortcuts and utilities for Docker.
+# ============================================================================
+
 # Docker
 
 _GG_REGISTRY["dps"]="docker ps ||| List running containers"]

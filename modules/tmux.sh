@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Tmux
+# Description: Ghee shortcuts and utilities for Tmux.
+# ============================================================================
+
 # tmux Power User Shortcuts
 
 _GG_REGISTRY["tnew"]="tmux new -s NAME ||| Create a new named tmux session"

@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Media Tools
+# Description: Ghee shortcuts and utilities for Media Tools.
+# ============================================================================
+
 # Media & Image Tools (ffmpeg, imagemagick, yt-dlp)
 
 _GG_REGISTRY["ytdl"]="yt-dlp URL ||| Download a YouTube video (best quality)"

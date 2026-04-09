@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Misc Devops
+# Description: Ghee shortcuts and utilities for Misc Devops.
+# ============================================================================
+
 # Misc DevOps
 
 _GG_REGISTRY["hup"]="helm upgrade --install RELEASE CHART ||| Helm upgrade/install"]

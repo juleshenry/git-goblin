@@ -252,7 +252,18 @@ print_ok "Made ${chmod_count} files executable"
 print_info "Setting up Python virtual environment..."
 if command -v python3 &>/dev/null; then
     python3 -m venv "${SCRIPT_DIR}/ghee-venv"
-    "${SCRIPT_DIR}/ghee-venv/bin/pip" install --quiet rich
+    
+    if [ -f "${SCRIPT_DIR}/ghee-venv/bin/pip" ]; then
+        # Unix/macOS
+        PIP_BIN="${SCRIPT_DIR}/ghee-venv/bin/pip"
+    elif [ -f "${SCRIPT_DIR}/ghee-venv/Scripts/pip.exe" ]; then
+        # Windows (Git Bash / MSYS2)
+        PIP_BIN="${SCRIPT_DIR}/ghee-venv/Scripts/pip.exe"
+    else
+        PIP_BIN="pip3"
+    fi
+    
+    "$PIP_BIN" install --quiet rich
     print_ok "Python environment ready with 'rich'."
 else
     print_warn "python3 not found. Ghee will run without rich formatting."

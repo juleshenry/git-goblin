@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# Module: Aws Cli
+# Description: Ghee shortcuts and utilities for Aws Cli.
+# ============================================================================
+
 # AWS CLI
 
 _GG_REGISTRY["awsid"]="aws sts get-caller-identity ||| Show current AWS identity"]
