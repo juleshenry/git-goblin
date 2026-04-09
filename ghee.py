@@ -381,7 +381,6 @@ def get_ollama_model():
 
 def ask_ollama(query, model):
     import urllib.request
-    print_info(f"Asking Ollama ({model}) to generate a command...")
     try:
         url = "http://localhost:11434/api/generate"
         prompt = f"Convert this natural language idea into a single, valid bash/shell command for macOS/Linux. Output ONLY the command, no markdown formatting, no backticks, no explanations. Idea: {query}"
@@ -399,8 +398,7 @@ def ask_ollama(query, model):
                 if command.startswith('bash'):
                     command = command[4:].strip()
             return command
-    except Exception as e:
-        print_err(f"Ollama error: {e}")
+    except Exception:
         return None
 
 def getch() -> str:

@@ -6,6 +6,10 @@
 
 > *Like Indian clarified butter — pure, rich, and makes everything better.*
 
+🌍 **Read in your language:**
+🇪🇸 [Español](README.es.md) · 🇨🇳 [中文](README.zh.md) · 🇮🇳 [हिन्दी](README.hi.md) · 🇰🇷 [한국어](README.ko.md) · 🇸🇦 [العربية](README.ar.md)
+<!-- 🌐 Translations cover descriptions; aliases & commands stay in English for consistency. -->
+
 **ghee** is a collection of **538+ shell shortcuts** for developers, devops engineers, and power users. It layers smoothly on top of your existing shell, making your CLI crispy and fast — just like the real thing.
 
 Covers: Git, Docker, Kubernetes, AWS, GCP, Terraform, Heroku, Vercel, Fly.io, Railway, GitHub CLI, npm/yarn/pnpm, Python/pip, Rust, Go, Redis, PostgreSQL, MongoDB, Nginx, systemd, tmux, networking, cybersecurity/recon, AI/LLM tools, media (ffmpeg/yt-dlp), JSON/YAML/CSV, macOS power tools, and more.
