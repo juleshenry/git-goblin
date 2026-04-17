@@ -268,10 +268,12 @@ _GG_REGISTRY["shodanip"]="curl -s https://internetdb.shodan.io/IP ||| Fast Shoda
 _GG_REGISTRY["sshkey"]="ssh-keygen -t ed25519 -C EMAIL ||| Generate modern secure SSH key"
 
 # Added by Ghee Superduper Upgrade
-b64e() {
+unalias b64e 2>/dev/null
+function b64e() {
     echo -n "\$1" | base64
 }
-b64d() {
+unalias b64d 2>/dev/null
+function b64d() {
     echo -n "\$1" | base64 --decode
 }
 jwtdecode() {

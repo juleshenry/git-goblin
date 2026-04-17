@@ -28,8 +28,16 @@ _gg_err()  { echo -e "${_gg_red}[ERR]${_gg_reset} $*" >&2; }
 declare -A _GG_REGISTRY
 _GG_CUSTOM_FILE="${HOME}/.ghee-custom"
 
+if [ -n "$ZSH_VERSION" ]; then
+    export _GHEE_DIR="$(dirname "${(%):-%x}")"
+elif [ -n "$BASH_VERSION" ]; then
+    export _GHEE_DIR="$(dirname "${BASH_SOURCE[0]}")"
+else
+    export _GHEE_DIR="${PWD}"
+fi
+
 g() {
-    local script_dir="$(dirname "${BASH_SOURCE[0]}")"
+    local script_dir="${_GHEE_DIR}"
     if [ -f "$script_dir/ghee-venv/bin/python" ]; then
         "$script_dir/ghee-venv/bin/python" "$script_dir/ghee.py" "$@"
     elif [ -f "$script_dir/ghee-venv/Scripts/python.exe" ]; then

@@ -10,7 +10,10 @@ _GG_REGISTRY["G"]="G [cmd] or G -a 'cmd' 'desc' ||| Ghee hot-doc shell"]
 _GG_REGISTRY["gg-help"]="print reference table ||| Full command reference"]
 
 G() {
-    local script_dir="$(dirname "${BASH_SOURCE[0]}")"
+    local script_dir="${_GHEE_DIR}"
+    if [ -z "$script_dir" ]; then
+        script_dir="${HOME}/ghee"
+    fi
     if [ -f "$script_dir/ghee-venv/bin/python" ]; then
         "$script_dir/ghee-venv/bin/python" "$script_dir/ghee.py" "$@"
     else
