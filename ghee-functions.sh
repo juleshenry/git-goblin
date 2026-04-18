@@ -28,6 +28,27 @@ _gg_err()  { echo -e "${_gg_red}[ERR]${_gg_reset} $*" >&2; }
 declare -A _GG_REGISTRY
 _GG_CUSTOM_FILE="${HOME}/.ghee-custom"
 
+# Load custom aliases from ~/.ghee-custom as real shell aliases
+_ghee_load_custom_aliases() {
+    if [ -f "$_GG_CUSTOM_FILE" ]; then
+        while IFS= read -r line || [ -n "$line" ]; do
+            [ -z "$line" ] && continue
+            local a="${line%%|||*}"
+            local rest="${line#*|||}"
+            local c="${rest%%|||*}"
+            a="$(echo "$a" | xargs)"
+            c="$(echo "$c" | xargs)"
+            [ -z "$a" ] || [ -z "$c" ] && continue
+            # Only create alias if alias name is a single word (valid alias)
+            if [[ "$a" =~ ^[a-zA-Z_][a-zA-Z0-9_-]*$ ]]; then
+                alias "$a"="$c"
+            fi
+        done < "$_GG_CUSTOM_FILE"
+    fi
+}
+
+_ghee_load_custom_aliases
+
 if [ -n "$ZSH_VERSION" ]; then
     export _GHEE_DIR="$(dirname "${(%):-%x}")"
 elif [ -n "$BASH_VERSION" ]; then
@@ -38,11 +59,17 @@ fi
 
 g() {
     local script_dir="${_GHEE_DIR}"
+    local _ghee_python
     if [ -f "$script_dir/ghee-venv/bin/python" ]; then
-        "$script_dir/ghee-venv/bin/python" "$script_dir/ghee.py" "$@"
+        _ghee_python="$script_dir/ghee-venv/bin/python"
     elif [ -f "$script_dir/ghee-venv/Scripts/python.exe" ]; then
-        "$script_dir/ghee-venv/Scripts/python.exe" "$script_dir/ghee.py" "$@"
+        _ghee_python="$script_dir/ghee-venv/Scripts/python.exe"
     else
-        python3 "$script_dir/ghee.py" "$@"
+        _ghee_python="python3"
+    fi
+    "$_ghee_python" "$script_dir/ghee.py" "$@"
+    # Reload custom aliases after adding one
+    if [ "$1" = "-a" ]; then
+        _ghee_load_custom_aliases
     fi
 }

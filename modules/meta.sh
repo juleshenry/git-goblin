@@ -19,6 +19,10 @@ G() {
     else
         python3 "$script_dir/ghee.py" "$@"
     fi
+    # Reload custom aliases after adding one
+    if [ "$1" = "-a" ]; then
+        _ghee_load_custom_aliases
+    fi
 }
 
 # ── gg-help: print formatted reference table ──

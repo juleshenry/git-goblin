@@ -243,37 +243,31 @@ def save_registry_cache(registry: Dict[str, Dict[str, str]]) -> None:
     except IOError as e:
         print_err(f"Failed to save cache: {e}")
 
-def add_custom(alias: str, desc: str) -> None:
+def add_custom(cmd: str, alias: str) -> None:
     """
     Add a custom shortcut to the registry.
 
     Validates inputs for safety and correctness before adding to the custom file.
 
     Args:
-        alias: The command/shortcut to add
-        desc: A description of what the command does
+        cmd: The full command to shortcut (e.g. 'ollama list')
+        alias: The short alias name (e.g. 'olist')
     """
     # Validate inputs
+    cmd_valid, cmd_err = validate_command_input(cmd)
+    if not cmd_valid:
+        print_err(f"Invalid command: {cmd_err}")
+        sys.exit(1)
+
     alias_valid, alias_err = validate_alias_input(alias)
     if not alias_valid:
         print_err(f"Invalid alias: {alias_err}")
         sys.exit(1)
 
-    desc_valid, desc_err = validate_desc_input(desc)
-    if not desc_valid:
-        print_err(f"Invalid description: {desc_err}")
-        sys.exit(1)
-
-    cmd_valid, cmd_err = validate_command_input(alias)
-    if not cmd_valid:
-        print_err(f"Invalid command: {cmd_err}")
-        sys.exit(1)
-
-    cmd = alias  # The alias IS the command in this context
     try:
         with open(CUSTOM_FILE, "a") as f:
-            f.write(f"{alias}|||{cmd}|||{desc}\n")
-        print_ok(f"Added: [bold]{alias}[/bold] -- {desc}" if RICH_AVAILABLE else f"Added: {alias} -- {desc}")
+            f.write(f"{alias}|||{cmd}|||{cmd}\n")
+        print_ok(f"Added: [bold]{alias}[/bold] -> {cmd}" if RICH_AVAILABLE else f"Added: {alias} -> {cmd}")
         print_info(f"Saved to {CUSTOM_FILE}")
         
         # Invalidate cache after adding custom command
@@ -781,11 +775,11 @@ def main():
         sync_custom(url)
     elif args[0] == "-a":
         if len(args) < 3:
-            print_err("Usage: g -a 'command' 'description'")
+            print_err("Usage: G -a <alias> <command>")
             sys.exit(1)
-        alias_cmd = args[1]
-        desc = " ".join(args[2:])
-        add_custom(alias_cmd, desc)
+        alias_name = args[1]
+        cmd = " ".join(args[2:])
+        add_custom(cmd, alias_name)
     else:
         query = " ".join(args)
         best_guess(query, registry)
