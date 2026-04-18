@@ -287,6 +287,42 @@ def add_custom(cmd: str, alias: str) -> None:
         sys.exit(1)
 
 
+
+def remove_custom(alias: str) -> None:
+    """
+    Remove a custom shortcut from the registry by alias name.
+    """
+    if not CUSTOM_FILE.exists():
+        print_err("No custom shortcuts file found.")
+        sys.exit(1)
+
+    lines = CUSTOM_FILE.read_text().splitlines()
+    new_lines = []
+    found = False
+    for line in lines:
+        if not line.strip():
+            continue
+        key = line.split("|||")[0].strip()
+        if key == alias:
+            found = True
+        else:
+            new_lines.append(line)
+
+    if not found:
+        print_err(f"Alias '{alias}' not found in custom shortcuts.")
+        sys.exit(1)
+
+    CUSTOM_FILE.write_text("\n".join(new_lines) + ("\n" if new_lines else ""))
+    print_ok(f"Removed: [bold]{alias}[/bold]" if RICH_AVAILABLE else f"Removed: {alias}")
+
+    # Invalidate cache
+    if CACHE_FILE.exists():
+        try:
+            CACHE_FILE.unlink()
+        except IOError:
+            pass
+
+
 def score_match(query: str, key: str, cmd: str, desc: str) -> int:
     """
     Score the match of a query against a command alias, actual command, and description.
@@ -746,6 +782,11 @@ def main():
         alias_name = args[1]
         cmd = " ".join(args[2:])
         add_custom(cmd, alias_name)
+    elif args[0] == "-rm":
+        if len(args) < 2:
+            print_err("Usage: G -rm <alias>")
+            sys.exit(1)
+        remove_custom(args[1])
     elif args[0] == "--sync":
         url = args[1] if len(args) > 1 else None
         sync_custom(url)

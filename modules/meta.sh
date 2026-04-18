@@ -23,6 +23,10 @@ G() {
     if [ "$1" = "-a" ]; then
         _ghee_load_custom_aliases
     fi
+    # Unalias after removing one
+    if [ "$1" = "-rm" ] && [ -n "$2" ]; then
+        unalias "$2" 2>/dev/null
+    fi
 }
 
 # ── gg-help: print formatted reference table ──
